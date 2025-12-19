@@ -1,0 +1,50 @@
+
+
+/* Colores de la pagina segun el logo de dulce capricho de yennifer */
+:root { 
+    --rosa-logo: #f26185ff;    /* Rosa del borde */
+    --azul-logo: #16c2e8ff;    /* Azul del cupcake */
+    --marron-logo: #825a42;    /* Marrón chocolate */
+    --negro-logo: #212121;     /* Negro para textos fuertes */
+}
+
+/* 2. Estilos Generales */
+body { 
+    background-color: #f4f9fa; /* Fondo azul clarito basado en el logo */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+.container {
+    margin-top: 20px;
+}
+
+/* 3. Navegación (Navbar) */
+.navbar { 
+    background-color: var(--rosa-logo) !important; 
+    border-bottom: 3px solid var(--marron-logo); 
+}
+
+.navbar-brand, .nav-link { 
+    color: white !important; 
+}
+
+/* 4. Botones y Elementos Visuales */
+.btn-primary { 
+    background-color: var(--marron-logo); 
+    border: none; 
+}
+
+.btn-primary:hover { 
+    background-color: var(--negro-logo); 
+}
+
+.cupcake-icon {
+    color: var(--azul-logo);
+    text-shadow: 1px 1px 1px var(--marron-logo);
+}
+
+/* 5. Títulos */
+h1 {
+    color: var(--rosa-logo);
+    font-weight: bold;
+}
