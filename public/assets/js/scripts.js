@@ -1,18 +1,49 @@
+/**
+ * 🧁 Mi Costo Dulce: Scripts Generales
+ */
 
-// Esperar a que el documento esté listo
 document.addEventListener('DOMContentLoaded', function() {
     console.log("🧁 Mi Costo Dulce: Scripts cargados y listos.");
 
-    // Función de ejemplo para calcular costos (la usaremos más adelante)
-    // Esta función ayudará a calcular: Cantidad * Precio Unitario
-    const calcularCosto = (cantidad, precio) => {
-        return (parseFloat(cantidad) * parseFloat(precio)).toFixed(2);
+    // Ver/Ocultar Contraseña 
+    const toggleButtons = document.querySelectorAll('.toggle-password');
+
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Intentamos obtener el input de dos maneras para que nunca falle:
+            // 1. Por el ID en 'data-target' (si existe)
+            // 2. Buscando el input que está dentro del mismo grupo (parentElement)
+            const targetId = this.getAttribute('data-target');
+            const input = targetId ? document.getElementById(targetId) : this.parentElement.querySelector('input');
+            const icon = this.querySelector('i'); 
+
+            if (input && icon) {
+                // Cambia entre 'password' y 'text'
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                
+                // Alterna las clases del icono (ojo abierto / ojo tachado)
+                if (isPassword) {
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            } else {
+                console.error("❌ No se encontró el input o el icono para este botón.");
+            }
+        });
+    });
+
+    //  Herramientas de Cálculo ---
+    window.calcularCosto = (cantidad, precio) => {
+        const total = (parseFloat(cantidad) * parseFloat(precio));
+        return isNaN(total) ? "0.00" : total.toFixed(2);
     };
 
-    // Aquí activaremos alertas automáticas o cálculos en tiempo real
 });
 
-// Función para confirmar antes de eliminar un ingrediente o receta
+
+// Función para confirmar antes de eliminar
 function confirmarEliminacion(nombre) {
-    return confirm(`¿Estás seguro de que quieres eliminar "${nombre}"? Esta acción no se puede deshacer.`);
+    return confirm(`¿Estás seguro de que quieres eliminar "${nombre}"?\n\nEsta acción no se puede deshacer.`);
 }

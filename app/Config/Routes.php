@@ -21,7 +21,8 @@ $routes->get('registro', 'Auth::registro');       // Pantalla para nuevos usuari
 $routes->post('auth/registrar', 'Auth::registrar'); 
 $routes->get('salir', 'Auth::salir');             // Cerrar sesión
 $routes->get('recuperar', 'Auth::recuperar');     // Olvido de  clave del usuario
-
+$routes->post('auth/enviar-recuperacion', 'Auth::enviarRecuperacion');
+$routes->get('auth/enviar-recuperacion', 'Auth::recuperar');
 /*
  * --------------------------------------------------------------------
  * Módulo de Ingredientes (Insumos)
@@ -55,4 +56,3 @@ $routes->group('recetas', function($routes) {
     $routes->get('borrar/(:num)', 'Recetas::borrar/$1');
 
 });
-    

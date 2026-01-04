@@ -1,16 +1,15 @@
-
-
-/* Colores de la pagina segun el logo de dulce capricho de yennifer */
+/*  VARIABLES DE COLOR (Dulce Capricho) */
 :root { 
     --rosa-logo: #f26185ff;    /* Rosa del borde */
     --azul-logo: #16c2e8ff;    /* Azul del cupcake */
     --marron-logo: #825a42;    /* Marrón chocolate */
     --negro-logo: #212121;     /* Negro para textos fuertes */
+    --fondo-suave: #f4f9fa;    /* Fondo azul clarito */
 }
 
-/* 2. Estilos Generales */
+/* ESTILOS GENERALES */
 body { 
-    background-color: #f4f9fa; /* Fondo azul clarito basado en el logo */
+    background-color: var(--fondo-suave); 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
@@ -18,7 +17,7 @@ body {
     margin-top: 20px;
 }
 
-/* 3. Navegación (Navbar) */
+/*  NAVEGACIÓN (Navbar) */
 .navbar { 
     background-color: var(--rosa-logo) !important; 
     border-bottom: 3px solid var(--marron-logo); 
@@ -28,14 +27,16 @@ body {
     color: white !important; 
 }
 
-/* 4. Botones y Elementos Visuales */
+/*  BOTONES Y ELEMENTOS DE MARCA */
 .btn-primary { 
     background-color: var(--marron-logo); 
     border: none; 
+    transition: all 0.3s ease;
 }
 
 .btn-primary:hover { 
     background-color: var(--negro-logo); 
+    transform: translateY(-1px);
 }
 
 .cupcake-icon {
@@ -43,8 +44,63 @@ body {
     text-shadow: 1px 1px 1px var(--marron-logo);
 }
 
-/* 5. Títulos */
-h1 {
+h1, h3 {
     color: var(--rosa-logo);
     font-weight: bold;
+}
+
+.text-rosa {
+    color: var(--rosa-logo) !important;
+}
+
+/*  DISEÑO DEL LOGIN Y REGISTRO (CON FONDO) */
+
+
+.auth-bg {
+    background-image: url('../img/backgrounds/fondo-login.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: block !important;
+}
+
+/* Card semi-transparente para resaltar sobre los dulces */
+.auth-bg .card {
+    background-color: rgba(255, 255, 255, 0.92); /* Efecto cristalino */
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+/*  CAMPOS DE CONTRASEÑA (INPUT GROUP) */
+
+/* Une el input con el ojito */
+.input-group input[type="password"],
+.input-group input[type="text"] {
+    border-right: none;
+}
+
+/* Estilo para el botón del "ojito" */
+.toggle-password {
+    border-left: none;
+    background-color: white !important;
+    border-color: #dee2e6;
+    color: var(--marron-logo);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: var(--rosa-logo);
+}
+
+/* Resplandor azul al hacer clic en el campo */
+.input-group:focus-within .form-control, 
+.input-group:focus-within .toggle-password {
+    border-color: var(--azul-logo);
+    box-shadow: 0 0 0 0.25rem rgba(22, 194, 232, 0.25);
 }

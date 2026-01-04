@@ -23,7 +23,7 @@
                     </button>
                     
                     <div class="text-center">
-                        <a href="<?= base_url('auth/login') ?>" class="text-muted small text-decoration-none">Volver al inicio</a>
+                        <a href="<?= base_url('login') ?>" class="text-muted small text-decoration-none">Volver al inicio</a>
                     </div>
                 </form>
             </div>

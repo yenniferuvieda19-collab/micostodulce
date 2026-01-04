@@ -2,16 +2,15 @@
 
 namespace App\Controllers;
 
-use App\Models\UsuarioModel; // @todo: Crear modelo para la tabla 'usuarios'
+use App\Models\UsuarioModel;
 
 class Auth extends BaseController
 {
     /**
-     * Muestra la vista de inicio de sesión personalizada
+     * Muestra la vista de inicio de sesión
      */
     public function login()
     {
-        // Se carga la vista ubicada en app/Views/auth/login.php
         return view('auth/login');
     }
 
@@ -22,8 +21,7 @@ class Auth extends BaseController
     {
         $session = session();
         $model = new UsuarioModel();
-        
-        // Mapeo según columnas SQL: Correo y Contraseña
+
         $correo = $this->request->getPost('email');
         $password = $this->request->getPost('password');
 
@@ -32,6 +30,7 @@ class Auth extends BaseController
         if ($user && password_verify($password, $user['Contraseña'])) {
             $session->set([
                 'Id_usuario' => $user['Id_usuario'],
+                'Nombre'     => $user['Nombre'],
                 'isLoggedIn' => true
             ]);
             return redirect()->to(base_url('ingredientes'));
@@ -40,10 +39,82 @@ class Auth extends BaseController
         return redirect()->back()->with('error', 'Credenciales inválidas.');
     }
 
-   public function salir()
-{
-    session()->destroy(); // Limpia la mesa de trabajo
-    // Redirige al login con un mensaje de despedida
-    return redirect()->to(base_url('login'))->with('mensaje', '¡Sesión cerrada! Gracias por trabajar en Mi Costo Dulce.');
-}
+    /**
+     * Cierra la sesión del usuario
+     */
+    public function salir()
+    {
+        session()->destroy();
+        return redirect()->to(base_url('login'))->with('mensaje', '¡Sesión cerrada! Gracias por trabajar en Mi Costo Dulce.');
+    }
+
+    /**
+     * Muestra la vista de registro
+     */
+    public function registro()
+    {
+        return view('auth/registro');
+    }
+
+    /**
+     * Procesa el registro de nuevos usuarios
+     */
+    public function registrar()
+    {
+        $model = new UsuarioModel();
+
+        $nombre_negocio = $this->request->getPost('nombre_negocio');
+        $email = $this->request->getPost('email');  
+        $password = $this->request->getPost('password');
+
+        if (empty($nombre_negocio) || empty($email) || empty($password)) {
+            return redirect()->back()->with('error', 'Todos los campos son obligatorios.');
+        }
+
+        if ($model->where('Correo', $email)->first()) {
+            return redirect()->back()->with('error', 'El correo ya está registrado.');
+        }
+
+        if (strlen($password) < 6) {
+            return redirect()->back()->with('error', 'La contraseña debe tener al menos 6 caracteres.');
+        }
+
+        $data = [
+            'Nombre' => $nombre_negocio,
+            'Correo' => $email,
+            'Contraseña' => password_hash($password, PASSWORD_BCRYPT)
+        ];
+
+        $model->insert($data);
+
+        return redirect()->to(base_url('login'))->with('mensaje', 'Registro exitoso. ¡Bienvenido a Mi Costo Dulce!');
+    }
+
+    /**
+     * Muestra la vista para solicitar recuperación de clave
+     */
+    public function recuperar()
+    {
+        return view('auth/recuperar');
+    }
+
+    /* Procesa el envío del correo de recuperación     */
+    public function enviarRecuperacion()
+    {
+        $email = $this->request->getPost('email');
+
+        if (empty($email)) {
+            return redirect()->back()->with('error', 'Por favor, ingresa tu correo electrónico.');
+        }
+
+        $model = new UsuarioModel();
+        $user = $model->where('Correo', $email)->first();
+
+        if ($user) {
+            
+            return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones pronto.');
+        }
+
+        return redirect()->back()->with('error', 'No encontramos una cuenta con ese correo.');
+    }
 }

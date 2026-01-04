@@ -11,35 +11,33 @@
     <link rel="stylesheet" href="<?= base_url('assets/css/estilos.css') ?>">
 
     <style>
-        /* Fondo del Navbar con el rosa de la marca  de dulce capricho*/
         .navbar {
             background-color: var(--rosa-logo) !important;
         }
 
-        /* ICONO CUPCAKE*/
         .cupcake-icon {
-            color: #85C1E9 !important; 
+            color: var(--azul-logo) !important; 
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        .nav-link {
-            font-weight: 500;
-        }
-
         footer {
-            border-top: 1px solid #f1f1f1ff;
+            border-top: 1px solid rgba(0,0,0,0.05);
             margin-top: 4rem !important;
         }
 
-        /* Estilo suave para las alertas de Mi Costo Dulce */
         .alert {
             border: none;
             border-left: 4px solid;
             border-radius: 8px;
         }
+
+        /* Ajuste para que el contenido no quede pegado a la navbar en el login */
+        .auth-bg main {
+            padding-top: 5rem;
+        }
     </style>
 </head>
-<body>
+<body class="<?= (url_is('login') || url_is('registro') || url_is('recuperar')) ? 'auth-bg' : '' ?>">
 
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm mb-4">
     <div class="container">
@@ -47,26 +45,27 @@
             <i class="fa-solid fa-cake-candles cupcake-icon me-2"></i> Mi Costo Dulce
         </a>
         
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <?php if(session()->get('isLoggedIn')): ?>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('ingredientes') ?>">Mis Insumos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('recetas') ?>">Mis Recetas</a>
-                </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link btn btn-light btn-sm text-dark ms-lg-3 px-3 shadow-sm" href="<?= base_url('salir') ?>">
-                        <i class="fa-solid fa-right-from-bracket me-1"></i> Salir
-                    </a>
-                </li>
-            </ul>
-        </div>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('ingredientes') ?>">Mis Insumos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('recetas') ?>">Mis Recetas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-light btn-sm text-dark ms-lg-3 px-3 shadow-sm" href="<?= base_url('salir') ?>">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i> Salir
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        <?php endif; ?>
     </div>
 </nav>
 
