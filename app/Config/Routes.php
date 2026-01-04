@@ -11,7 +11,7 @@ $routes->get('/', 'Home::index');
 
 /*
  * --------------------------------------------------------------------
- * Módulo de Autenticación (Auth)
+ * Módulo de Autenticación (Auth).
  * --------------------------------------------------------------------
  * Aquí manejamos el ingreso de los reposteros al sistema.
  */
