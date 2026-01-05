@@ -10,7 +10,7 @@
 </div>
 
 <?php if (session()->getFlashdata('mensaje')): ?>
-    <div class="alert alert-success">
+    <div class="alert alert-success border-0 shadow-sm">
         <?= session()->getFlashdata('mensaje') ?>
     </div>
 <?php endif; ?>
@@ -23,7 +23,7 @@
                     <th class="ps-4">Ingrediente</th>
                     <th>Cantidad Pack</th>
                     <th>Precio Compra</th>
-                    <th>Costo Unitario</th> <th class="text-end pe-4">Acciones</th>
+                    <th class="text-end pe-4">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,27 +33,43 @@
                             <td class="ps-4 fw-bold text-secondary">
                                 <?= esc($insumo['nombre_ingrediente']) ?>
                             </td>
-                            <td><?= esc($insumo['cantidad_paquete']) ?></td>
-                            <td>$ <?= number_format($insumo['precio_compra'], 2) ?></td>
-                            <td class="fw-bold text-success">
-                                $ <?= number_format($insumo['costo_unidad'], 4) ?>
+                            
+                            <td>
+                                <?php 
+                                    $cant = $insumo['cantidad_paquete'];
+                                    $tipo = $insumo['Id_unidad_base'];
+                                    
+                                    switch ($tipo) {
+                                        case 2: // Kg
+                                            echo ($cant / 1000) . ' Kg';
+                                            break;
+                                        case 4: // Litros
+                                            echo ($cant / 1000) . ' L';
+                                            break;
+                                        case 3: // ml
+                                            echo $cant . ' ml';
+                                            break;
+                                        case 5: // Unidades
+                                            echo $cant . ' Und';
+                                            break;
+                                        default: // Gramos (1)
+                                            echo $cant . ' gr';
+                                            break;
+                                    }
+                                ?>
                             </td>
+                            
+                            <td>$ <?= number_format($insumo['precio_compra'], 2) ?></td>
+                            
                             <td class="text-end pe-4">
-                                <a href="<?= base_url('ingredientes/editar/'.$insumo['Id_ingrediente']) ?>" class="btn btn-sm btn-outline-secondary border-0">
-                                    <i class="fa-solid fa-pen"></i>
-                                </a>
-                                <a href="<?= base_url('ingredientes/borrar/'.$insumo['Id_ingrediente']) ?>" class="btn btn-sm btn-outline-danger border-0" onclick="return confirm('¿Seguro que deseas borrar este ingrediente?');">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
+                                <a href="#" class="btn btn-sm btn-outline-secondary border-0"><i class="fa-solid fa-pen"></i></a>
+                                <a href="#" class="btn btn-sm btn-outline-danger border-0"><i class="fa-solid fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">
-                            <i class="fa-solid fa-basket-shopping fa-2x mb-2"></i><br>
-                            No tienes ingredientes registrados aún.
-                        </td>
+                        <td colspan="4" class="text-center py-4 text-muted">No hay insumos registrados.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
