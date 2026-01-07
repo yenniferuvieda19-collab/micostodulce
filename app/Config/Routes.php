@@ -6,35 +6,37 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// Página de inicio - Dashboard principal
+// --- PÁGINA DE INICIO ---
 $routes->get('/', 'Home::index');
 
 /*
  * --------------------------------------------------------------------
- * Módulo de Autenticación (Auth).
+ * Módulo de Autenticación (Login y Registro)
  * --------------------------------------------------------------------
- * Aquí manejamos el ingreso de los reposteros al sistema.
  */
 $routes->get('login', 'Auth::login');             // Pantalla de entrada
-$routes->post('auth/ingresar', 'Auth::ingresar'); // Procesa el formulario de login
-$routes->get('registro', 'Auth::registro');       // Pantalla para nuevos usuarios
+$routes->post('auth/ingresar', 'Auth::ingresar'); // Procesa el formulario
+$routes->get('registro', 'Auth::registro');       // Pantalla registro
 $routes->post('auth/registrar', 'Auth::registrar'); 
 $routes->get('salir', 'Auth::salir');             // Cerrar sesión
-$routes->get('recuperar', 'Auth::recuperar');     // Olvido de  clave del usuario
+
+// Recuperación de contraseña
+$routes->get('recuperar', 'Auth::recuperar');     
 $routes->post('auth/enviar-recuperacion', 'Auth::enviarRecuperacion');
 $routes->get('auth/enviar-recuperacion', 'Auth::recuperar');
+
 /*
  * --------------------------------------------------------------------
  * Módulo de Ingredientes (Insumos)
  * --------------------------------------------------------------------
- * Usamos 'resource' para que CI4 cree automáticamente las rutas de:
- * index, show, create, update y delete. 
  */
 $routes->group('ingredientes', function($routes) {
-    $routes->get('/', 'Ingredientes::index');         // Listado de harina, azúcar, etc.
-    $routes->get('crear', 'Ingredientes::crear');     // Formulario de nuevo insumo
-    $routes->post('guardar', 'Ingredientes::guardar'); // Guardar en DB
-    $routes->get('editar/(:num)', 'Ingredientes::editar/$1'); // Cargar datos para editar
+    $routes->get('/', 'Ingredientes::index');          // Ver lista
+    $routes->get('crear', 'Ingredientes::crear');      // Formulario crear
+    $routes->post('guardar', 'Ingredientes::guardar'); // Guardar nuevo
+    
+    // Editar y Borrar Insumos
+    $routes->get('editar/(:num)', 'Ingredientes::editar/$1'); 
     $routes->post('actualizar/(:num)', 'Ingredientes::actualizar/$1');
     $routes->get('borrar/(:num)', 'Ingredientes::borrar/$1');
 });
@@ -44,15 +46,13 @@ $routes->group('ingredientes', function($routes) {
  * Módulo de Recetas (El corazón del negocio)
  * --------------------------------------------------------------------
  */
-// Grupo de recetas: Todo lo que empiece con /recetas irá aquí
 $routes->group('recetas', function($routes) {
+    $routes->get('/', 'Recetas::index');           // Ver tarjetas
+    $routes->get('crear', 'Recetas::crear');       // Formulario crear
+    $routes->post('guardar', 'Recetas::guardar');  // Guardar nueva
     
-    $routes->get('/', 'Recetas::index'); 
-    
-    $routes->get('crear', 'Recetas::crear'); 
-
-    // Estas rutas las usaremos después para guardar datos y borrar
-    $routes->post('guardar', 'Recetas::guardar');
+    // Editar y Borrar Recetas (Ahora están en su lugar correcto)
+    $routes->get('editar/(:num)', 'Recetas::editar/$1'); 
+    $routes->post('actualizar/(:num)', 'Recetas::actualizar/$1');
     $routes->get('borrar/(:num)', 'Recetas::borrar/$1');
-
 });

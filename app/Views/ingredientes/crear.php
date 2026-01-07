@@ -4,7 +4,7 @@
 
 <div class="row justify-content-center mt-4">
     <div class="col-md-8 col-lg-6">
-        
+
         <div class="card shadow border-0">
             <div class="card-header py-3 bg-white border-bottom-0">
                 <div class="d-flex justify-content-between align-items-center">
@@ -18,7 +18,7 @@
             </div>
 
             <div class="card-body p-4">
-                
+
                 <?php if (session()->getFlashdata('error')): ?>
                     <div class="alert alert-danger shadow-sm border-0 mb-4">
                         <i class="fa-solid fa-circle-exclamation me-2"></i><?= session()->getFlashdata('error') ?>
@@ -26,7 +26,7 @@
                 <?php endif; ?>
 
                 <form action="<?= base_url('ingredientes/guardar') ?>" method="POST">
-                    
+
                     <div class="mb-4">
                         <label class="form-label fw-bold text-secondary small text-uppercase">Nombre del Ingrediente</label>
                         <div class="input-group">
@@ -37,18 +37,22 @@
 
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-secondary small text-uppercase">Cantidad</label>
-                            <input type="number" step="0.01" name="cantidad" class="form-control" placeholder="Ej: 1" required>
+                            <label class="form-label fw-bold text-secondary small text-uppercase">Cantidad del Paquete</label>
+                            <input type="number" step="0.01" name="cantidad" class="form-control" placeholder="Ej: 1000" required>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-secondary small text-uppercase">Medida</label>
-                            <select name="unidad_medida" class="form-select">
-                                <option value="gr">Gramos (gr)</option>
-                                <option value="ml">Mililitros (ml)</option>
-                                <option value="kg">Kilogramos (kg)</option>
-                                <option value="lt">Litros (L)</option>
-                                <option value="unidad">Unidad (Pieza)</option>
+
+                            <select name="unidad_id" class="form-select" required>
+                                <option value="" selected disabled>Seleccionar...</option>
+
+                                <?php foreach ($unidades as $unidad): ?>
+                                    <option value="<?= $unidad['Id_unidad'] ?>">
+                                        <?= esc($unidad['nombre_unidad']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+
                             </select>
                         </div>
 

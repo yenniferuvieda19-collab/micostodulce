@@ -22,7 +22,7 @@
 
         footer {
             border-top: 1px solid rgba(0,0,0,0.05);
-            margin-top: 4rem !important;
+            /* Quite el margin-top: 4rem !important, y le agregue flexbox para que lo maneje */
         }
 
         .alert {
@@ -37,7 +37,8 @@
         }
     </style>
 </head>
-<body class="<?= (url_is('login') || url_is('registro') || url_is('recuperar')) ? 'auth-bg' : '' ?>">
+
+<body class="<?= (url_is('login') || url_is('registro') || url_is('recuperar')) ? 'auth-bg' : '' ?> d-flex flex-column min-vh-100">
 
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm mb-4">
     <div class="container">
@@ -69,7 +70,7 @@
     </div>
 </nav>
 
-<main class="container">
+<main class="container flex-grow-1">
     <?php if(session()->getFlashdata('mensaje')): ?>
         <div class="alert alert-success shadow-sm mb-4 border-success">
             <i class="fa-solid fa-circle-check me-2"></i> <?= session()->getFlashdata('mensaje') ?>
@@ -83,16 +84,41 @@
     <?php endif; ?>
 
     <?= $this->renderSection('contenido') ?>
+
 </main>
 
-<footer class="text-center mt-5 py-3" style="color: var(--marron-logo);">
-    <small>
-        Hecho con ❤️ para <b>Dulce Capricho</b> &copy; <?= date('Y') ?>
-    </small>
+<footer class="bg-light text-center py-3 mt-auto">
+    <div class="container">
+        <small class="text-muted">
+            Hecho con ❤️ para <strong>Dulce Capricho</strong> &copy; 2026
+        </small>
+    </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="<?= base_url('assets/js/scripts.js') ?>"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function confirmarBorrado(event, url) {
+            event.preventDefault(); // Detiene la acción para que no borre de una vez
+            
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás recuperar este elemento después!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33', // Rojo para borrar
+                cancelButtonColor: '#3085d6', // Azul para cancelar
+                confirmButtonText: 'Sí, borrar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url; // Si dice sí, procedemos a borrar
+                }
+            })
+        }
+    </script>
 
 </body>
 </html>
