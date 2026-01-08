@@ -29,8 +29,8 @@
                         <label class="form-label small fw-bold">Contraseña</label>
                         <div class="input-group">
                             <input type="password" name="password" id="password" class="form-control" placeholder="Crea una clave segura" required>
-                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password">
-                                <i class="fa-regular fa-eye eye-icon"></i>
+                            <button class="btn btn-outline-secondary" type="button" onclick="toggleView('password', 'icon-pass')">
+                                <i class="fa-regular fa-eye" id="icon-pass"></i>
                             </button>
                         </div>
                     </div>
@@ -39,8 +39,8 @@
                         <label class="form-label small fw-bold">Confirmar Contraseña</label>
                         <div class="input-group">
                             <input type="password" name="password_confirm" id="password_confirm" class="form-control" placeholder="Repite tu clave" required>
-                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password_confirm">
-                                <i class="fa-regular fa-eye eye-icon"></i>
+                            <button class="btn btn-outline-secondary" type="button" onclick="toggleView('password_confirm', 'icon-confirm')">
+                                <i class="fa-solid fa-eye" id="icon-confirm"></i>
                             </button>
                         </div>
                     </div>
@@ -59,32 +59,22 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Seleccionamos todos los botones que tienen la clase toggle-password
-        const toggleButtons = document.querySelectorAll('.toggle-password');
+    function toggleView(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
 
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // Obtenemos el ID del input que este botón debe controlar
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-                const icon = this.querySelector('.eye-icon');
-
-                // Cambiamos el tipo de input (texto o password)
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
-
-                // Cambiamos el icono según el estado
-                if (type === 'text') {
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-        });
-    });
+        if (input.type === 'password') {
+            // Condicional para mostrar contraseña, al cumplirse, significa que el input está en tipo "password" (Puntos negros).
+            input.type = 'text'; //Toma el tipo de entrada del input, y la convierte en tipo texto para mostrarla.
+            icon.classList.remove('fa-eye'); //Quita el ícono de ojo abierto.
+            icon.classList.add('fa-eye-slash'); //Coloca el ícono de ojo tachado.
+        } else {
+            // lo contraario, oculta la contraseña.
+            input.type = 'password'; //Convierte el tipo texto del input, en tipo password.
+            icon.classList.remove('fa-eye-slash'); //Quita el ícono de ojo tachado.
+            icon.classList.add('fa-eye'); //Coloca el ojo abierto.
+        }
+    }
 </script>
 
 <?= $this->endSection() ?>
