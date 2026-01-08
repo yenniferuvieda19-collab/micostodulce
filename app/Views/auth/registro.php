@@ -11,9 +11,9 @@
                     <h3 class="fw-bold mt-2" style="color: var(--negro-logo);">Únete a Mi Costo Dulce</h3>
                     <p class="text-muted">Comienza a organizar tus costos hoy mismo</p>
                 </div>
-                
+
                 <form action="<?= base_url('auth/registrar') ?>" method="POST">
-                    <?= csrf_field() ?> 
+                    <?= csrf_field() ?>
 
                     <div class="mb-3">
                         <label class="form-label small fw-bold">Nombre del Emprendimiento</label>
@@ -44,11 +44,11 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <button type="submit" class="btn btn-primary w-100 btn-lg mb-3">
                         Registrarme
                     </button>
-                    
+
                     <p class="text-center small">
                         ¿Ya tienes cuenta? <a href="<?= base_url('login') ?>" class="text-rosa fw-bold text-decoration-none">Inicia sesión</a>
                     </p>
@@ -73,7 +73,7 @@
                 // Cambiamos el tipo de input (texto o password)
                 const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
                 input.setAttribute('type', type);
-                
+
                 // Cambiamos el icono según el estado
                 if (type === 'text') {
                     icon.classList.remove('fa-eye');

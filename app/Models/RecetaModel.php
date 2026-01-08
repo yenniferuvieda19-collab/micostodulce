@@ -6,7 +6,17 @@ use CodeIgniter\Model;
 
 class RecetaModel extends Model
 {
-    protected $table      = 'recetas';
-    protected $primaryKey = 'Id_receta';
-    protected $allowedFields = ['Id_usuario', 'nombre_postre', 'porciones', 'costo_ingredientes', 'precio_venta_sug'];
+    protected $table            = 'recetas';
+    protected $primaryKey       = 'Id_receta';
+    protected $useAutoIncrement = true;
+    protected $returnType       = 'array';
+
+    protected $allowedFields    = [
+        'Id_usuario',
+        'nombre_postre',
+        'porciones',
+        'costo_ingredientes',
+        'precio_venta_sug',
+        'porcentaje_ganancia'
+    ];
 }

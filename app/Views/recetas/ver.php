@@ -44,7 +44,7 @@
         <div class="card border-0 shadow-sm text-center p-4" style="border-top: 5px solid var(--rosa-logo) !important;">
             <p class="text-muted small text-uppercase mb-1">Costo total de producción</p>
             <h2 class="fw-bold mb-4" style="color: var(--marron-logo);">$ <?= $receta['costo_total'] ?></h2>
-            
+
             <div class="p-3 rounded mb-4" style="background-color: #f4f9fa;">
                 <p class="text-muted small mb-1">Costo por unidad</p>
                 <h4 class="fw-bold text-rosa mb-0">$ <?= number_format($receta['costo_total'] / $receta['porciones'], 2) ?></h4>

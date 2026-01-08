@@ -6,21 +6,17 @@ use CodeIgniter\Model;
 
 class IngredienteModel extends Model
 {
-    // Nombre de la tabla SQL
-    protected $table      = 'ingredientes';
+    protected $table            = 'ingredientes';
+    protected $primaryKey       = 'Id_ingrediente';
 
-    protected $primaryKey = 'Id_ingrediente';
+    protected $useAutoIncrement = true;
+    protected $returnType       = 'array';
 
-    // Campos permitidos según la estructura
-    protected $allowedFields = [
-        'Id_usuario', 
-        'Id_unidad_base', 
-        'nombre_ingrediente', 
-        'precio_compra', 
-        'cantidad_paquete', 
-        'costo_unidad'
+    protected $allowedFields    = [
+        'Id_usuario',
+        'nombre_ingrediente',
+        'costo_unidad',
+        'cantidad_paquete',
+        'Id_unidad_base'
     ];
-
-  
-    protected $useTimestamps = false;
 }

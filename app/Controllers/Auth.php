@@ -66,9 +66,17 @@ class Auth extends BaseController
         $nombre_negocio = $this->request->getPost('nombre_negocio');
         $email = $this->request->getPost('email');  
         $password = $this->request->getPost('password');
+        
+        // 1. Recibimos la confirmación
+        $password_confirm = $this->request->getPost('password_confirm');
 
         if (empty($nombre_negocio) || empty($email) || empty($password)) {
             return redirect()->back()->with('error', 'Todos los campos son obligatorios.');
+        }
+
+        // 2. Validamos que coincidan
+        if ($password !== $password_confirm) {
+            return redirect()->back()->withInput()->with('error', 'Las contraseñas no coinciden.');
         }
 
         if ($model->where('Correo', $email)->first()) {
