@@ -8,6 +8,5 @@ class UsuarioModel extends Model
 {
   protected $table      = 'usuarios';
   protected $allowedFields = ['Nombre', 'Correo', 'Contraseña'];
-  // Uncomment below if you want add primary key
   protected $primaryKey = 'Id_usuario';
 }

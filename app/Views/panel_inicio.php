@@ -55,9 +55,11 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="bg-light">
                         <tr>
-                            <th class="ps-4">Postre</th>
-                            <th>Porciones</th>
-                            <th>Precio Venta</th>
+                            <th class="ps-4">Recetas</th>
+
+                            <th class="text-center">Porciones</th>
+                            <th class="text-center">Precio Venta</th>
+
                             <th class="text-end pe-4">Acciones</th>
                         </tr>
                     </thead>
@@ -66,23 +68,22 @@
                             <?php foreach ($ultimasRecetas as $receta): ?>
                                 <tr>
                                     <td class="ps-4 fw-bold"><?= esc($receta['nombre_postre']) ?></td>
-                                    <td><?= esc($receta['porciones']) ?></td>
-                                    <td class="text-success fw-bold">$ <?= number_format($receta['precio_venta_sug'], 2) ?></td>
-                                    <td class="text-end pe-4">
 
+                                    <td class="text-center"><?= esc($receta['porciones']) ?></td>
+                                    <td class="text-center text-success fw-bold">$ <?= number_format($receta['precio_venta_sug'], 2, '.', ',') ?></td>
+
+                                    <td class="text-end pe-4">
                                         <a href="<?= base_url('recetas/editar/' . $receta['Id_receta']) ?>"
                                             class="btn btn-sm btn-light text-primary me-1"
                                             title="Editar Receta">
                                             <i class="fa-solid fa-pen"></i>
                                         </a>
-
                                         <a href="<?= base_url('recetas/borrar/' . $receta['Id_receta']) ?>"
                                             class="btn btn-sm btn-light text-danger"
                                             onclick="return confirm('¿Estás seguro de borrar esta receta?')"
                                             title="Borrar Receta">
                                             <i class="fa-solid fa-trash"></i>
                                         </a>
-
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

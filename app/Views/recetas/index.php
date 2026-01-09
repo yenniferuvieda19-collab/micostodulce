@@ -30,10 +30,7 @@
                 $precioVenta = $receta['precio_venta_sug'];
                 $porciones   = ($receta['porciones'] > 0) ? $receta['porciones'] : 1;
 
-                // Costos unitarios
                 $costoPorcion = $costoTotal / $porciones;
-
-                // Ventas unitarias +20% por rebanada
                 $precioPorcionBase = $precioVenta / $porciones;
                 $precioPorcionVenta = $precioPorcionBase * 1.20;
                 ?>
@@ -43,7 +40,9 @@
 
                         <div class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex justify-content-between align-items-start">
                             <div>
-                                <h5 class="fw-bold text-dark mb-1"><?= esc($receta['nombre_postre']) ?></h5>
+                                <a href="<?= base_url('recetas/ver/' . $receta['Id_receta']) ?>" class="text-decoration-none">
+                                    <h5 class="fw-bold text-dark mb-1 hover-link"><?= esc($receta['nombre_postre']) ?></h5>
+                                </a>
                                 <span class="badge bg-light text-secondary border">
                                     <i class="fa-solid fa-chart-pie me-1"></i> <?= esc($receta['porciones']) ?> Porciones
                                 </span>
@@ -51,14 +50,12 @@
 
                             <div class="d-flex gap-2">
                                 <a href="<?= base_url('recetas/editar/' . $receta['Id_receta']) ?>"
-                                    class="btn btn-sm btn-outline-primary border-0"
-                                    title="Editar Receta">
+                                    class="btn btn-sm btn-outline-primary border-0" title="Editar">
                                     <i class="fa-solid fa-pen"></i>
                                 </a>
                                 <a href="<?= base_url('recetas/borrar/' . $receta['Id_receta']) ?>"
                                     class="btn btn-sm btn-outline-danger border-0"
-                                    onclick="return confirm('¿Eliminar esta receta permanentemente?')"
-                                    title="Eliminar Receta">
+                                    onclick="return confirm('¿Eliminar esta receta?')" title="Eliminar">
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
                             </div>
@@ -73,11 +70,11 @@
                                 <div class="row text-center">
                                     <div class="col-6 border-end border-danger-subtle">
                                         <small class="text-muted d-block" style="font-size: 0.7rem;">TOTAL</small>
-                                        <span class="fw-bold text-danger">$ <?= number_format($costoTotal, 2) ?></span>
+                                        <span class="fw-bold text-danger">$ <?= number_format($costoTotal, 2, '.', ',') ?></span>
                                     </div>
                                     <div class="col-6">
                                         <small class="text-muted d-block" style="font-size: 0.7rem;">X PORCIÓN</small>
-                                        <span class="fw-bold text-danger">$ <?= number_format($costoPorcion, 2) ?></span>
+                                        <span class="fw-bold text-danger">$ <?= number_format($costoPorcion, 2, '.', ',') ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -89,11 +86,11 @@
                                 <div class="row text-center">
                                     <div class="col-6 border-end border-success-subtle">
                                         <small class="text-muted d-block" style="font-size: 0.7rem;">TORTA ENTERA</small>
-                                        <h5 class="fw-bold text-success mb-0">$ <?= number_format($precioVenta, 2) ?></h5>
+                                        <h5 class="fw-bold text-success mb-0">$ <?= number_format($precioVenta, 2, '.', ',') ?></h5>
                                     </div>
                                     <div class="col-6">
                                         <small class="text-muted d-block" style="font-size: 0.7rem;">X REBANADA (+20%)</small>
-                                        <h5 class="fw-bold text-success mb-0">$ <?= number_format($precioPorcionVenta, 2) ?></h5>
+                                        <h5 class="fw-bold text-success mb-0">$ <?= number_format($precioPorcionVenta, 2, '.', ',') ?></h5>
                                     </div>
                                 </div>
                             </div>

@@ -17,6 +17,8 @@ class RecetaModel extends Model
         'porciones',
         'costo_ingredientes',
         'precio_venta_sug',
-        'porcentaje_ganancia'
+        'porcentaje_ganancia',
+        'preparacion',
+        'notas',    
     ];
 }
