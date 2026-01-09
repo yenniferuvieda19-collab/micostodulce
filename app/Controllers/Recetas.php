@@ -66,7 +66,6 @@ class Recetas extends BaseController
             'costo_ingredientes'  => 0,
             'precio_venta_sug'    => 0,
             'porcentaje_ganancia' => $gananciaReal,
-            'preparacion'         => $this->request->getPost('preparacion'),
             'notas'               => $this->request->getPost('notas')
         ];
 
@@ -250,7 +249,6 @@ class Recetas extends BaseController
             'costo_ingredientes'  => $costoTotalReceta,
             'precio_venta_sug'    => $precioVenta,
             'porcentaje_ganancia' => $gananciaReal,
-            'preparacion'         => $this->request->getPost('preparacion'),
             'notas'               => $this->request->getPost('notas')
         ]);
 

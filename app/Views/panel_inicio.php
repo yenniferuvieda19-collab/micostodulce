@@ -45,15 +45,6 @@
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white py-3 border-bottom-0 d-flex justify-content-between align-items-center">
-                <h5 class="fw-bold mb-0">Últimas Recetas Agregadas</h5>
-                <a href="<?= base_url('recetas') ?>" class="btn btn-sm btn-link text-decoration-none">Ver todas</a>
-            </div>
-        </div>
-
-    </div>
-
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white py-3 border-bottom-0 d-flex justify-content-between align-items-center">
             <h5 class="fw-bold mb-0">Últimas Recetas Agregadas</h5>

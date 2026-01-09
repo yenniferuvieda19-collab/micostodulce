@@ -23,7 +23,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold" style="color: var(--azul-logo);">Mis Insumos</h2>
-            <p class="text-muted">Gestiona los precios de tus compras.</p>
+            <p class="fs-5 fw-medium text-dark">Gestiona los precios de tus compras.</p>
         </div>
         <div class="d-flex gap-2"> 
             <!-- Utilicé la clase d-flex para unir ambos botones y que queden más juntos -->
