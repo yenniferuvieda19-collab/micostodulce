@@ -161,4 +161,30 @@
     });
 </script>
 
+<style>/*Agregué el estilo del fondo*/
+    body {background-image: linear-gradient(rgba(255, 255, 255, 0.75), 
+         rgba(255, 255, 255, 0.75)), 
+        url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important; /*Agregué la ruta de la imagen*/
+         background-size: cover !important; 
+         background-position: center !important; 
+         background-attachment: fixed !important; 
+         background-repeat: no-repeat !important; 
+        }
+
+    main, .wrapper, #content {background: transparent !important;}
+
+    .dashboard-container { background: transparent !important; 
+        width: 100% !important; 
+        min-height: 100vh; 
+        padding-top: 1rem; 
+        padding-bottom: 3rem; 
+    }
+
+    .card {background-color: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(8px); 
+        border-radius: 15px; 
+        border: none !important; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+</style>
+
 <?= $this->endSection() ?>

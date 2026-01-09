@@ -42,9 +42,10 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm mb-4">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="<?= base_url() ?>">
-            <i class="fa-solid fa-cake-candles cupcake-icon me-2"></i> Mi Costo Dulce
-        </a>
+        <a class="navbar-brand fw-bold fs-2" href="<?= base_url() ?>" 
+            style="font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 0.5px;">
+            <i class="fa-solid fa-cake-candles cupcake-icon fa-lg me-3"></i> Mi Costo Dulce</a>
+            <!-- Mejoré la tipografía de letra y el ícono de la torta -->
         
         <?php if(session()->get('isLoggedIn')): ?>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -54,14 +55,9 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('ingredientes') ?>">Mis Insumos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('recetas') ?>">Mis Recetas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-light btn-sm text-dark ms-lg-3 px-3 shadow-sm" href="<?= base_url('salir') ?>">
-                            <i class="fa-solid fa-right-from-bracket me-1"></i> Salir
+                        <a class="nav-link btn btn-light btn-sm text-dark ms-lg-3 px-5 shadow-sm" href="<?= base_url('salir') ?>">
+                            <!-- Cambié el "Salir" por cerrar sesión, y borré los botones de mis insumos y mis recetas -->
+                            <i class="fa-solid fa-right-from-bracket me-1"></i> Cerrar Sesión
                         </a>
                     </li>
                 </ul>

@@ -2,7 +2,8 @@
 
 <?= $this->section('contenido') ?>
 
-<div class="container mt-4">
+<div class="dashboard-container"> 
+    <div class="container">
 
     <?php if (session()->getFlashdata('mensaje_error')): ?>
         <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
@@ -24,9 +25,14 @@
             <h2 class="fw-bold" style="color: var(--azul-logo);">Mis Insumos</h2>
             <p class="text-muted">Gestiona los precios de tus compras.</p>
         </div>
-        <a href="<?= base_url('ingredientes/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" style="background-color: var(--azul-logo); border:none;">
-            <i class="fa-solid fa-plus me-2"></i>Nuevo Insumo
-        </a>
+        <div class="d-flex gap-2"> 
+            <!-- Utilicé la clase d-flex para unir ambos botones y que queden más juntos -->
+            <a href="<?= base_url('recetas') ?>" class="btn rounded-pill px-5 shadow-sm fw-bold text-white" style="background-color: #ee1d6dff;border:none;">
+                 <i class="fa-solid me-2"></i>Ver Mis Recetas</a> 
+                 <!-- Acá agregué el botón que direcciona a las recetas -->
+            <a href="<?= base_url('ingredientes/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" style="background-color: var(--azul-logo); border:none;">
+                <i class="fa-solid fa-plus me-2"></i>Nuevo Insumo</a>
+        </div>
     </div>
 
     <div class="card border-0 shadow-sm">
@@ -116,5 +122,31 @@
         </div>
     </div>
 </div>
+</div>
+
+<style> /*Agregué el estilo del fondo*/
+    body {background-image: linear-gradient(rgba(255, 255, 255, 0.75), 
+         rgba(255, 255, 255, 0.75)), 
+        url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important; /*Agregué la ruta de la imagen*/
+         background-size: cover !important; 
+         background-position: center !important; 
+         background-attachment: fixed !important; 
+         background-repeat: no-repeat !important; 
+        }
+
+    main, .wrapper, #content {background: transparent !important;}
+
+    .dashboard-container { background: transparent !important; 
+        width: 100% !important; 
+        min-height: 100vh; 
+        padding-top: 1rem; 
+        padding-bottom: 3rem; 
+    }
+
+    .card {background-color: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(8px); 
+        border-radius: 15px; 
+        border: none !important; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
 
 <?= $this->endSection() ?>

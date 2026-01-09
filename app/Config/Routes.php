@@ -19,6 +19,7 @@ $routes->post('auth/ingresar', 'Auth::ingresar'); // Procesa el formulario
 $routes->get('registro', 'Auth::registro');       // Pantalla registro
 $routes->post('auth/registrar', 'Auth::registrar'); 
 $routes->get('salir', 'Auth::salir');             // Cerrar sesión
+$routes->get('panel', 'Auth::panel'); //Carga el panel de bienvenida al portal web.
 
 // Recuperación de contraseña
 $routes->get('recuperar', 'Auth::recuperar');     

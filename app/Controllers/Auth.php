@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
+use App\Models\IngredienteModel;
+use App\Models\RecetaModel;
 
 class Auth extends BaseController
 {
@@ -33,7 +35,7 @@ class Auth extends BaseController
                 'Nombre'     => $user['Nombre'],
                 'isLoggedIn' => true
             ]);
-            return redirect()->to(base_url('ingredientes'));
+            return redirect()->to(base_url("panel"));
         }
 
         return redirect()->back()->with('error', 'Credenciales inválidas.');
@@ -124,5 +126,28 @@ class Auth extends BaseController
         }
 
         return redirect()->back()->with('error', 'No encontramos una cuenta con ese correo.');
+    }
+
+    public function panel()
+    {
+
+        if (!session()->get("isLoggedIn")){
+            return redirect()->to(base_url('login'));
+        }
+
+        $ingredientesModel = new IngredienteModel(); 
+        $recetasModel = new RecetaModel();
+
+        $idUsuario = session()->get('Id_usuario');
+
+        $data = [
+        'totalIngredientes' => $ingredientesModel->where('Id_usuario', $idUsuario)->countAllResults(),
+        'totalRecetas'      => $recetasModel->where('Id_usuario', $idUsuario)->countAllResults(),
+        // Traemos las últimas 5 recetas para la tabla
+        'ultimasRecetas'           => $recetasModel->where('Id_usuario', $idUsuario)->orderBy('Id_receta', 'DESC')->findAll(5)
+        ];
+
+        return view('panel_inicio', $data);
+
     }
 }

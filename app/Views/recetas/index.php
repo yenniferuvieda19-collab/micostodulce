@@ -2,16 +2,21 @@
 
 <?= $this->section('contenido') ?>
 
-<div class="container mt-4">
+<div class="dashboard-container"> 
+    <div class="container">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold" style="color: var(--azul-logo);">Mis Recetas</h2>
-            <p class="text-muted">Calcula costos y define tus precios de venta.</p>
+            <p class="fs-5 fw-medium text-dark">Calcula costos y define tus precios de venta.</p>
         </div>
+        <div class="d-flex gap-2">
+            <!-- Acá agregué el botón de "Ver mis insumos" y lo unifiqué en un mismo bloque div que el de nueva receta para que estén más juntos -->
+            <a href="<?= base_url("ingredientes") ?>" class="btn rounded-pill px-5 shadow-sm fw-bold text-white" style="background-color: #ee1d6dff;border:none;">
+                <i class="fa-soild me-2"></i>Ver Mis Insumos</a>
         <a href="<?= base_url('recetas/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" style="background-color: var(--azul-logo); border:none;">
-            <i class="fa-solid fa-plus me-2"></i>Nueva Receta
-        </a>
+            <i class="fa-solid fa-plus me-2"></i>Nueva Receta</a>
+        </div>
     </div>
 
     <?php if (empty($recetas)): ?>
@@ -105,12 +110,36 @@
         </div>
 
     <?php endif; ?>
+    </div>
 </div>
 
-<style>
+<style>/*Unifiqué el estilo con del de las tarjetas para agregar el fondo*/
+    body {background-image: linear-gradient(rgba(255, 255, 255, 0.75), 
+         rgba(255, 255, 255, 0.75)), 
+        url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important; /*Agregué la ruta de la imagen*/
+         background-size: cover !important; 
+         background-position: center !important; 
+         background-attachment: fixed !important; 
+         background-repeat: no-repeat !important; 
+        }
+
+    main, .wrapper, #content {background: transparent !important;}
+
+    .dashboard-container { background: transparent !important; 
+        width: 100% !important; 
+        min-height: 100vh; 
+        padding-top: 1rem; 
+        padding-bottom: 3rem; 
+    }
+
+    .card {background-color: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(8px); 
+        border-radius: 15px; 
+        border: none !important; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
     .hover-shadow:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+        transform: translateY(-5px);
+        box-shadow: 0 .8rem 2rem rgba(0, 0, 0, .15) !important;
     }
 
     .transition-all {
