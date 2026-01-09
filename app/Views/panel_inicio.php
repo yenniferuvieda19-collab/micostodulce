@@ -50,37 +50,52 @@
                 <h5 class="fw-bold mb-0">Últimas Recetas Agregadas</h5>
                 <a href="<?= base_url('recetas') ?>" class="btn btn-sm btn-link text-decoration-none">Ver todas</a>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="ps-4">Postre</th>
-                                <th>Porciones</th>
-                                <th>Precio Venta</th>
-                                <th class="text-end pe-4">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($ultimasRecetas)): ?>
-                                <?php foreach ($ultimasRecetas as $receta): ?>
-                                    <tr>
-                                        <td class="ps-4 fw-bold"><?= esc($receta['nombre_postre']) ?></td>
-                                        <td><?= esc($receta['porciones']) ?></td>
-                                        <td class="text-success fw-bold">$ <?= number_format($receta['precio_venta_sug'], 2) ?></td>
-                                        <td class="text-end pe-4">
-                                            <a href="<?= base_url('recetas/editar/' . $receta['Id_receta']) ?>" class="btn btn-sm btn-light text-primary me-1"><i class="fa-solid fa-pen"></i></a>
-                                            <a href="<?= base_url('recetas/borrar/' . $receta['Id_receta']) ?>" class="btn btn-sm btn-light text-danger" onclick="return confirm('¿Estás seguro?')"><i class="fa-solid fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
+        </div>
+
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3 border-bottom-0 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0">Últimas Recetas Agregadas</h5>
+            <a href="<?= base_url('recetas') ?>" class="btn btn-sm btn-link text-decoration-none">Ver todas</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Recetas</th>
+
+                            <th class="text-center">Porciones</th>
+                            <th class="text-center">Precio Venta</th>
+
+                            <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($ultimasRecetas)): ?>
+                            <?php foreach ($ultimasRecetas as $receta): ?>
                                 <tr>
-                                    <td colspan="4" class="text-center py-5 text-muted">
-                                        <i class="fa-solid fa-cookie-bite fa-2x mb-2 opacity-50"></i>
-                                        <p class="mb-0">Aún no has creado recetas.</p>
+                                    <td class="ps-4 fw-bold"><?= esc($receta['nombre_postre']) ?></td>
+
+                                    <td class="text-center"><?= esc($receta['porciones']) ?></td>
+                                    <td class="text-center text-success fw-bold">$ <?= number_format($receta['precio_venta_sug'], 2, '.', ',') ?></td>
+
+                                    <td class="text-end pe-4">
+                                        <a href="<?= base_url('recetas/editar/' . $receta['Id_receta']) ?>"
+                                            class="btn btn-sm btn-light text-primary me-1"
+                                            title="Editar Receta">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                        <a href="<?= base_url('recetas/borrar/' . $receta['Id_receta']) ?>"
+                                            class="btn btn-sm btn-light text-danger"
+                                            onclick="return confirm('¿Estás seguro de borrar esta receta?')"
+                                            title="Borrar Receta">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
+                                <?php endforeach; ?>
                             <?php endif; ?>
                         </tbody>
                     </table>

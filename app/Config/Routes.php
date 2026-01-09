@@ -51,6 +51,8 @@ $routes->group('recetas', function($routes) {
     $routes->get('/', 'Recetas::index');           // Ver tarjetas
     $routes->get('crear', 'Recetas::crear');       // Formulario crear
     $routes->post('guardar', 'Recetas::guardar');  // Guardar nueva
+
+    $routes->get('ver/(:num)', 'Recetas::ver/$1'); //ruta para Ver la receta en solo vista
     
     // Editar y Borrar Recetas (Ahora están en su lugar correcto)
     $routes->get('editar/(:num)', 'Recetas::editar/$1'); 
