@@ -99,21 +99,50 @@ class Auth extends BaseController
     // Procesa el envío del correo de recuperación
     public function enviarRecuperacion()
     {
+        $model = new UsuarioModel();
         $email = $this->request->getPost('email');
+// recibe la info del formulario de recuperar
 
         if (empty($email)) {
             return redirect()->back()->with('error', 'Por favor, ingresa tu correo electrónico.');
         }
 
-        $model = new UsuarioModel();
+        
         $user = $model->where('Correo', $email)->first();
 
-        if ($user) {
-            
-            return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones pronto.');
-        }
+        if (!$user) {
+    // Si no existe el usuario
+    return redirect()->back()->with('error', 'No encontramos una cuenta con ese correo.');
+   }
+   //si existe se ejecuta lo siguinte
 
-        return redirect()->back()->with('error', 'No encontramos una cuenta con ese correo.');
+         
+         $token = bin2hex(random_bytes(32));
+
+         $db = \Config\Database::connect();
+         $db->table('tokens_temporales')->insert([
+                   'id_usuario'    => $user['Id_usuario'],
+                   'token' => password_hash($token, PASSWORD_DEFAULT),
+                   'fecha_expiracion' => date('Y-m-d H:i:s', strtotime('+1 hour'))
+                 ]);
+        
+               
+                 $link = base_url('auth/resetPassword/' . $token);
+
+                 $emailService = \Config\Services::email();
+                 $emailService->setTo($user['Correo']);
+                 $emailService->setSubject('Recuperación de contraseña');
+                 $emailService->setMessage("Haz clic en el siguiente enlace para recuperar tu contraseña: <a href='{$link}'>Recuperar contraseña</a>");
+                 $emailService->send();
+
+
+
+
+
+
+
+return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones pronto.');
+
     }
 
     public function panel()
