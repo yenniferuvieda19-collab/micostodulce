@@ -19,6 +19,7 @@ $routes->post('auth/ingresar', 'Auth::ingresar'); // Procesa el formulario
 $routes->get('registro', 'Auth::registro');       // Pantalla registro
 $routes->post('auth/registrar', 'Auth::registrar'); 
 $routes->get('salir', 'Auth::salir');             // Cerrar sesión
+$routes->get('panel', 'Auth::panel'); //Carga el panel de bienvenida al portal web.
 
 // Recuperación de contraseña
 $routes->get('recuperar', 'Auth::recuperar');     
@@ -50,6 +51,8 @@ $routes->group('recetas', function($routes) {
     $routes->get('/', 'Recetas::index');           // Ver tarjetas
     $routes->get('crear', 'Recetas::crear');       // Formulario crear
     $routes->post('guardar', 'Recetas::guardar');  // Guardar nueva
+
+    $routes->get('ver/(:num)', 'Recetas::ver/$1'); //ruta para Ver la receta en solo vista
     
     // Editar y Borrar Recetas (Ahora están en su lugar correcto)
     $routes->get('editar/(:num)', 'Recetas::editar/$1'); 

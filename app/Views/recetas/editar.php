@@ -3,7 +3,7 @@
 <?= $this->section('contenido') ?>
 
 <div class="row justify-content-center">
-    <div class="col-lg-10">
+    <div class="col-lg-12">
 
         <form action="<?= base_url('recetas/actualizar/' . $receta['Id_receta']) ?>" method="POST" id="formReceta">
 
@@ -17,48 +17,52 @@
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
                     <div class="row g-3">
-
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-secondary">Nombre del Postre</label>
                             <input type="text" name="nombre" class="form-control form-control-lg"
                                 value="<?= esc($receta['nombre_postre']) ?>" required>
                         </div>
-
                         <div class="col-md-3">
                             <label class="form-label fw-bold text-secondary">Porciones</label>
                             <input type="number" name="porciones" class="form-control form-control-lg"
                                 value="<?= esc($receta['porciones']) ?>" required>
                         </div>
-
                         <div class="col-md-3">
                             <label class="form-label fw-bold text-success">Ganancia Deseada</label>
-
                             <div class="input-group input-group-lg">
                                 <input type="number" step="1" name="ganancia" class="form-control border-success"
                                     value="<?= esc($receta['porcentaje_ganancia']) ?>" required>
                                 <span class="input-group-text bg-success text-white border-success">%</span>
                             </div>
-                            <div class="form-text small">Guardado: <?= esc($receta['porcentaje_ganancia']) ?>%</div>
                         </div>
-
                     </div>
                 </div>
             </div>
 
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white py-3">
-                    <h5 class="mb-0 fw-bold" style="color: var(--azul-logo);">
-                        <i class="fa-solid fa-blender me-2"></i>Ingredientes
-                    </h5>
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0 fw-bold" style="color: var(--azul-logo);">
+                            <i class="fa-solid fa-blender me-2"></i>Ingredientes
+                        </h5>
+                    </div>
+
+                    <div class="bg-light px-3 py-1 rounded border">
+                        <small class="text-muted fw-bold">COSTO TOTAL:</small>
+                        <span id="displayTotalCosto" class="fw-bold text-danger ms-2">$ 0.00</span>
+                    </div>
                 </div>
+
                 <div class="card-body p-4">
                     <div class="table-responsive">
-                        <table class="table" id="tablaIngredientes">
-                            <thead>
+                        <table class="table align-middle" id="tablaIngredientes">
+                            <thead class="bg-light">
                                 <tr class="text-secondary small text-uppercase">
-                                    <th style="width: 50%;">Ingrediente</th>
-                                    <th style="width: 30%;">Cantidad a Usar</th>
-                                    <th style="width: 10%;"></th>
+                                    <th style="width: 35%;">Ingrediente</th>
+                                    <th style="width: 20%;" class="text-center">Costo Unitario</th>
+                                    <th style="width: 25%;">Cantidad a Usar</th>
+                                    <th style="width: 15%;" class="text-end">Subtotal ($)</th>
+                                    <th style="width: 5%;"></th>
                                 </tr>
                             </thead>
                             <tbody id="listaIngredientes">
@@ -68,6 +72,15 @@
                     <button type="button" class="btn btn-light text-primary fw-bold w-100 border-dashed mt-2" onclick="agregarFila()">
                         <i class="fa-solid fa-plus me-2"></i>Agregar Ingrediente
                     </button>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <label class="form-label fw-bold text-secondary">
+                        <i class="fa-solid fa-comment-dots me-2"></i>Nota Adicional (Opcional)
+                    </label>
+                    <textarea name="notas" class="form-control" rows="2" placeholder="Ej: Mantener refrigerado..."><?= isset($receta['notas']) ? esc($receta['notas']) : '' ?></textarea>
                 </div>
             </div>
 
@@ -81,108 +94,121 @@
 </div>
 
 <script>
-    // Preparar los datos
     const ingredientesDisponibles = [
-        <?php foreach ($ingredientes as $ing): ?>
-            <?php
-            // Definimos la unidad
-            $txtUnidad = '-';
-            switch ($ing['Id_unidad_base']) {
-                case 1:
-                    $txtUnidad = 'gr';
-                    break;
-                case 2:
-                    $txtUnidad = 'Kg';
-                    break;
-                case 3:
-                    $txtUnidad = 'ml';
-                    break;
-                case 4:
-                    $txtUnidad = 'Lt';
-                    break;
-                case 5:
-                    $txtUnidad = 'Und';
-                    break;
-            }
-            ?> {
+        <?php foreach ($ingredientes as $ing): ?> {
                 id: "<?= $ing['Id_ingrediente'] ?>",
                 nombre: "<?= esc($ing['nombre_ingrediente']) ?>",
-                unidad: "<?= $txtUnidad ?>"
+                unidad_id: <?= $ing['Id_unidad_base'] ?>,
+                precio: <?= $ing['costo_unidad'] ?>,
+                paquete: <?= $ing['cantidad_paquete'] ?>
             },
         <?php endforeach; ?>
     ];
 
-    // Recuperamos los datos de la receta actual
     const detallesActuales = [
         <?php foreach ($detalles as $det): ?> {
-                // Intentamos capturar el ID correctamente sea cual sea la mayúscula
                 id: "<?= isset($det['Id_ingrediente']) ? $det['Id_ingrediente'] : $det['id_ingrediente'] ?>",
                 cant: "<?= $det['cantidad_requerida'] ?>"
             },
         <?php endforeach; ?>
     ];
 
-    // Agregar Fila
+    function formatearDinero(cantidad) {
+        return new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(cantidad);
+    }
+
     function agregarFila(idPre = null, cantPre = null) {
         const tbody = document.getElementById('listaIngredientes');
         const row = document.createElement('tr');
 
-        let unidadInicial = '-';
-
-        // Construir el Select
-        let opciones = '<option value="" data-unidad="-">-- Selecciona --</option>';
+        let opciones = '<option value="" data-unidad="-" data-precio="0" data-paquete="0" data-tipo="0">-- Selecciona --</option>';
 
         ingredientesDisponibles.forEach(ing => {
             let selected = '';
-            if (idPre == ing.id) {
-                selected = 'selected';
-                unidadInicial = ing.unidad;
-            }
-            opciones += `<option value="${ing.id}" data-unidad="${ing.unidad}" ${selected}>${ing.nombre}</option>`;
+            if (idPre == ing.id) selected = 'selected';
+            opciones += `<option value="${ing.id}" data-unidad-id="${ing.unidad_id}" data-precio="${ing.precio}" data-paquete="${ing.paquete}" ${selected}>${ing.nombre}</option>`;
         });
 
         let valorCant = (cantPre) ? cantPre : '';
 
-        // Construir HTML
         row.innerHTML = `
-            <td>
-                <select name="ingrediente_id[]" class="form-select" onchange="actualizarUnidad(this)" required>
-                    ${opciones}
-                </select>
-            </td>
-            <td>
-                <div class="input-group">
-                    <input type="number" step="0.01" name="cantidades[]" class="form-control" value="${valorCant}" placeholder="0.00" required>
-                    <span class="input-group-text fw-bold text-secondary unidad-label" style="min-width: 60px; justify-content: center;">
-                        ${unidadInicial}
-                    </span>
-                </div>
-            </td>
-            <td class="text-center">
-                <button type="button" class="btn btn-outline-danger border-0 btn-sm" onclick="eliminarFila(this)">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </td>
+            <td><select name="ingrediente_id[]" class="form-select" onchange="actualizarCalculos(this)" required>${opciones}</select></td>
+            <td class="text-center"><small class="text-muted d-block" style="font-size: 0.7rem;">Costo por <span class="lbl-unidad">-</span>:</small><span class="fw-bold text-secondary lbl-costo-unitario">$ 0.0000</span></td>
+            <td><div class="input-group"><input type="number" step="0.01" name="cantidades[]" class="form-control" value="${valorCant}" placeholder="0" oninput="actualizarCalculos(this)" required><span class="input-group-text fw-bold text-secondary lbl-unidad" style="min-width: 50px; justify-content: center;">-</span></div></td>
+            <td class="text-end"><span class="fw-bold text-dark lbl-subtotal">$ 0.00</span></td>
+            <td class="text-center"><button type="button" class="btn btn-outline-danger border-0 btn-sm" onclick="eliminarFila(this)"><i class="fa-solid fa-trash"></i></button></td>
         `;
         tbody.appendChild(row);
+        if (idPre) {
+            const select = row.querySelector('select');
+            actualizarCalculos(select);
+        }
     }
 
-    // Actualizar la unidad
-    function actualizarUnidad(selectElement) {
-        const opcionSeleccionada = selectElement.options[selectElement.selectedIndex];
-        const unidad = opcionSeleccionada.getAttribute('data-unidad');
-        const fila = selectElement.closest('tr');
-        const labelUnidad = fila.querySelector('.unidad-label');
+    function actualizarCalculos(elemento) {
+        const fila = elemento.closest('tr');
+        const select = fila.querySelector('select');
+        const inputCant = fila.querySelector('input[name="cantidades[]"]');
+        const labelsUnidad = fila.querySelectorAll('.lbl-unidad');
+        const labelCostoUnit = fila.querySelector('.lbl-costo-unitario');
+        const labelSubtotal = fila.querySelector('.lbl-subtotal');
+        const opcion = select.options[select.selectedIndex];
+        const unidadId = parseInt(opcion.getAttribute('data-unidad-id')) || 0;
+        const precioPaquete = parseFloat(opcion.getAttribute('data-precio')) || 0;
+        const tamanoPaquete = parseFloat(opcion.getAttribute('data-paquete')) || 0;
 
-        labelUnidad.textContent = unidad ? unidad : '-';
+        let factor = 1;
+        let etiquetaUnidad = 'Und';
+        if (unidadId === 1) {
+            etiquetaUnidad = 'gr';
+            factor = 1;
+        } else if (unidadId === 2) {
+            etiquetaUnidad = 'gr';
+            factor = 1000;
+        } else if (unidadId === 3) {
+            etiquetaUnidad = 'ml';
+            factor = 1;
+        } else if (unidadId === 4) {
+            etiquetaUnidad = 'ml';
+            factor = 1000;
+        }
+
+        labelsUnidad.forEach(lbl => lbl.textContent = etiquetaUnidad);
+        let costoUnitario = 0;
+        let tamanoRealEnGramos = tamanoPaquete * factor;
+        if (tamanoRealEnGramos > 0) {
+            costoUnitario = precioPaquete / tamanoRealEnGramos;
+        }
+        labelCostoUnit.textContent = '$ ' + costoUnitario.toFixed(4);
+        const cantidadUsada = parseFloat(inputCant.value) || 0;
+        const subtotal = costoUnitario * cantidadUsada;
+        labelSubtotal.textContent = '$ ' + formatearDinero(subtotal);
+        calcularTotalGeneral();
     }
 
-    // Eliminar fila
+    function calcularTotalGeneral() {
+        const subtotales = document.querySelectorAll('.lbl-subtotal');
+        let total = 0;
+        subtotales.forEach(span => {
+            let textoValor = span.textContent.replace('$', '').trim();
+            textoValor = textoValor.replace(/,/g, '');
+            const valor = parseFloat(textoValor) || 0;
+            total += valor;
+        });
+        const displayTotal = document.getElementById('displayTotalCosto');
+        if (displayTotal) {
+            displayTotal.textContent = '$ ' + formatearDinero(total);
+        }
+    }
+
     function eliminarFila(boton) {
         boton.closest('tr').remove();
+        calcularTotalGeneral();
     }
 
-    // Cargar la página
     document.addEventListener('DOMContentLoaded', function() {
         if (detallesActuales.length > 0) {
             detallesActuales.forEach(item => {
@@ -193,5 +219,31 @@
         }
     });
 </script>
+
+<style>/*Agregué el estilo del fondo*/
+    body {background-image: linear-gradient(rgba(255, 255, 255, 0.75), 
+         rgba(255, 255, 255, 0.75)), 
+        url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important; /*Agregué la ruta de la imagen*/
+         background-size: cover !important; 
+         background-position: center !important; 
+         background-attachment: fixed !important; 
+         background-repeat: no-repeat !important; 
+        }
+
+    main, .wrapper, #content {background: transparent !important;}
+
+    .dashboard-container { background: transparent !important; 
+        width: 100% !important; 
+        min-height: 100vh; 
+        padding-top: 1rem; 
+        padding-bottom: 3rem; 
+    }
+
+    .card {background-color: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(8px); 
+        border-radius: 15px; 
+        border: none !important; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+</style>
 
 <?= $this->endSection() ?>

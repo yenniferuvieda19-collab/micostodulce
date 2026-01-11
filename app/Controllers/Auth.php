@@ -3,20 +3,18 @@
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
+use App\Models\IngredienteModel;
+use App\Models\RecetaModel;
 
 class Auth extends BaseController
 {
-    /**
-     * Muestra la vista de inicio de sesión
-     */
+    // Muestra la vista de inicio de sesión
     public function login()
     {
         return view('auth/login');
     }
 
-    /**
-     * Validación de credenciales contra la tabla 'usuarios'
-     */
+    // Validación de credenciales contra la tabla 'usuarios'
     public function ingresar()
     {
         $session = session();
@@ -33,32 +31,26 @@ class Auth extends BaseController
                 'Nombre'     => $user['Nombre'],
                 'isLoggedIn' => true
             ]);
-            return redirect()->to(base_url('ingredientes'));
+            return redirect()->to(base_url("panel"));
         }
 
         return redirect()->back()->with('error', 'Credenciales inválidas.');
     }
 
-    /**
-     * Cierra la sesión del usuario
-     */
+    // Cierra la sesión del usuario
     public function salir()
     {
         session()->destroy();
         return redirect()->to(base_url('login'))->with('mensaje', '¡Sesión cerrada! Gracias por trabajar en Mi Costo Dulce.');
     }
 
-    /**
-     * Muestra la vista de registro
-     */
+    // Muestra la vista de registro
     public function registro()
     {
         return view('auth/registro');
     }
 
-    /**
-     * Procesa el registro de nuevos usuarios
-     */
+    // Procesa el registro de nuevos usuarios
     public function registrar()
     {
         $model = new UsuarioModel();
@@ -67,14 +59,14 @@ class Auth extends BaseController
         $email = $this->request->getPost('email');  
         $password = $this->request->getPost('password');
         
-        // 1. Recibimos la confirmación
+        // Recibimos la confirmación
         $password_confirm = $this->request->getPost('password_confirm');
 
         if (empty($nombre_negocio) || empty($email) || empty($password)) {
             return redirect()->back()->with('error', 'Todos los campos son obligatorios.');
         }
 
-        // 2. Validamos que coincidan
+        // Validamos que coincidan
         if ($password !== $password_confirm) {
             return redirect()->back()->withInput()->with('error', 'Las contraseñas no coinciden.');
         }
@@ -98,15 +90,13 @@ class Auth extends BaseController
         return redirect()->to(base_url('login'))->with('mensaje', 'Registro exitoso. ¡Bienvenido a Mi Costo Dulce!');
     }
 
-    /**
-     * Muestra la vista para solicitar recuperación de clave
-     */
+    // Muestra la vista para solicitar recuperación de clave
     public function recuperar()
     {
         return view('auth/recuperar');
     }
 
-    /* Procesa el envío del correo de recuperación     */
+    // Procesa el envío del correo de recuperación
     public function enviarRecuperacion()
     {
         $model = new UsuarioModel();
@@ -127,17 +117,17 @@ class Auth extends BaseController
    //si existe se ejecuta lo siguinte
 
          
-         $token = bin2hex(random_bytes(32));
+         $token = bin2hex(random_bytes(32)); //genera el token
 
          $db = \Config\Database::connect();
          $db->table('tokens_temporales')->insert([
                    'id_usuario'    => $user['Id_usuario'],
-                   'token' => password_hash($token, PASSWORD_DEFAULT),
+                   'token' => password_hash($token, PASSWORD_DEFAULT), //encripta el token
                    'fecha_expiracion' => date('Y-m-d H:i:s', strtotime('+1 hour'))
                  ]);
         
                
-                 $link = base_url('auth/resetPassword/' . $token);
+                 $link = base_url('resetPassword/' . $token); //link que ira en el correo
 
                  $emailService = \Config\Services::email();
                  $emailService->setTo($user['Correo']);
@@ -145,13 +135,40 @@ class Auth extends BaseController
                  $emailService->setMessage("Haz clic en el siguiente enlace para recuperar tu contraseña: <a href='{$link}'>Recuperar contraseña</a>");
                  $emailService->send();
 
+                 return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones pronto.');
+
+    }
+                    public function recuperarContrasena($token = null )
+                      {
+                      return view('auth/resetpassword', ['token'=> $token]);
+                       }
+                       
 
 
 
 
 
 
-return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones pronto.');
+    public function panel()
+    {
+
+        if (!session()->get("isLoggedIn")){
+            return redirect()->to(base_url('login'));
+        }
+
+        $ingredientesModel = new IngredienteModel(); 
+        $recetasModel = new RecetaModel();
+
+        $idUsuario = session()->get('Id_usuario');
+
+        $data = [
+        'totalIngredientes' => $ingredientesModel->where('Id_usuario', $idUsuario)->countAllResults(),
+        'totalRecetas'      => $recetasModel->where('Id_usuario', $idUsuario)->countAllResults(),
+        // Traemos las últimas 5 recetas para la tabla
+        'ultimasRecetas'           => $recetasModel->where('Id_usuario', $idUsuario)->orderBy('Id_receta', 'DESC')->findAll(5)
+        ];
+
+        return view('panel_inicio', $data);
 
     }
 }
