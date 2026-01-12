@@ -117,17 +117,17 @@ class Auth extends BaseController
    //si existe se ejecuta lo siguinte
 
          
-         $token = bin2hex(random_bytes(32));
+         $token = bin2hex(random_bytes(32)); //genera el token
 
          $db = \Config\Database::connect();
          $db->table('tokens_temporales')->insert([
                    'id_usuario'    => $user['Id_usuario'],
-                   'token' => password_hash($token, PASSWORD_DEFAULT),
+                   'token' => password_hash($token, PASSWORD_DEFAULT), //encripta el token
                    'fecha_expiracion' => date('Y-m-d H:i:s', strtotime('+1 hour'))
                  ]);
         
                
-                 $link = base_url('auth/resetPassword/' . $token);
+                 $link = base_url('resetPassword/' . $token); //link que ira en el correo
 
                  $emailService = \Config\Services::email();
                  $emailService->setTo($user['Correo']);
@@ -135,13 +135,40 @@ class Auth extends BaseController
                  $emailService->setMessage("Haz clic en el siguiente enlace para recuperar tu contraseña: <a href='{$link}'>Recuperar contraseña</a>");
                  $emailService->send();
 
+                 return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones pronto.');
+
+    }
+                    public function recuperarContrasena($token = null )
+                      {
+                      return view('auth/resetpassword', ['token'=> $token]);
+                       }
+                       
+
+     //esta mierda me tiene ladillao yaaaaa
 
 
 
 
+    public function panel()
+    {
 
+        if (!session()->get("isLoggedIn")){
+            return redirect()->to(base_url('login'));
+        }
 
-return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones pronto.');
+        $ingredientesModel = new IngredienteModel(); 
+        $recetasModel = new RecetaModel();
+
+        $idUsuario = session()->get('Id_usuario');
+
+        $data = [
+        'totalIngredientes' => $ingredientesModel->where('Id_usuario', $idUsuario)->countAllResults(),
+        'totalRecetas'      => $recetasModel->where('Id_usuario', $idUsuario)->countAllResults(),
+        // Traemos las últimas 5 recetas para la tabla
+        'ultimasRecetas'           => $recetasModel->where('Id_usuario', $idUsuario)->orderBy('Id_receta', 'DESC')->findAll(5)
+        ];
+
+        return view('panel_inicio', $data);
 
     }
 
