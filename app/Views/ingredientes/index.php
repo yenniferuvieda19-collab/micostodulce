@@ -25,14 +25,9 @@
             <h2 class="fw-bold" style="color: var(--azul-logo);">Mis Insumos</h2>
             <p class="fs-5 fw-medium text-dark">Gestiona los precios de tus compras.</p>
         </div>
-        <div class="d-flex gap-2"> 
-            <!-- Utilicé la clase d-flex para unir ambos botones y que queden más juntos -->
-            <a href="<?= base_url('recetas') ?>" class="btn rounded-pill px-5 shadow-sm fw-bold text-white" style="background-color: #ee1d6dff;border:none;">
-                 <i class="fa-solid me-2"></i>Ver Mis Recetas</a> 
-                 <!-- Acá agregué el botón que direcciona a las recetas. -->
-            <a href="<?= base_url('ingredientes/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" style="background-color: var(--azul-logo); border:none;">
-                <i class="fa-solid fa-plus me-2"></i>Nuevo Insumo</a>
-        </div>
+        <a href="<?= base_url('ingredientes/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" style="background-color: var(--azul-logo); border:none;">
+            <i class="fa-solid fa-plus me-2"></i>Nuevo Insumo
+        </a>
     </div>
 
     <div class="card border-0 shadow-sm">
