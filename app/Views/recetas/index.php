@@ -57,9 +57,10 @@
                                         class="btn btn-sm btn-outline-primary border-0" title="Editar">
                                         <i class="fa-solid fa-pen"></i>
                                     </a>
+                                    
                                     <a href="<?= base_url('recetas/borrar/' . $receta['Id_receta']) ?>"
-                                        class="btn btn-sm btn-outline-danger border-0"
-                                        onclick="return confirm('¿Eliminar esta receta?')" title="Eliminar">
+                                        class="btn btn-sm btn-outline-danger border-0 btn-eliminar"
+                                        title="Eliminar">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </div>
@@ -154,4 +155,37 @@
     }
 </style>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const botonesEliminar = document.querySelectorAll('.btn-eliminar');
+
+        botonesEliminar.forEach(boton => {
+            boton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const urlBorrar = this.getAttribute('href');
+
+                Swal.fire({
+                    title: '¿Eliminar esta receta?',
+                    text: "Se borrarán todos los cálculos asociados.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = urlBorrar;
+                    }
+                });
+            });
+        });
+    });
+</script>
 <?= $this->endSection() ?>

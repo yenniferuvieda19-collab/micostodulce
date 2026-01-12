@@ -56,9 +56,9 @@ class Auth extends BaseController
         $model = new UsuarioModel();
 
         $nombre_negocio = $this->request->getPost('nombre_negocio');
-        $email = $this->request->getPost('email');  
+        $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
-        
+
         // Recibimos la confirmación
         $password_confirm = $this->request->getPost('password_confirm');
 
@@ -99,43 +99,74 @@ class Auth extends BaseController
     // Procesa el envío del correo de recuperación
     public function enviarRecuperacion()
     {
+        $model = new UsuarioModel();
         $email = $this->request->getPost('email');
+        // recibe la info del formulario de recuperar
 
         if (empty($email)) {
             return redirect()->back()->with('error', 'Por favor, ingresa tu correo electrónico.');
         }
 
-        $model = new UsuarioModel();
+
         $user = $model->where('Correo', $email)->first();
 
-        if ($user) {
-            
-            return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones pronto.');
+        if (!$user) {
+            // Si no existe el usuario
+            return redirect()->back()->with('error', 'No encontramos una cuenta con ese correo.');
         }
+        //si existe se ejecuta lo siguinte
 
-        return redirect()->back()->with('error', 'No encontramos una cuenta con ese correo.');
+
+        $token = bin2hex(random_bytes(32)); //genera el token
+
+        $db = \Config\Database::connect();
+        $db->table('tokens_temporales')->insert([
+            'id_usuario'    => $user['Id_usuario'],
+            'token' => password_hash($token, PASSWORD_DEFAULT), //encripta el token
+            'fecha_expiracion' => date('Y-m-d H:i:s', strtotime('+1 hour'))
+        ]);
+
+
+        $link = base_url('resetPassword/' . $token); //link que ira en el correo
+
+        $emailService = \Config\Services::email();
+        $emailService->setTo($user['Correo']);
+        $emailService->setSubject('Recuperación de contraseña');
+        $emailService->setMessage("Haz clic en el siguiente enlace para recuperar tu contraseña: <a href='{$link}'>Recuperar contraseña</a>");
+        $emailService->send();
+
+        return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones pronto.');
     }
+    public function recuperarContrasena($token = null)
+    {
+        return view('auth/resetpassword', ['token' => $token]);
+    }
+
+
+    //esta mierda me tiene ladillao yaaaaa
+
+
+
 
     public function panel()
     {
 
-        if (!session()->get("isLoggedIn")){
+        if (!session()->get("isLoggedIn")) {
             return redirect()->to(base_url('login'));
         }
 
-        $ingredientesModel = new IngredienteModel(); 
+        $ingredientesModel = new IngredienteModel();
         $recetasModel = new RecetaModel();
 
         $idUsuario = session()->get('Id_usuario');
 
         $data = [
-        'totalIngredientes' => $ingredientesModel->where('Id_usuario', $idUsuario)->countAllResults(),
-        'totalRecetas'      => $recetasModel->where('Id_usuario', $idUsuario)->countAllResults(),
-        // Traemos las últimas 5 recetas para la tabla
-        'ultimasRecetas'           => $recetasModel->where('Id_usuario', $idUsuario)->orderBy('Id_receta', 'DESC')->findAll(5)
+            'totalIngredientes' => $ingredientesModel->where('Id_usuario', $idUsuario)->countAllResults(),
+            'totalRecetas'      => $recetasModel->where('Id_usuario', $idUsuario)->countAllResults(),
+            // Traemos las últimas 5 recetas para la tabla
+            'ultimasRecetas'           => $recetasModel->where('Id_usuario', $idUsuario)->orderBy('Id_receta', 'DESC')->findAll(5)
         ];
 
         return view('panel_inicio', $data);
-
     }
 }

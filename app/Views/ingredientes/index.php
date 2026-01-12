@@ -28,11 +28,8 @@
                     <thead class="bg-light">
                         <tr class="text-secondary small text-uppercase">
                             <th class="ps-4 py-3">Ingrediente</th>
-
                             <th class="py-3 text-center">Presentación</th>
-
                             <th class="py-3 text-center">Precio Compra</th>
-
                             <th class="text-end pe-4 py-3">Acciones</th>
                         </tr>
                     </thead>
@@ -77,14 +74,12 @@
                                     <td class="text-end pe-4">
                                         <div class="d-flex justify-content-end gap-2">
                                             <a href="<?= base_url('ingredientes/editar/' . $ing['Id_ingrediente']) ?>"
-                                                class="btn btn-sm btn-outline-primary border-0"
-                                                title="Editar">
+                                                class="btn btn-sm btn-outline-primary border-0" title="Editar">
                                                 <i class="fa-solid fa-pen"></i>
                                             </a>
 
                                             <a href="<?= base_url('ingredientes/borrar/' . $ing['Id_ingrediente']) ?>"
-                                                class="btn btn-sm btn-outline-danger border-0 btn-eliminar"
-                                                title="Eliminar">
+                                                class="btn btn-sm btn-outline-danger border-0 btn-eliminar" title="Eliminar">
                                                 <i class="fa-solid fa-trash"></i>
                                             </a>
                                         </div>
@@ -154,6 +149,8 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const botonesEliminar = document.querySelectorAll('.btn-eliminar');
@@ -163,6 +160,7 @@
                 e.preventDefault();
                 const urlBorrar = this.getAttribute('href');
 
+                // Confirmación para eliminar
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: "No podrás revertir esta acción y el insumo se borrará permanentemente.",
