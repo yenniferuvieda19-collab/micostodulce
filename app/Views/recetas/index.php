@@ -36,7 +36,9 @@
 
                     $costoPorcion = $costoTotal / $porciones;
                     $precioPorcionBase = $precioVenta / $porciones;
-                    $precioPorcionVenta = $precioPorcionBase * 1.20;
+                    
+                    // MODIFICACIÓN: Se eliminó el 20% extra (* 1.20) como pediste
+                    $precioPorcionVenta = $precioPorcionBase;
                     ?>
 
                     <div class="col-md-6 col-lg-4">
@@ -47,8 +49,13 @@
                                     <a href="<?= base_url('recetas/ver/' . $receta['Id_receta']) ?>" class="text-decoration-none">
                                         <h5 class="fw-bold text-dark mb-1 hover-link"><?= esc($receta['nombre_postre']) ?></h5>
                                     </a>
+                                    
                                     <span class="badge bg-light text-secondary border">
-                                        <i class="fa-solid fa-chart-pie me-1"></i> <?= esc($receta['porciones']) ?> Porciones
+                                        <?php if ($porciones == 1): ?>
+                                            <i class="fa-solid fa-cake-candles me-1"></i> Venta Unitaria
+                                        <?php else: ?>
+                                            <i class="fa-solid fa-chart-pie me-1"></i> <?= esc($receta['porciones']) ?> Porciones
+                                        <?php endif; ?>
                                     </span>
                                 </div>
 
@@ -72,32 +79,49 @@
                                     <div class="mb-2">
                                         <span class="badge bg-danger">COSTO DE INVERSIÓN</span>
                                     </div>
-                                    <div class="row text-center">
-                                        <div class="col-6 border-end border-danger-subtle">
-                                            <small class="text-muted d-block" style="font-size: 0.7rem;">TOTAL</small>
-                                            <span class="fw-bold text-danger">$ <?= number_format($costoTotal, 2, '.', ',') ?></span>
+
+                                    <?php if ($porciones == 1): ?>
+                                        <div class="text-center">
+                                            <small class="text-muted d-block" style="font-size: 0.7rem;">COSTO TOTAL</small>
+                                            <span class="fw-bold text-danger fs-5">$ <?= number_format($costoTotal, 2, '.', ',') ?></span>
                                         </div>
-                                        <div class="col-6">
-                                            <small class="text-muted d-block" style="font-size: 0.7rem;">X PORCIÓN</small>
-                                            <span class="fw-bold text-danger">$ <?= number_format($costoPorcion, 2, '.', ',') ?></span>
+                                    <?php else: ?>
+                                        <div class="row text-center">
+                                            <div class="col-6 border-end border-danger-subtle">
+                                                <small class="text-muted d-block" style="font-size: 0.7rem;">TOTAL LOTE</small>
+                                                <span class="fw-bold text-danger">$ <?= number_format($costoTotal, 2, '.', ',') ?></span>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted d-block" style="font-size: 0.7rem;">C/U (COSTO)</small>
+                                                <span class="fw-bold text-danger">$ <?= number_format($costoPorcion, 2, '.', ',') ?></span>
+                                            </div>
                                         </div>
-                                    </div>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="p-3 rounded-3" style="background-color: #f0fff4; border: 1px solid #c3e6cb;">
                                     <div class="mb-2">
                                         <span class="badge bg-success">PRECIO VENTA SUGERIDO</span>
                                     </div>
-                                    <div class="row text-center">
-                                        <div class="col-6 border-end border-success-subtle">
-                                            <small class="text-muted d-block" style="font-size: 0.7rem;">TORTA ENTERA</small>
-                                            <h5 class="fw-bold text-success mb-0">$ <?= number_format($precioVenta, 2, '.', ',') ?></h5>
+                                    
+                                    <?php if ($porciones == 1): ?>
+                                        <div class="text-center">
+                                            <small class="text-muted d-block" style="font-size: 0.7rem;">PRECIO UNITARIO</small>
+                                            <h3 class="fw-bold text-success mb-0">$ <?= number_format($precioVenta, 2, '.', ',') ?></h3>
                                         </div>
-                                        <div class="col-6">
-                                            <small class="text-muted d-block" style="font-size: 0.7rem;">X REBANADA (+20%)</small>
-                                            <h5 class="fw-bold text-success mb-0">$ <?= number_format($precioPorcionVenta, 2, '.', ',') ?></h5>
+                                    <?php else: ?>
+                                        <div class="row text-center align-items-center">
+                                            <div class="col-5 border-end border-success-subtle">
+                                                <small class="text-muted d-block" style="font-size: 0.65rem;">LOTE COMPLETO</small>
+                                                <h6 class="fw-bold text-success mb-0 opacity-75">$ <?= number_format($precioVenta, 2, '.', ',') ?></h6>
+                                            </div>
+                                            <div class="col-7">
+                                                <small class="text-success fw-bold d-block" style="font-size: 0.7rem;">PRECIO INDIVIDUAL</small>
+                                                <h4 class="fw-bold text-success mb-0">$ <?= number_format($precioPorcionVenta, 2, '.', ',') ?></h4>
+                                            </div>
                                         </div>
-                                    </div>
+                                    <?php endif; ?>
+                                    
                                 </div>
 
                             </div>
