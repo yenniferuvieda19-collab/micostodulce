@@ -127,7 +127,7 @@ class Auth extends BaseController
                  ]);
         
                
-                 $link = base_url('resetPassword/' . $token); //link que ira en el correo
+                 $link = base_url('resetPassword/' . $token . '?uid=' . $user['Id_usuario']); //link que ira en el correo
 
                  $emailService = \Config\Services::email();
                  $emailService->setTo($user['Correo']);
@@ -138,15 +138,102 @@ class Auth extends BaseController
                  return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones pronto.');
 
     }
-                    public function recuperarContrasena($token = null )
+
+
+
+
+
+        public function verificacionGmail($token = null )
                       {
-                      return view('auth/resetpassword', ['token'=> $token]);
-                       }
                        
 
-     //esta mierda me tiene ladillao yaaaaa
+
+                           // 1) Conexión a base de datos
+    $db = \Config\Database::connect();
+
+    // 2) Obtener parámetros desde la URL
+    $idUsuario = $this->request->getGet('uid');
+   if (!$idUsuario || !$token) {
+        return "Enlace incompleto o inválido.";
+    }
+
+    // 3) Consultar el token más reciente del usuario
+    $tokenData = $db->table('tokens_temporales')
+                    ->where('Id_usuario', $idUsuario)
+                    ->orderBy('Id_token', 'DESC')
+                    ->get()
+                    ->getRow();
+
+    // 4) Validar existencia del registro de token
+    if (!$tokenData) {
+        return "Token inválido.";
+    }
+
+    // 5) Bloquear si ya fue usado (fecha_uso no es NULL ni vacío)
+    if (!is_null($tokenData->fecha_uso) && $tokenData->fecha_uso !== '') {
+       return redirect()->to(base_url('login'))
+                 ->with('error', 'El link ya fue utilizado');
+    }
+
+    // 6) Comparar token plano contra hash almacenado
+    if (!password_verify($token, $tokenData->token)) {
+       return redirect()->to(base_url('login'))
+                 ->with('error', 'link invalido');
 
 
+    }
+
+    // 7) Comprobar vigencia (no expirado)
+    if (strtotime($tokenData->fecha_expiracion) < time()) {
+        return redirect()->to(base_url('login'))
+                 ->with('error', 'El link ya expiro');
+
+
+    }
+
+    // 8) Marcar el token como usado (registrar fecha_uso)
+    $db->table('tokens_temporales')
+       ->where('Id_token', $tokenData->Id_token)
+       ->update(['fecha_uso' => date('Y-m-d H:i:s')]);    
+
+    // 9) Renderizar la vista para cambiar contraseña 
+    return view('auth/resetpassword', [
+        'Id_usuario' => $idUsuario,
+        'token'      => $token
+    ]);
+
+
+                
+                       }  
+
+
+
+            public function RecuperarContrasena()
+            {
+                $model=new UsuarioModel();
+
+                $idUsuario=$this->request->getPost('Id_usuario');
+                //die(var_dump($idUsuario));
+                $contrasena=$this->request->getPost('password');
+                $Confirmcontrasena=$this->request->getPost('confirm_password');
+
+
+                 if (strlen($contrasena) < 6) {
+            return redirect()->back()->with('error', 'La contraseña debe tener al menos 6 caracteres.');
+        }
+
+                if($contrasena !== $Confirmcontrasena)
+                    {
+              return redirect()->back()->with('error', 'las contraseñas no son iguales');
+                     }
+
+                $NuevaContrasena = password_hash($contrasena, PASSWORD_DEFAULT);
+
+                $model->update($idUsuario, ['Contraseña' => $NuevaContrasena]);
+              
+                return redirect()->to(base_url('login'))->with('mensaje', 'cambio de contraseña exitoso');
+
+            }
 
 
     public function panel()
@@ -172,26 +259,5 @@ class Auth extends BaseController
 
     }
 
-    public function panel()
-    {
-
-        if (!session()->get("isLoggedIn")){
-            return redirect()->to(base_url('login'));
-        }
-
-        $ingredientesModel = new IngredienteModel(); 
-        $recetasModel = new RecetaModel();
-
-        $idUsuario = session()->get('Id_usuario');
-
-        $data = [
-        'totalIngredientes' => $ingredientesModel->where('Id_usuario', $idUsuario)->countAllResults(),
-        'totalRecetas'      => $recetasModel->where('Id_usuario', $idUsuario)->countAllResults(),
-        // Traemos las últimas 5 recetas para la tabla
-        'ultimasRecetas'           => $recetasModel->where('Id_usuario', $idUsuario)->orderBy('Id_receta', 'DESC')->findAll(5)
-        ];
-
-        return view('panel_inicio', $data);
-
-    }
+   
 }
