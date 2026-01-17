@@ -9,20 +9,25 @@
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        width: 100vw; /* Ancho completo de la ventana */
-        min-height: 100vh; /* Alto completo de la ventana */
+        width: 100vw;
+        /* Ancho completo de la ventana */
+        min-height: 100vh;
+        /* Alto completo de la ventana */
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: calc(-50vw + 50%); /* Truco para ignorar márgenes si los hubiera */
-        margin-top: -1.5rem; /* Sube para pegarse a la navbar rosa */
+        margin-left: calc(-50vw + 50%);
+        /* Truco para ignorar márgenes si los hubiera */
+        margin-top: -1.5rem;
+        /* Sube para pegarse a la navbar rosa */
         padding: 20px;
     }
 
     /* 2. Aseguramos que la tarjeta tenga un tamaño decente */
     .reset-card {
         width: 100%;
-        max-width: 400px; /* Tamaño estándar de login */
+        max-width: 400px;
+        /* Tamaño estándar de login */
         border-radius: 15px;
         background-color: rgba(255, 255, 255, 0.95);
         border: none;
@@ -36,15 +41,30 @@
         color: var(--marron-logo);
         cursor: pointer;
     }
-    .form-control { border-right: none; }
-    .form-control:focus { border-color: #dee2e6; box-shadow: none; }
-    .input-group:focus-within .form-control, 
+
+    .form-control {
+        border-right: none;
+    }
+
+    .form-control:focus {
+        border-color: #dee2e6;
+        box-shadow: none;
+    }
+
+    .input-group:focus-within .form-control,
     .input-group:focus-within .input-group-text {
         border-color: var(--azul-logo);
         box-shadow: 0 0 0 0.25rem rgba(22, 194, 232, 0.25);
     }
-    .btn-primary { background-color: var(--marron-logo, #8B4513); border: none; }
-    .btn-primary:hover { background-color: var(--rosa-logo, #e91e63); }
+
+    .btn-primary {
+        background-color: var(--marron-logo, #8B4513);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--rosa-logo, #e91e63);
+    }
 </style>
 
 <div class="auth-background">
@@ -85,7 +105,7 @@
                     </button>
                 </div>
             </form>
-            
+
             <div class="text-center mt-4">
                 <a href="<?= base_url('login') ?>" class="text-decoration-none fw-bold" style="color: var(--marron-logo);">
                     <i class="fa-solid fa-arrow-left me-1"></i> Volver al inicio
@@ -96,17 +116,17 @@
 </div>
 
 <script>
-function togglePassword(id) {
-    const input = document.getElementById(id);
-    const icon = document.getElementById('icon-' + id);
-    if (input.type === "password") {
-        input.type = "text";
-        icon.classList.replace('fa-eye', 'fa-eye-slash');
-    } else {
-        input.type = "password";
-        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    function togglePassword(id) {
+        const input = document.getElementById(id);
+        const icon = document.getElementById('icon-' + id);
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = "password";
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
     }
-}
 </script>
 
 <?= $this->endSection() ?>

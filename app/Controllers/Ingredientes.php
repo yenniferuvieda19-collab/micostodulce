@@ -104,30 +104,27 @@ class Ingredientes extends BaseController
     }
 
     // Borrar ingrediente
-    public function borrar($id)
+    public function borrar($id = null)
     {
-        $modelo = new IngredienteModel();
-        $detalleModel = new RecetaDetalleModel();
+        $model = new IngredienteModel();
 
-        $recetasUsandoIngrediente = $detalleModel->where('Id_ingrediente', $id)->countAllResults();
+        // Verificar si el insumo está en uso
+        $relacionModel = new \App\Models\IngredientesRecetasModel();
 
-        if ($recetasUsandoIngrediente == 0) {
-            $recetasUsandoIngrediente = $detalleModel->where('id_ingrediente', $id)->countAllResults();
+        $estaEnUso = $relacionModel->where('id_ingrediente', $id)->first();
+
+        if ($estaEnUso) {
+            // Alto, este insumo está en uso, por lo que no borramos nada y devolvemos error
+            return redirect()->back()->with('error', 'No se puede eliminar este insumo porque es parte de una o más recetas.');
         }
 
-        if ($recetasUsandoIngrediente > 0) {
-            session()->setFlashdata('mensaje_error', "⚠️ No puedes eliminar este insumo porque se utiliza en <b>$recetasUsandoIngrediente</b> receta(s). Elimínalo de las recetas primero.");
-            return redirect()->to('/ingredientes');
-        }
+        // Si llegamos aquí, es seguro borrar
+        $model->delete($id);
 
-        $modelo->delete($id);
-
-        session()->setFlashdata('mensaje_exito', "Insumo eliminado correctamente.");
-
-        return redirect()->to('/ingredientes');
+        return redirect()->to(base_url('ingredientes'))->with('mensaje', 'Insumo eliminado correctamente.');
     }
 
-    // Función privada para recalcular costos
+    // Función para recalcular costos
     private function recalcularRecetasAfectadas($idIngrediente)
     {
         $detalleModel = new RecetaDetalleModel();
