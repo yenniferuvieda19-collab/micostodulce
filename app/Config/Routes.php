@@ -24,7 +24,8 @@ $routes->get('panel', 'Auth::panel'); //Carga el panel de bienvenida al portal w
 // Recuperación de contraseña
 $routes->get('recuperar', 'Auth::recuperar');
 $routes->post('auth/enviar-recuperacion', 'Auth::enviarRecuperacion');
-$routes->get('resetPassword/(:any)', 'Auth::recuperarContrasena/$1');
+$routes->get('resetPassword/(:any)', 'Auth::verificacionGmail/$1'); 
+$routes->post('auth/update_password', 'Auth::ProcesarContrasena'); 
 
 /*
  * --------------------------------------------------------------------

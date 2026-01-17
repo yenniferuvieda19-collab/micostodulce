@@ -75,8 +75,14 @@
         </div>
 
         <div class="card-body p-4">
+
+
+    
+
+        
             <form action="<?= base_url('auth/update_password') ?>" method="POST">
                 <?= csrf_field() ?>
+                <input type="hidden" name="Id_usuario" value="<?= $Id_usuario ?>"> 
                 <input type="hidden" name="token" value="<?= $token ?>">
 
                 <div class="mb-3">
