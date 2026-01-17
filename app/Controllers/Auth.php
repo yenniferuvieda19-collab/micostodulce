@@ -172,26 +172,5 @@ class Auth extends BaseController
 
     }
 
-    public function panel()
-    {
-
-        if (!session()->get("isLoggedIn")){
-            return redirect()->to(base_url('login'));
-        }
-
-        $ingredientesModel = new IngredienteModel(); 
-        $recetasModel = new RecetaModel();
-
-        $idUsuario = session()->get('Id_usuario');
-
-        $data = [
-        'totalIngredientes' => $ingredientesModel->where('Id_usuario', $idUsuario)->countAllResults(),
-        'totalRecetas'      => $recetasModel->where('Id_usuario', $idUsuario)->countAllResults(),
-        // Traemos las últimas 5 recetas para la tabla
-        'ultimasRecetas'           => $recetasModel->where('Id_usuario', $idUsuario)->orderBy('Id_receta', 'DESC')->findAll(5)
-        ];
-
-        return view('panel_inicio', $data);
-
-    }
+   
 }
