@@ -3,37 +3,40 @@
 <?= $this->section('contenido') ?>
 
 <style>
-    /* 1. Fondo que ocupa TODA la pantalla */
+    /* Hola, arreglé el fondo para que cubra toda la pantalla y no se viera recortado. Att: Andrés <3 */
     .auth-background {
-        background-image: url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>');
+        background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), 
+                          url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>');
         background-size: cover;
-        background-position: center;
+        background-position: center center;
+        background-attachment: fixed;
         background-repeat: no-repeat;
-        width: 100vw;
-        /* Ancho completo de la ventana */
-        min-height: 100vh;
-        /* Alto completo de la ventana */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    /* Este contenedor centra la tarjeta vertical y horizontalmente, corrigiendo lo feo que se veía a un lado*/
+    .reset-wrapper {
+        min-height: calc(100vh - 80px); /* Ajusta según el alto de tu navbar */
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: calc(-50vw + 50%);
-        /* Truco para ignorar márgenes si los hubiera */
-        margin-top: -1.5rem;
-        /* Sube para pegarse a la navbar rosa */
         padding: 20px;
     }
 
-    /* 2. Aseguramos que la tarjeta tenga un tamaño decente */
     .reset-card {
         width: 100%;
         max-width: 400px;
-        /* Tamaño estándar de login */
         border-radius: 15px;
         background-color: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(5px);
         border: none;
     }
 
-    /* 3. Tus estilos de inputs (mantenemos los originales) */
     .input-group-text {
         border-left: none;
         background-color: #ffffff !important;
@@ -41,33 +44,15 @@
         color: var(--marron-logo);
         cursor: pointer;
     }
-
-    .form-control {
-        border-right: none;
-    }
-
-    .form-control:focus {
-        border-color: #dee2e6;
-        box-shadow: none;
-    }
-
-    .input-group:focus-within .form-control,
-    .input-group:focus-within .input-group-text {
-        border-color: var(--azul-logo);
-        box-shadow: 0 0 0 0.25rem rgba(22, 194, 232, 0.25);
-    }
-
-    .btn-primary {
-        background-color: var(--marron-logo, #8B4513);
-        border: none;
-    }
-
-    .btn-primary:hover {
-        background-color: var(--rosa-logo, #e91e63);
-    }
+    .form-control { border-right: none; }
+    .form-control:focus { border-color: #dee2e6; box-shadow: none; }
+    .btn-primary { background-color: var(--marron-logo, #8B4513); border: none; }
+    .btn-primary:hover { background-color: var(--rosa-logo, #e91e63); }
 </style>
 
-<div class="auth-background">
+<div class="auth-background"></div>
+
+<div class="reset-wrapper">
     <div class="card reset-card shadow-lg">
         <div class="card-header bg-transparent text-center py-4 border-0">
             <h2 class="fw-bold" style="color: var(--rosa-logo); margin-bottom: 0;">Nueva Contraseña</h2>
@@ -75,11 +60,6 @@
         </div>
 
         <div class="card-body p-4">
-
-
-    
-
-        
             <form action="<?= base_url('auth/update_password') ?>" method="POST">
                 <?= csrf_field() ?>
                 <input type="hidden" name="Id_usuario" value="<?= $Id_usuario ?>"> 
@@ -135,32 +115,4 @@
     }
 </script>
 
-<?= $this->endSection() ?>
-<?= $this->extend('layouts/main') ?>
-
-<?= $this->section('content') ?>
-    <div class="container">
-        <h2>Restablecer Contraseña</h2>
-        
-        <form action="<?= base_url('auth/update_password') ?>" method="POST">
-            
-            <input type="hidden" name="token" value="<?= $token ?>">
-            
-            <div class="form-group">
-                <label>Nueva Contraseña:</label>
-                <input type="password" name="password" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Confirmar Contraseña:</label>
-                <input type="password" name="confirm_password" class="form-control" required>
-            </div>
-            
-            <hr>
-            <button type="submit" class="btn btn-primary">
-                Actualizar y Guardar
-            </button>
-            
-            </form>
-    </div>
 <?= $this->endSection() ?>

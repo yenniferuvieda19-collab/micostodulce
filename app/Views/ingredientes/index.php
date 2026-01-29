@@ -5,35 +5,24 @@
 <div class="dashboard-container">
     <div class="container">
 
+        <?php if (session()->getFlashdata('mensaje_exito')): ?>
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
+            <i class="fa-solid fa-check-circle me-2"></i>
+            <?= session()->getFlashdata('mensaje_exito') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h2 class="fw-bold" style="color: var(--marron-logo);">Mis Insumos</h2>
                 <p class="text-muted mb-0">Administra los precios y presentaciones de tus ingredientes.</p>
             </div>
 
-<<<<<<< HEAD
-    <?php if (session()->getFlashdata('mensaje_exito')): ?>
-        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
-            <i class="fa-solid fa-check-circle me-2"></i>
-            <?= session()->getFlashdata('mensaje_exito') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <?php endif; ?>
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold" style="color: var(--azul-logo);">Mis Insumos</h2>
-            <p class="fs-5 fw-medium text-dark">Gestiona los precios de tus compras.</p>
-        </div>
-        <a href="<?= base_url('ingredientes/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" style="background-color: var(--azul-logo); border:none;">
-            <i class="fa-solid fa-plus me-2"></i>Nuevo Insumo
-        </a>
-    </div>
-=======
             <div class="d-flex gap-2">
                 <a href="<?= base_url('recetas') ?>" class="btn rounded-pill px-5 shadow-sm fw-bold text-white" style="background-color: #ee1d6dff; border:none;">
                     <i class="fa-solid fa-arrow-right-arrow-left me-2"></i>Ir a Recetas
                 </a>
->>>>>>> f066a330330f9eeaa52647ca23063053a80adca4
 
                 <a href="<?= base_url('ingredientes/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm" style="background-color: var(--azul-logo); border:none;">
                     <i class="fa-solid fa-plus me-2"></i>Nuevo Insumo

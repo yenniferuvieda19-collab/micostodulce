@@ -57,7 +57,7 @@ class Ingredientes extends BaseController
 
         $modelo->insert($datos);
 
-        return redirect()->to('/ingredientes');
+        return redirect()->to('/ingredientes')->with('mensaje_exito', '¡Nuevo insumo agregado con éxito!');
     }
 
     // Mostrar formulario de editar
@@ -99,8 +99,8 @@ class Ingredientes extends BaseController
         $modelo->update($id, $datos);
 
         $this->recalcularRecetasAfectadas($id);
-
-        return redirect()->to('/ingredientes');
+        
+        return redirect()->to('/ingredientes')->with('mensaje_exito', 'Insumo actualizado y costos recalculados.');
     }
 
     // Borrar ingrediente
@@ -121,7 +121,7 @@ class Ingredientes extends BaseController
         // Si llegamos aquí, es seguro borrar
         $model->delete($id);
 
-        return redirect()->to(base_url('ingredientes'))->with('mensaje', 'Insumo eliminado correctamente.');
+        return redirect()->to(base_url('ingredientes'))->with('mensaje_exito', 'Insumo eliminado correctamente.');
     }
 
     // Función para recalcular costos
