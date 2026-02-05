@@ -68,6 +68,57 @@
             </div>
 
             <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold" style="color: var(--azul-logo);">
+                        <i class="fa-solid fa-hand-holding-dollar me-2"></i>Costos Indirectos
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted small mb-3">Selecciona los gastos adicionales (Cajas, Servicios, Mano de Obra) que aplican a esta receta.</p>
+                    
+                    <div class="row g-3">
+                        <?php if(!empty($gastos)): ?>
+                            <?php foreach($gastos as $gasto): ?>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-check p-3 border rounded bg-light custom-check-card position-relative h-100">
+                                        <input class="form-check-input position-absolute top-50 start-0 ms-3 translate-middle-y" 
+                                               type="checkbox" 
+                                               name="gasto_id[]" 
+                                               value="<?= $gasto['Id_gasto'] ?>" 
+                                               id="gasto_<?= $gasto['Id_gasto'] ?>"
+                                               style="transform: scale(1.2);">
+                                        
+                                        <label class="form-check-label w-100 ps-5 cursor-pointer d-flex flex-column justify-content-center" 
+                                               for="gasto_<?= $gasto['Id_gasto'] ?>" style="min-height: 40px;">
+                                            <div class="d-flex justify-content-between align-items-center w-100">
+                                                <span class="fw-bold text-dark"><?= esc($gasto['nombre_gasto']) ?></span>
+                                                <span class="badge bg-white text-success border border-success shadow-sm">
+                                                    $<?= number_format($gasto['precio_unitario'], 2) ?>
+                                                </span>
+                                            </div>
+                                            <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
+                                                <i class="fa-solid fa-tag me-1"></i><?= esc($gasto['categoria']) ?>
+                                            </small>
+                                        </label>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="col-12">
+                                <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center">
+                                    <i class="fa-solid fa-triangle-exclamation me-3 fs-4"></i>
+                                    <div>
+                                        <strong>No hay costos indirectos registrados.</strong><br>
+                                        <a href="<?= base_url('gastos') ?>" class="alert-link text-decoration-none">Haz clic aquí para crear tus gastos (Cajas, Gas, etc.)</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
                     <label class="form-label fw-bold text-secondary">
                         <i class="fa-solid fa-comment-dots me-2"></i>Nota Adicional (Opcional)
@@ -213,6 +264,31 @@
         border-radius: 15px; 
         border: none !important; 
         box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+
+        /* Estilos para los Checkboxes de Gastos */
+        .custom-check-card {
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+        border: 1px solid #dee2e6 !important;
+    }
+    
+    .custom-check-card:hover {
+        background-color: #fff !important;
+        transform: translateY(-3px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        border-color: var(--azul-logo) !important;
+    }
+
+    /* Esta regla detecta si el checkbox dentro de la tarjeta está marcado */
+    .custom-check-card:has(.form-check-input:checked) {
+        background-color: #e8f0fe !important; 
+        border-color: var(--azul-logo) !important;
+        box-shadow: inset 0 0 0 1px var(--azul-logo);
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
     }
 </style>
 

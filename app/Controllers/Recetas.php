@@ -34,6 +34,7 @@ class Recetas extends BaseController
         }
 
         $ingModel = new IngredienteModel();
+        $gastoModel = new \App\Models\GastoAdicionalModel();
         $idUsuario = session()->get('Id_usuario');
 
         // Filtramos insumos válidos (precio > 0) y los ordenamos alfabéticamente para facilitar la búsqueda al usuario.
@@ -41,6 +42,8 @@ class Recetas extends BaseController
             ->where('costo_unidad >', 0.01)
             ->orderBy('nombre_ingrediente', 'ASC')
             ->findAll();
+
+        $data['gastos'] = $gastoModel->where('Id_usuario', $idUsuario)->findAll();
 
         return view('recetas/crear', $data);
     }
@@ -58,10 +61,14 @@ class Recetas extends BaseController
         $recetaModel  = new RecetaModel();
         $ingModel     = new IngredienteModel();
         $detalleModel = new IngredientesRecetasModel();
+        // Modelos nuevos para los Gastos Indirectos
+        $gastoModel       = new \App\Models\GastoAdicionalModel();
+        $gastoRecetaModel = new \App\Models\GastosRecetasModel();
 
         // Recibimos los arrays del formulario (Ingredientes y Cantidades)
         $ingredientesIds = $this->request->getPost('ingrediente_id');
         $cantidades      = $this->request->getPost('cantidades');
+        $gastosIds       = $this->request->getPost('gasto_id');
         $inputGanancia   = $this->request->getPost('ganancia');
 
         // Validación básica del porcentaje de ganancia (Default: 30%), aunque puede ser el porcentaje que el cliente desee
@@ -70,7 +77,7 @@ class Recetas extends BaseController
 
         $idUsuario = session()->get('Id_usuario');
 
-        // PASO 1: Crear la "Carpeta" de la receta (Cabecera). Inicializamos costos en 0, se calcularán más abajo.
+        // PASO 1: Crear la receta Cabecera, inicializamos costos en 0, se calcularán más abajo
         $dataReceta = [
             'Id_usuario'          => $idUsuario,
             'nombre_postre'       => $this->request->getPost('nombre'),
@@ -126,6 +133,27 @@ class Recetas extends BaseController
                             'unidad_receta'      => 'unidad'
                         ]);
                     }
+                }
+            }
+        }
+
+        $costoGastos = 0; // Acumula cajas, luz, mano de obra...
+
+        // Procesa los gatos indirectos para agregarlo a la receta
+        if ($gastosIds) {
+            foreach ($gastosIds as $idGasto) {
+                $infoGasto = $gastoModel->find($idGasto);
+                
+                if ($infoGasto) {
+                    $precioAplicar = floatval($infoGasto['precio_unitario']);
+                    $costoGastos += $precioAplicar;
+
+                    // Guardamos la relación
+                    $gastoRecetaModel->insert([
+                        'Id_receta'       => $idReceta,
+                        'id_gasto'        => $idGasto,
+                        'precio_aplicado' => $precioAplicar
+                    ]);
                 }
             }
         }
@@ -274,7 +302,7 @@ class Recetas extends BaseController
 
         // Eliminamos todos los ingredientes viejos de esta receta para evitar conflictos y actualizar sin problemas
         $detalleModel->where('Id_receta', $id)->delete();
-    
+
         // Si hay ingredintes nuevos los agregamos, si no pues se queda igual
         if (!empty($detallesNuevos)) {
             $detalleModel->insertBatch($detallesNuevos);
