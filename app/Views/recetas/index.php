@@ -11,12 +11,19 @@
                 <p class="fs-5 fw-medium text-dark">Calcula costos y define tus precios de venta.</p>
             </div>
             <div class="d-flex gap-2">
-                <a href="<?= base_url("ingredientes") ?>" class="btn rounded-pill px-5 shadow-sm fw-bold text-white" style="background-color: #ee1d6dff;border:none;">
-                    <i class="fa-solid fa-arrow-right-arrow-left me-2"></i>Ir a Insumos</a>
+                <a href="<?= base_url("ingredientes") ?>" class="btn rounded-pill px-4 shadow-sm fw-bold text-white" style="background-color: #ee1d6dff; border:none;">
+                    <i class="fa-solid fa-basket-shopping me-2"></i>Insumos
+                </a>
+
+                <a href="<?= base_url("gastos") ?>" class="btn rounded-pill px-4 shadow-sm fw-bold bg-white text-dark border">
+                    <i class="fa-solid fa-hand-holding-dollar me-2 text-warning"></i>Ir a Costos Indirectos
+                </a>
+
                 <a href="<?= base_url('recetas/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" style="background-color: var(--azul-logo); border:none;">
-                    <i class="fa-solid fa-plus me-2"></i>Nueva Receta</a>
+                    <i class="fa-solid fa-plus me-2"></i>Nueva Receta
+                </a>
             </div>
-        </div>
+        </div>  
 
         <?php if (empty($recetas)): ?>
             <div class="text-center py-5">

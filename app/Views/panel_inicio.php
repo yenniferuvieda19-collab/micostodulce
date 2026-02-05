@@ -2,9 +2,9 @@
 
 <?= $this->section('contenido') ?>
 
-<div class="dashboard-container"> 
-    <div class="container mt-0"> 
-        
+<div class="dashboard-container">
+    <div class="container mt-0">
+
         <div class="mb-4">
             <h2 class="fw-bold" style="color: var(--azul-logo);">
                 Hola nuevamente<?= session()->get('nombre') ? ', ' . session()->get('nombre') : '' ?> 👋
@@ -64,21 +64,39 @@
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white py-3 border-bottom-0 d-flex justify-content-between align-items-center">
                 <h5 class="fw-bold mb-0">Últimas Recetas Agregadas</h5>
-                <a href="<?= base_url('recetas') ?>" class="btn btn-sm btn-link text-decoration-none">Ver todas</a>
+                <?php if (!empty($ultimasRecetas)): ?>
+                    <a href="<?= base_url('recetas') ?>" class="btn btn-sm btn-link text-decoration-none">Ver todas</a>
+                <?php endif; ?>
             </div>
+
             <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="ps-4">Recetas</th>
-                                <th class="text-center">Porciones</th>
-                                <th class="text-center">Precio Venta</th>
-                                <th class="text-end pe-4">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($ultimasRecetas)): ?>
+                <?php if (empty($ultimasRecetas)): ?>
+
+                    <div class="text-center py-5">
+                        <div class="mb-3 text-muted opacity-25">
+                            <i class="fa-solid fa-bowl-food fa-3x"></i>
+                        </div>
+                        <h6 class="text-muted fw-bold">Aún no hay actividad reciente</h6>
+                        <p class="text-secondary small mb-4">Empieza a calcular tus costos creando tu primera receta ahora.</p>
+
+                        <a href="<?= base_url('recetas/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm" style="background-color: var(--azul-logo); border:none;">
+                            <i class="fa-solid fa-plus me-2"></i>Crear Nueva Receta
+                        </a>
+                    </div>
+
+                <?php else: ?>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">Recetas</th>
+                                    <th class="text-center">Porciones</th>
+                                    <th class="text-center">Precio Venta</th>
+                                    <th class="text-end pe-4">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 <?php foreach ($ultimasRecetas as $receta): ?>
                                     <tr>
                                         <td class="ps-4 fw-bold"><?= esc($receta['nombre_postre']) ?></td>
@@ -88,36 +106,63 @@
                                             <a href="<?= base_url('recetas/editar/' . $receta['Id_receta']) ?>" class="btn btn-sm btn-light text-primary me-1" title="Editar">
                                                 <i class="fa-solid fa-pen"></i>
                                             </a>
-                                            <a href="<?= base_url('recetas/borrar/' . $receta['Id_receta']) ?>" class="btn btn-sm btn-light text-danger btn-eliminar-panel" title="Borrar">
+                                            <a href="<?= base_url('recetas/borrar/' . $receta['Id_receta'] . '?ref=panel') ?>"
+                                                class="btn btn-sm btn-light text-danger btn-eliminar-panel"
+                                                title="Borrar">
                                                 <i class="fa-solid fa-trash"></i>
                                             </a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
+                            </tbody>
+                        </table>
+                    </div>
+
+                <?php endif; ?>
             </div>
         </div>
 
-    </div>
-</div>
+        <style>
+            body {
+                background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+                    url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important;
+                background-size: cover !important;
+                background-position: center !important;
+                background-attachment: fixed !important;
+                background-repeat: no-repeat !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
 
-<style> 
-    body {
-        background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-        url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important; 
-        background-size: cover !important; 
-        background-position: center !important; 
-        background-attachment: fixed !important; 
-        background-repeat: no-repeat !important; 
-        margin: 0 !important; padding: 0 !important;
-    }
-    main, .container-fluid, .wrapper, #content {background: transparent !important;}
-    .dashboard-container { background: transparent !important; width: 100% !important; min-height: 100vh; padding-top: 2rem; padding-bottom: 3rem; }
-    .card {background-color: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(8px); border-radius: 15px; border: none !important; box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;}
-    .hover-scale:hover { transform: translateY(-5px); box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .10) !important; transition: transform 0.3s ease; cursor: pointer; } 
-</style>
+            main,
+            .container-fluid,
+            .wrapper,
+            #content {
+                background: transparent !important;
+            }
 
-<?= $this->endSection() ?>
+            .dashboard-container {
+                background: transparent !important;
+                width: 100% !important;
+                min-height: 100vh;
+                padding-top: 2rem;
+                padding-bottom: 3rem;
+            }
+
+            .card {
+                background-color: rgba(255, 255, 255, 0.9) !important;
+                backdrop-filter: blur(8px);
+                border-radius: 15px;
+                border: none !important;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+            }
+
+            .hover-scale:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .10) !important;
+                transition: transform 0.3s ease;
+                cursor: pointer;
+            }
+        </style>
+
+        <?= $this->endSection() ?>

@@ -69,4 +69,6 @@ $routes->group('recetas', function ($routes) {
 $routes->get('gastos', 'Gastos::index');
 $routes->get('gastos/crear', 'Gastos::crear');
 $routes->post('gastos/guardar', 'Gastos::guardar');
+$routes->get('gastos/editar/(:num)', 'Gastos::editar/$1');
 $routes->get('gastos/borrar/(:num)', 'Gastos::borrar/$1');
+$routes->post('gastos/actualizar/(:num)', 'Gastos::actualizar/$1');

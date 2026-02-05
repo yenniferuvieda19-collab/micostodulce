@@ -12,8 +12,13 @@
             </div>
             <div class="d-flex gap-2">
                 <a href="<?= base_url('recetas') ?>" class="btn rounded-pill px-4 shadow-sm fw-bold text-white" style="background-color: #ee1d6dff; border:none;">
-                    <i class="fa-solid fa-arrow-right-arrow-left me-2"></i>Volver a Recetas
+                    <i class="fa-solid fa-book-open me-2"></i>Ir a Recetas
                 </a>
+
+                <a href="<?= base_url('ingredientes') ?>" class="btn rounded-pill px-4 shadow-sm fw-bold bg-white text-dark border">
+                    <i class="fa-solid fa-basket-shopping me-2 text-success"></i>Ir a Insumos
+                </a>
+
                 <a href="<?= base_url('gastos/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" style="background-color: var(--azul-logo); border:none;">
                     <i class="fa-solid fa-plus me-2"></i>Nuevo Gasto
                 </a>
@@ -68,6 +73,12 @@
                                     </td>
 
                                     <td class="text-end pe-4">
+                                        <a href="<?= base_url('gastos/editar/' . $gasto['Id_gasto']) ?>"
+                                            class="btn btn-sm btn-outline-primary border-0 me-1"
+                                            title="Editar">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+
                                         <a href="<?= base_url('gastos/borrar/' . $gasto['Id_gasto']) ?>"
                                             class="btn btn-sm btn-outline-danger border-0 btn-eliminar"
                                             title="Eliminar">
@@ -155,4 +166,4 @@
         });
     });
 </script>
-<?= $this->endSection() ?>
+<?= $this->endSection() ?>  

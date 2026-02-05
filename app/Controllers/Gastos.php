@@ -6,6 +6,7 @@ use App\Models\GastoAdicionalModel;
 
 class Gastos extends BaseController
 {
+    // Lista los Costos Indirectos (Cajas, Servicios, Mano de Obra).
     public function index()
     {
         // Verificar si está logueado
@@ -28,12 +29,13 @@ class Gastos extends BaseController
         return view('gastos/crear');
     }
 
+    // Guarda un nuevo gasto. Incluye lógica para calcular costo unitario si el usuario ingresa un paquete
     public function guardar()
     {
         $model = new GastoAdicionalModel();
 
-        // Recibimos los datos básicos
-        $esPaquete = $this->request->getPost('es_paquete'); // Será "1" o null
+        // Detectamos si es un paquete ejemplo: Paquete de 50 vasos o unidad simple
+        $esPaquete = $this->request->getPost('es_paquete');
         $costoUnitarioFinal = 0;
 
         // Calculadora inteligente
@@ -82,5 +84,61 @@ class Gastos extends BaseController
         }
 
         return redirect()->to('gastos')->with('error', 'No se pudo eliminar el gasto.');
+    }
+
+    // Cargar formulario de edición
+    public function editar($id = null)
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/');
+        }
+
+        $model = new GastoAdicionalModel();
+        $gasto = $model->find($id);
+
+        // Verificar que el gasto exista y sea del usuario
+        if (!$gasto || $gasto['Id_usuario'] != session()->get('Id_usuario')) {
+            return redirect()->to('gastos')->with('error', 'Gasto no encontrado.');
+        }
+
+        $data['gasto'] = $gasto;
+        return view('gastos/editar', $data);
+    }
+
+    // Actualizar los cambios en los gasto
+    public function actualizar($id = null)
+    {
+        $model = new GastoAdicionalModel();
+
+        // Recibir datos del formulario (Igual que en guardar)
+        $esPaquete = $this->request->getPost('es_paquete');
+        $costoUnitarioFinal = 0;
+
+        // La matemática de recalcular costo unitario
+        if ($esPaquete == 1) {
+            $costoPaquete = $this->request->getPost('costo_paquete');
+            $cantidad = $this->request->getPost('cantidad_paquete');
+            
+            if($cantidad > 0) {
+                $costoUnitarioFinal = $costoPaquete / $cantidad;
+            }
+        } else {
+            $costoUnitarioFinal = $this->request->getPost('precio_unitario');
+        }
+
+        // Preparar datos
+        $datos = [
+            'nombre_gasto'     => $this->request->getPost('nombre_gasto'),
+            'categoria'        => $this->request->getPost('categoria'),
+            'es_paquete'       => $esPaquete ?? 0,
+            'costo_paquete'    => $this->request->getPost('costo_paquete') ?? 0,
+            'cantidad_paquete' => $this->request->getPost('cantidad_paquete') ?? 1,
+            'precio_unitario'  => $costoUnitarioFinal
+        ];
+
+        // Actualizar en la BD
+        $model->update($id, $datos);
+
+        return redirect()->to('gastos')->with('mensaje', 'Gasto actualizado correctamente.');
     }
 }

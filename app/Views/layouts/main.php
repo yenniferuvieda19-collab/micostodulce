@@ -115,4 +115,36 @@
 
 </body>
 
-</html>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Bloquear tecleo del signo menos (-) y la letra 'e' (exponencial)
+            document.body.addEventListener('keydown', function(e) {
+                if (e.target.type === 'number') {
+                    if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+                        e.preventDefault();
+                    }
+                }
+            });
+
+            // Controlar las flechitas y el pegado de texto
+            document.body.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    // Si el valor es menor a 0, lo resetea a vacío o a 0
+                    if (e.target.value < 0) {
+                        e.target.value = ''; 
+                    }
+                }
+            });
+
+            // Agregar atributo min="0" dinámicamente a todos los inputs numéricos, esto ayuda a que el navegador sepa que el límite es 0
+            const inputsNumericos = document.querySelectorAll('input[type="number"]');
+            inputsNumericos.forEach(input => {
+                if (!input.hasAttribute('min')) {
+                    input.setAttribute('min', '0');
+                }
+            });
+        });
+    </script>
+
+</html></body>

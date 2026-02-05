@@ -20,8 +20,12 @@
             </div>
 
             <div class="d-flex gap-2">
-                <a href="<?= base_url('recetas') ?>" class="btn rounded-pill px-5 shadow-sm fw-bold text-white" style="background-color: #ee1d6dff; border:none;">
+                <a href="<?= base_url('recetas') ?>" class="btn rounded-pill px-4 shadow-sm fw-bold text-white" style="background-color: #ee1d6dff; border:none;">
                     <i class="fa-solid fa-arrow-right-arrow-left me-2"></i>Ir a Recetas
+                </a>
+
+                <a href="<?= base_url("gastos") ?>" class="btn rounded-pill px-4 shadow-sm fw-bold bg-white text-dark border">
+                    <i class="fa-solid fa-hand-holding-dollar me-2 text-warning"></i> Ir a Costos Indirectos
                 </a>
 
                 <a href="<?= base_url('ingredientes/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm" style="background-color: var(--azul-logo); border:none;">
