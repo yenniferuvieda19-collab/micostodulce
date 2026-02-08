@@ -75,13 +75,22 @@ class Auth extends BaseController
             return redirect()->back()->with('error', 'El correo ya está registrado.');
         }
 
-        if (strlen($password) <= 6) {
+        if (strlen($password) < 6) {
             return redirect()->back()->with('error', 'La contraseña debe tener al menos 6 caracteres.');
         }
  
          if (strlen($password) > 15) {
             return redirect()->back()->with('error', 'La contraseña solo puede tener maximo 15 caracteres.');
         }
+
+        $reglas = [
+    'password' => 'regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).+$/]'
+                ];
+
+         if (!$this->validate($reglas)) {
+             // Si no cumple, regresa con el error
+             return redirect()->back()->with('error', 'La contraseña requiere una Mayuzcula, una Miniscula y un caracter especial(*#$%/)');
+                       }
 
         $data = [
             'Nombre' => $nombre_negocio,
@@ -169,34 +178,34 @@ class Auth extends BaseController
                        
 
 
-                           // 1) Conexión a base de datos
+    //  Conexión a base de datos
     $db = \Config\Database::connect();
 
-    // 2) Obtener parámetros desde la URL
+    //  Obtener parámetros desde la URL
     $idUsuario = $this->request->getGet('uid');
    if (!$idUsuario || !$token) {
         return "Enlace incompleto o inválido.";
     }
 
-    // 3) Consultar el token más reciente del usuario
+    //  Consultar el token más reciente del usuario
     $tokenData = $db->table('tokens_temporales')
                     ->where('Id_usuario', $idUsuario)
                     ->orderBy('Id_token', 'DESC')
                     ->get()
                     ->getRow();
 
-    // 4) Validar existencia del registro de token
+    //  Validar existencia del registro de token
     if (!$tokenData) {
         return "Token inválido.";
     }
 
-    // 5) Bloquear si ya fue usado (fecha_uso no es NULL ni vacío)
+    //  Bloquear si ya fue usado (fecha_uso no es NULL ni vacío)
     if (!is_null($tokenData->fecha_uso) && $tokenData->fecha_uso !== '') {
        return redirect()->to(base_url('login'))
                  ->with('error', 'El link ya fue utilizado');
     }
 
-    // 6) Comparar token plano contra hash almacenado
+    //  Comparar token plano contra hash almacenado
     if (!password_verify($token, $tokenData->token)) {
        return redirect()->to(base_url('login'))
                  ->with('error', 'link invalido');
@@ -204,7 +213,7 @@ class Auth extends BaseController
 
     }
 
-    // 7) Comprobar si aun es valido
+    //  Comprobar si aun es valido
     if (strtotime($tokenData->fecha_expiracion) < time()) {
         return redirect()->to(base_url('login'))
                  ->with('error', 'El link ya expiro');
@@ -212,12 +221,8 @@ class Auth extends BaseController
 
     }
 
-    // 8) Marcar el token como usado 
-    $db->table('tokens_temporales')
-       ->where('Id_token', $tokenData->Id_token)
-       ->update(['fecha_uso' => date('Y-m-d H:i:s')]);    
 
-    // 9) Renderizar la vista para cambiar contraseña 
+    //  Renderizar la vista para cambiar contraseña 
     return view('auth/resetpassword', [
         'Id_usuario' => $idUsuario,
         'token'      => $token
@@ -236,16 +241,48 @@ class Auth extends BaseController
                 //die(var_dump($idUsuario));
                 $contrasena=$this->request->getPost('password');
                 $Confirmcontrasena=$this->request->getPost('confirm_password');
+                
 
 
                  if (strlen($contrasena) < 6) {
             return redirect()->back()->with('error', 'La contraseña debe tener al menos 6 caracteres.');
         }
 
+               if (strlen($contrasena) > 15) {
+            return redirect()->back()->with('error', 'La contraseña solo puede tener maximo 15 caracteres.');
+        }
+
                 if($contrasena !== $Confirmcontrasena)
                     {
               return redirect()->back()->with('error', 'las contraseñas no son iguales');
                      }
+
+
+                  $reglas = [
+                      'password' => 'regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).+$/]'
+                ];
+
+         if (!$this->validate($reglas)) {
+             // Si no cumple, regresa con el error
+             return redirect()->back()->with('error', 'La contraseña requiere una Mayuzcula, una Miniscula y un caracter especial(*#$%/)');
+                       }    
+
+
+                $db = \Config\Database::connect();
+              // 1. Buscamos el token en la base de datos usando el Id_usuario
+               $tokenData = $db->table('tokens_temporales')
+                ->where('id_usuario', $idUsuario)
+                ->orderBy('Id_token', 'DESC') // Traemos el último generado
+                ->get()
+                ->getRow();
+
+                   // 2. Verificamos que realmente encontramos algo
+                   if ($tokenData) {
+                 
+                    $db->table('tokens_temporales')
+                     ->where('Id_token', $tokenData->Id_token) 
+                     ->update(['fecha_uso' => date('Y-m-d H:i:s')]);
+                      }      
 
                 $NuevaContrasena = password_hash($contrasena, PASSWORD_DEFAULT);
 
