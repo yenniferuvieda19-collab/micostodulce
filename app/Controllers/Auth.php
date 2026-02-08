@@ -75,8 +75,12 @@ class Auth extends BaseController
             return redirect()->back()->with('error', 'El correo ya está registrado.');
         }
 
-        if (strlen($password) < 6) {
+        if (strlen($password) <= 6) {
             return redirect()->back()->with('error', 'La contraseña debe tener al menos 6 caracteres.');
+        }
+ 
+         if (strlen($password) > 15) {
+            return redirect()->back()->with('error', 'La contraseña solo puede tener maximo 15 caracteres.');
         }
 
         $data = [
@@ -86,6 +90,19 @@ class Auth extends BaseController
         ];
 
         $model->insert($data);
+
+                $emailService = \Config\Services::email();
+                $data2 =  [
+                        'nombre_negocio' =>  $nombre_negocio
+                ];
+                $body = view('email/bienvenido_template', $data2);
+        $emailService->setTo($email);
+        $emailService->setSubject('Bienvenido a Mi Costo Dulce');
+        $emailService->setMessage("$body");
+        $emailService->send();
+
+
+
 
         return redirect()->to(base_url('login'))->with('mensaje', 'Registro exitoso. ¡Bienvenido a Mi Costo Dulce!');
     }
@@ -131,12 +148,19 @@ class Auth extends BaseController
 
 
         $emailService = \Config\Services::email();
+
+        $data=[
+            'nombre_negocio' => $user['Nombre'],
+            'link' => $link
+        ];
+        $body= view ('email/ResetPasword', $data);
+
         $emailService->setTo($user['Correo']);
         $emailService->setSubject('Recuperación de contraseña');
-        $emailService->setMessage("Haz clic en el siguiente enlace para recuperar tu contraseña: <a href='{$link}'>Recuperar contraseña</a>");
+        $emailService->setMessage($body);
         $emailService->send();
 
-        return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones pronto.');
+        return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones en tu correo.');
     }
    
 
