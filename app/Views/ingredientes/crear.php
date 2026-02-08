@@ -2,49 +2,48 @@
 
 <?= $this->section('contenido') ?>
 
-<div class="row justify-content-center mt-4">
-    <div class="col-md-8 col-lg-6">
+<div class="row justify-content-center py-2 py-md-4 px-2">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
 
-        <div class="card shadow border-0">
-            <div class="card-header py-3 bg-white border-bottom-0">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-header py-3 bg-white border-bottom-0 rounded-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 fw-bold" style="color: var(--marron-logo);">
                         <i class="fa-solid fa-basket-shopping me-2"></i>Registrar Insumo
                     </h4>
-                    <a href="<?= base_url('ingredientes') ?>" class="btn btn-sm text-secondary">
+                    <a href="<?= base_url('ingredientes') ?>" class="btn btn-sm text-secondary hover-zoom">
                         <i class="fa-solid fa-xmark fa-lg"></i>
                     </a>
                 </div>
             </div>
 
-            <div class="card-body p-4">
+            <div class="card-body p-3 p-sm-4 p-md-5 pt-2">
 
                 <?php if (session()->getFlashdata('error')): ?>
-                    <div class="alert alert-danger shadow-sm border-0 mb-4">
+                    <div class="alert alert-danger shadow-sm border-0 mb-4 animate__animated animate__headShake">
                         <i class="fa-solid fa-circle-exclamation me-2"></i><?= session()->getFlashdata('error') ?>
                     </div>
                 <?php endif; ?>
 
                 <form action="<?= base_url('ingredientes/guardar') ?>" method="POST">
-
+                    
                     <div class="mb-4">
                         <label class="form-label fw-bold text-secondary small text-uppercase">Nombre del Ingrediente</label>
-                        <div class="input-group">
+                        <div class="input-group input-group-lg">
                             <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-tag text-muted"></i></span>
-                            <input type="text" name="nombre" class="form-control border-start-0 ps-0" placeholder="Ej: Harina, Huevos, Leche..." required>
+                            <input type="text" name="nombre" class="form-control border-start-0 ps-0 fs-6" placeholder="Ej: Harina, Huevos, Leche..." required>
                         </div>
                     </div>
 
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-12 col-sm-6">
                             <label class="form-label fw-bold text-secondary small text-uppercase">Cantidad del Paquete</label>
-                            <input type="number" step="0.01" name="cantidad" class="form-control" placeholder="Ej: 1000" required>
+                            <input type="number" step="0.01" name="cantidad" class="form-control form-control-lg fs-6" placeholder="Ej: 1000" required>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-12 col-sm-6">
                             <label class="form-label fw-bold text-secondary small text-uppercase">Medida</label>
-
-                            <select name="unidad_id" class="form-select" required>
+                            <select name="unidad_id" class="form-select form-select-lg fs-6" required>
                                 <option value="" selected disabled>Seleccionar...</option>
 
                                 <?php foreach ($unidades as $unidad): ?>
@@ -58,18 +57,23 @@
 
                         <div class="col-12">
                             <label class="form-label fw-bold text-secondary small text-uppercase mt-2">Precio Total Pagado</label>
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text bg-success text-white border-0">$</span>
-                                <input type="number" step="0.01" name="precio" class="form-control border-success" placeholder="0.00" required>
+                            <div class="input-group input-group-lg shadow-sm rounded">
+                                <span class="input-group-text bg-success text-white border-0 px-4">$</span>
+                                <input type="number" step="0.01" name="precio" class="form-control border-success fs-4 fw-bold text-success" placeholder="0.00" required>
                             </div>
-                            <div class="form-text text-muted">Ingresa el valor total que pagaste por el paquete.</div>
+                            <div class="form-text text-muted small">
+                                <i class="fa-solid fa-circle-info me-1"></i>Ingresa el valor total que pagaste por el paquete completo.
+                            </div>
                         </div>
                     </div>
 
-                    <div class="d-grid gap-2 mt-4 pt-2">
-                        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm" style="background-color: var(--marron-logo); border-color: var(--marron-logo);">
-                            Guardar Insumo
+                    <div class="d-grid gap-2 mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow fw-bold p-3" style="background-color: var(--marron-logo); border-color: var(--marron-logo);">
+                            <i class="fa-solid fa-floppy-disk me-2"></i>GUARDAR INSUMO
                         </button>
+                        <a href="<?= base_url('ingredientes') ?>" class="btn btn-link text-muted text-decoration-none text-center d-sm-none">
+                            Cancelar
+                        </a>
                     </div>
 
                 </form>
@@ -79,29 +83,49 @@
     </div>
 </div>
 
-<style>/*Agregué el estilo del fondo*/
-    body {background-image: linear-gradient(rgba(255, 255, 255, 0.75), 
-         rgba(255, 255, 255, 0.75)), 
-        url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important; /*Agregué la ruta de la imagen*/
-         background-size: cover !important; 
-         background-position: center !important; 
-         background-attachment: fixed !important; 
-         background-repeat: no-repeat !important; 
-        }
+<style>
+    /*Agregué el estilo del fondo*/
+    body {
+        background-image: linear-gradient(rgba(255, 255, 255, 0.75), 
+            rgba(255, 255, 255, 0.75)), 
+            url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important; /*Agregué la ruta de la imagen*/
+        background-size: cover !important; 
+        background-position: center !important; 
+        background-attachment: fixed !important; 
+        background-repeat: no-repeat !important; 
+    }
 
-    main, .wrapper, #content {background: transparent !important;}
+    main, .wrapper, #content { background: transparent !important; }
 
-    .dashboard-container { background: transparent !important; 
+    .dashboard-container { 
+        background: transparent !important; 
         width: 100% !important; 
         min-height: 100vh; 
         padding-top: 1rem; 
         padding-bottom: 3rem; 
     }
 
-    .card {background-color: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(8px); 
-        border-radius: 15px; 
+    .card {
+        background-color: rgba(255, 255, 255, 0.95) !important; 
+        backdrop-filter: blur(10px); 
+        border-radius: 20px; 
         border: none !important; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    }
+
+    /* Efecto hover suave para el botón de cerrar */
+    .hover-zoom:hover {
+        transform: scale(1.1);
+        color: #dc3545 !important;
+        transition: all 0.2s ease;
+    }
+
+    /* Ajuste para inputs en móviles */
+    @media (max-width: 576px) {
+        .input-group-text {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
     }
 </style>
 

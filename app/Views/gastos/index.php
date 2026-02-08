@@ -3,101 +3,105 @@
 <?= $this->section('contenido') ?>
 
 <div class="dashboard-container">
-    <div class="container">
+    <div class="container px-3 px-md-4">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
             <div>
-                <h2 class="fw-bold" style="color: var(--marron-logo);">Mis Costos Indirectos</h2>
+                <h2 class="fw-bold mb-1" style="color: var(--marron-logo);">Mis Costos Indirectos</h2>
                 <p class="text-muted mb-0">Gestiona empaques, servicios y mano de obra.</p>
             </div>
-            <div class="d-flex gap-2">
-                <a href="<?= base_url('recetas') ?>" class="btn rounded-pill px-4 shadow-sm fw-bold text-white" style="background-color: #ee1d6dff; border:none;">
-                    <i class="fa-solid fa-book-open me-2"></i>Ir a Recetas
+            
+            <div class="d-flex flex-wrap gap-2 w-100 w-md-auto ms-md-auto justify-content-md-end">
+                <a href="<?= base_url('recetas') ?>" class="btn rounded-pill px-3 px-md-4 shadow-sm fw-bold text-white flex-fill flex-md-grow-0" style="background-color: #ee1d6dff; border:none;">
+                    <i class="fa-solid fa-book-open me-1 me-md-2"></i>Recetas
                 </a>
 
-                <a href="<?= base_url('ingredientes') ?>" class="btn rounded-pill px-4 shadow-sm fw-bold bg-white text-dark border">
-                    <i class="fa-solid fa-basket-shopping me-2 text-success"></i>Ir a Insumos
+                <a href="<?= base_url('ingredientes') ?>" class="btn rounded-pill px-3 px-md-4 shadow-sm fw-bold bg-white text-dark border flex-fill flex-md-grow-0">
+                    <i class="fa-solid fa-basket-shopping me-1 me-md-2 text-success"></i>Insumos
                 </a>
 
-                <a href="<?= base_url('gastos/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" style="background-color: var(--azul-logo); border:none;">
-                    <i class="fa-solid fa-plus me-2"></i>Nuevo Gasto
+                <a href="<?= base_url('gastos/crear') ?>" class="btn btn-primary rounded-pill px-3 px-md-4 shadow-sm fw-bold flex-fill flex-md-grow-0" style="background-color: var(--azul-logo); border:none;">
+                    <i class="fa-solid fa-plus me-1 me-md-2"></i>Nuevo Gasto
                 </a>
             </div>
         </div>
 
         <div class="card border-0 shadow-sm overflow-hidden">
             <div class="card-body p-0">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light">
-                        <tr class="text-secondary small text-uppercase">
-                            <th class="ps-4 py-3">Concepto</th>
-                            <th class="py-3 text-center">Categoría</th>
-                            <th class="py-3 text-center">Costo Unitario</th>
-                            <th class="text-end pe-4 py-3">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($gastos)): ?>
-                            <?php foreach ($gastos as $gasto): ?>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="min-width: 600px;">
+                        <thead class="bg-light">
+                            <tr class="text-secondary small text-uppercase">
+                                <th class="ps-4 py-3">Concepto</th>
+                                <th class="py-3 text-center">Categoría</th>
+                                <th class="py-3 text-center">Costo Unitario</th>
+                                <th class="text-end pe-4 py-3">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($gastos)): ?>
+                                <?php foreach ($gastos as $gasto): ?>
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-dark">
+                                            <?= esc($gasto['nombre_gasto']) ?>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <?php
+                                            // Asignar colores según categoría
+                                            $badgeClass = 'bg-secondary';
+                                            $icono = 'fa-tag';
+
+                                            if ($gasto['categoria'] == 'Empaque') {
+                                                $badgeClass = 'bg-info text-dark';
+                                                $icono = 'fa-box-open';
+                                            }
+                                            if ($gasto['categoria'] == 'Servicio') {
+                                                $badgeClass = 'bg-warning text-dark';
+                                                $icono = 'fa-bolt';
+                                            }
+                                            if ($gasto['categoria'] == 'Mano de Obra') {
+                                                $badgeClass = 'bg-success';
+                                                $icono = 'fa-hands-holding-circle';
+                                            }
+                                            ?>
+                                            <span class="badge <?= $badgeClass ?> border bg-opacity-75 px-3 rounded-pill">
+                                                <i class="fa-solid <?= $icono ?> me-1"></i> <?= esc($gasto['categoria']) ?>
+                                            </span>
+                                        </td>
+
+                                        <td class="fw-bold text-success text-center">
+                                            $ <?= number_format($gasto['precio_unitario'], 2, '.', ',') ?>
+                                        </td>
+
+                                        <td class="text-end pe-4">
+                                            <div class="btn-group shadow-sm">
+                                                <a href="<?= base_url('gastos/editar/' . $gasto['Id_gasto']) ?>"
+                                                    class="btn btn-sm btn-white border"
+                                                    title="Editar">
+                                                    <i class="fa-solid fa-pen text-primary"></i>
+                                                </a>
+
+                                                <a href="<?= base_url('gastos/borrar/' . $gasto['Id_gasto']) ?>"
+                                                    class="btn btn-sm btn-white border btn-eliminar"
+                                                    title="Eliminar">
+                                                    <i class="fa-solid fa-trash text-danger"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
                                 <tr>
-                                    <td class="ps-4 fw-bold text-dark">
-                                        <?= esc($gasto['nombre_gasto']) ?>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <?php
-                                        // Asignar colores según categoría
-                                        $badgeClass = 'bg-secondary';
-                                        $icono = 'fa-tag';
-
-                                        if ($gasto['categoria'] == 'Empaque') {
-                                            $badgeClass = 'bg-info text-dark';
-                                            $icono = 'fa-box-open';
-                                        }
-                                        if ($gasto['categoria'] == 'Servicio') {
-                                            $badgeClass = 'bg-warning text-dark';
-                                            $icono = 'fa-bolt';
-                                        }
-                                        if ($gasto['categoria'] == 'Mano de Obra') {
-                                            $badgeClass = 'bg-success';
-                                            $icono = 'fa-hands-holding-circle';
-                                        }
-                                        ?>
-                                        <span class="badge <?= $badgeClass ?> border bg-opacity-75">
-                                            <i class="fa-solid <?= $icono ?> me-1"></i> <?= esc($gasto['categoria']) ?>
-                                        </span>
-                                    </td>
-
-                                    <td class="fw-bold text-success text-center">
-                                        $ <?= number_format($gasto['precio_unitario'], 2, '.', ',') ?>
-                                    </td>
-
-                                    <td class="text-end pe-4">
-                                        <a href="<?= base_url('gastos/editar/' . $gasto['Id_gasto']) ?>"
-                                            class="btn btn-sm btn-outline-primary border-0 me-1"
-                                            title="Editar">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </a>
-
-                                        <a href="<?= base_url('gastos/borrar/' . $gasto['Id_gasto']) ?>"
-                                            class="btn btn-sm btn-outline-danger border-0 btn-eliminar"
-                                            title="Eliminar">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </a>
+                                    <td colspan="4" class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-box-open fa-3x mb-3 opacity-25"></i>
+                                        <p class="mb-0">No tienes gastos registrados.</p>
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="4" class="text-center py-5 text-muted">
-                                    <i class="fa-solid fa-box-open fa-3x mb-3 opacity-25"></i>
-                                    <p class="mb-0">No tienes gastos registrados.</p>
-                                    <small>Agrega tus cajas, bases o costo de servicios.</small>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -108,23 +112,13 @@
     body {
         background-image: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)),
             url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-attachment: fixed !important;
-        background-repeat: no-repeat !important;
-    }
-
-    main,
-    .wrapper,
-    #content {
-        background: transparent !important;
+        background-size: cover;
+        background-attachment: fixed;
     }
 
     .dashboard-container {
-        background: transparent !important;
-        width: 100% !important;
         min-height: 100vh;
-        padding-top: 1rem;
+        padding-top: 1.5rem;
         padding-bottom: 3rem;
     }
 
@@ -132,9 +126,10 @@
         background-color: rgba(255, 255, 255, 0.9) !important;
         backdrop-filter: blur(8px);
         border-radius: 15px;
-        border: none !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
     }
+
+    .btn-white { background-color: #fff; }
+    .btn-white:hover { background-color: #f8f9fa; }
 </style>
 
 <?= $this->endSection() ?>
@@ -142,6 +137,7 @@
 <?= $this->section('scripts') ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Tu script de eliminar se mantiene igual
     document.addEventListener('DOMContentLoaded', function() {
         const botonesEliminar = document.querySelectorAll('.btn-eliminar');
         botonesEliminar.forEach(boton => {
@@ -154,7 +150,6 @@
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
                     confirmButtonText: 'Sí, eliminar',
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
@@ -166,4 +161,4 @@
         });
     });
 </script>
-<?= $this->endSection() ?>  
+<?= $this->endSection() ?>

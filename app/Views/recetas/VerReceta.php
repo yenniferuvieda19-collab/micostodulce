@@ -6,13 +6,18 @@
     <div class="container">
 
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="<?= base_url('recetas') ?>" class="btn btn-outline-secondary rounded-pill">
+            <a href="<?= base_url('recetas') ?>" class="btn btn-outline-secondary rounded-pill bg-white shadow-sm">
                 <i class="fa-solid fa-arrow-left me-2"></i>Volver
             </a>
 
-            <a href="<?= base_url('recetas/editar/' . $receta['Id_receta']) ?>" class="btn btn-primary rounded-pill px-4" style="background-color: var(--azul-logo); border:none;">
-                <i class="fa-solid fa-pen me-2"></i>Editar
-            </a>
+            <div class="d-flex gap-2">
+                <button onclick="window.print()" class="btn btn-light rounded-pill px-4 shadow-sm border">
+                    <i class="fa-solid fa-print me-2"></i>Imprimir
+                </button>
+                <a href="<?= base_url('recetas/editar/' . $receta['Id_receta']) ?>" class="btn btn-primary rounded-pill px-4 shadow-sm" style="background-color: var(--azul-logo); border:none;">
+                    <i class="fa-solid fa-pen me-2"></i>Editar
+                </a>
+            </div>
         </div>
 
         <div class="card border-0 shadow-sm overflow-hidden">
@@ -42,21 +47,13 @@
                                     $lbl = 'Und';
                                     $cant = (float)$det['cantidad_requerida'];
                                     switch ($det['Id_unidad_base']) {
-                                        case 1:
-                                            $lbl = 'gr';
-                                            break;
-                                        case 2:
-                                            $lbl = 'Kg';
-                                            break;
-                                        case 3:
-                                            $lbl = 'ml';
-                                            break;
-                                        case 4:
-                                            $lbl = 'Lt';
-                                            break;
+                                        case 1: $lbl = 'gr'; break;
+                                        case 2: $lbl = 'Kg'; break;
+                                        case 3: $lbl = 'ml'; break;
+                                        case 4: $lbl = 'Lt'; break;
                                     }
                                     ?>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-0 border-bottom-0">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-0 border-bottom-0 bg-transparent">
                                         <span class="text-dark"><?= esc($det['nombre_ingrediente']) ?></span>
                                         <span class="fw-bold text-secondary">
                                             <?= $cant ?> <?= $lbl ?>
@@ -64,7 +61,7 @@
                                     </li>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <li class="list-group-item text-muted">No hay ingredientes.</li>
+                                <li class="list-group-item text-muted bg-transparent">No hay ingredientes registrados.</li>
                             <?php endif; ?>
                         </ul>
                     </div>
@@ -82,7 +79,7 @@
                                     <h4 class="fw-bold text-danger mb-0">
                                         $ <?= number_format($receta['costo_ingredientes'], 2, '.', ',') ?>
                                     </h4>
-                                    <small class="text-muted">Total Receta</small>
+                                    <small class="text-muted">Total Insumos</small>
                                 </div>
                             </div>
 
@@ -94,7 +91,7 @@
                                     <h4 class="fw-bold text-success mb-0">
                                         $ <?= number_format($receta['precio_venta_sug'], 2, '.', ',') ?>
                                     </h4>
-                                    <small class="text-muted">Sugerido</small>
+                                    <small class="text-muted">Sugerido (Final)</small>
                                 </div>
                             </div>
 
@@ -105,8 +102,8 @@
                 <?php if (!empty($receta['notas'])): ?>
                     <div class="row justify-content-center">
                         <div class="col-lg-8">
-                            <div class="alert alert-warning border-0 shadow-sm d-flex">
-                                <i class="fa-solid fa-sticky-note me-3 mt-1 fs-5"></i>
+                            <div class="alert alert-warning border-0 shadow-sm d-flex bg-white">
+                                <i class="fa-solid fa-sticky-note me-3 mt-1 fs-5 text-warning"></i>
                                 <div>
                                     <h6 class="fw-bold mb-1">Nota:</h6>
                                     <p class="mb-0 small text-dark"><?= esc($receta['notas']) ?></p>
@@ -132,9 +129,7 @@
         background-repeat: no-repeat !important;
     }
 
-    main,
-    .wrapper,
-    #content {
+    main, .wrapper, #content {
         background: transparent !important;
     }
 
@@ -152,6 +147,22 @@
         border-radius: 15px;
         border: none !important;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    /* Ajusté esto, mejorando la funcion para impresión */
+    @media print {
+        .btn, .badge.bg-light.border, .fa-arrow-left {
+            display: none !important;
+        }
+        body {
+            background-image: none !important;
+            background-color: white !important;
+        }
+        .card {
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            background-color: white !important;
+        }
     }
 </style>
 

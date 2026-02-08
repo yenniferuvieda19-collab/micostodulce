@@ -44,7 +44,7 @@
                     $costoPorcion = $costoTotal / $porciones;
                     $precioPorcionBase = $precioVenta / $porciones;
                     
-                    // MODIFICACIÓN: Se eliminó el 20% extra (* 1.20) como pediste
+                    // Se mantiene el precio real de la porción sin el 20% extra
                     $precioPorcionVenta = $precioPorcionBase;
                     ?>
 
@@ -128,7 +128,6 @@
                                             </div>
                                         </div>
                                     <?php endif; ?>
-                                    
                                 </div>
 
                             </div>
@@ -142,21 +141,17 @@
 </div>
 
 <style>
-    /*Unifiqué el estilo con del de las tarjetas para agregar el fondo*/
     body {
         background-image: linear-gradient(rgba(255, 255, 255, 0.75),
                 rgba(255, 255, 255, 0.75)),
             url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important;
-        /*Agregué la ruta de la imagen*/
         background-size: cover !important;
         background-position: center !important;
         background-attachment: fixed !important;
         background-repeat: no-repeat !important;
     }
 
-    main,
-    .wrapper,
-    #content {
+    main, .wrapper, #content {
         background: transparent !important;
     }
 
@@ -184,13 +179,16 @@
     .transition-all {
         transition: all 0.3s ease;
     }
+
+    .hover-link:hover {
+        color: var(--azul-logo) !important;
+    }
 </style>
 
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const botonesEliminar = document.querySelectorAll('.btn-eliminar');

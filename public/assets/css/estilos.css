@@ -63,7 +63,14 @@ h1, h3 {
     background-repeat: no-repeat;
     background-attachment: fixed;
     min-height: 100vh;
-    display: block !important;
+   /* display: block !important;*/
+   /*Comento el display block para que me deje ajustar el footer*/
+   display: flex !important; 
+    flex-direction: column;
+}
+
+main.flex-grow-1 {
+    padding-bottom: 20px; /* Espacio de seguridad antes del footer */
 }
 
 /* Card semi-transparente para resaltar sobre los dulces */

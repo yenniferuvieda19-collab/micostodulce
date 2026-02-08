@@ -2,28 +2,32 @@
 
 <?= $this->section('contenido') ?>
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body p-5">
+<div class="row justify-content-center w-100 g-0">
+    <div class="col-11 col-sm-8 col-md-6 col-lg-4">
+        <div class="card border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <i class="fa-solid fa-key fa-2x cupcake-icon"></i>
-                    <h4 class="fw-bold mt-2" style="color: var(--negro-logo);">Recuperar acceso</h4>
+                    <i class="fa-solid fa-key fa-3x mb-3 cupcake-icon" style="color: var(--rosa-logo);"></i>
+                    <h4 class="fw-bold" style="color: var(--negro-logo);">Recuperar acceso</h4>
                     <p class="text-muted small">Te enviaremos las instrucciones a tu correo</p>
                 </div>
 
                 <form action="<?= base_url('auth/enviar-recuperacion') ?>" method="POST">
+                    <?= csrf_field() ?>
+
                     <div class="mb-4">
                         <label class="form-label small fw-bold">Correo registrado</label>
-                        <input type="email" name="email" class="form-control" placeholder="ejemplo@correo.com" required>
+                        <input type="email" name="email" class="form-control form-control-lg fs-6" placeholder="ejemplo@correo.com" required>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 mb-3">
-                        Enviar enlace
+                    <button type="submit" class="btn btn-primary w-100 btn-lg mb-3 shadow-sm fw-bold">
+                        ENVIAR ENLACE
                     </button>
 
                     <div class="text-center">
-                        <a href="<?= base_url('login') ?>" class="text-muted small text-decoration-none">Volver al inicio</a>
+                        <a href="<?= base_url('login') ?>" class="text-muted small text-decoration-none">
+                            <i class="fa-solid fa-arrow-left me-1"></i> Volver al inicio
+                        </a>
                     </div>
                 </form>
             </div>

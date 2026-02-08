@@ -32,9 +32,10 @@
         }
 
         /* Ajuste para que el contenido baje un poco más */
-        .auth-bg main {
+        /*.auth-bg main {
             padding-top: 5rem;
-        }
+        }*/
+            /*Lo comento para que se ajuste mejor la vista en el centrado automático*/
     </style>
 </head>
 
@@ -66,7 +67,8 @@
         </div>
     </nav>
 
-    <main class="container flex-grow-1">
+    <main class="container flex-grow-1 d-flex flex-column justify-content-center">
+        
 
         <?php if (session()->getFlashdata('mensaje')): ?>
             <div class="alert alert-success alert-dismissible fade show shadow-sm border-success mb-4" role="alert">
