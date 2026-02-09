@@ -45,7 +45,7 @@ $routes->group('ingredientes', function ($routes) {
 
 /*
  * --------------------------------------------------------------------
- * Módulo de Recetas (El corazón del negocio)
+ * Módulo de Recetas 
  * --------------------------------------------------------------------
  */
 $routes->group('recetas', function ($routes) {
@@ -63,7 +63,7 @@ $routes->group('recetas', function ($routes) {
 
 /*
  * --------------------------------------------------------------------
- * Módulo de Gastos Indirectos (AQUÍ AFUERA)
+ * Módulo de Gastos Indirectos 
  * --------------------------------------------------------------------
  */
 $routes->get('gastos', 'Gastos::index');
@@ -72,3 +72,21 @@ $routes->post('gastos/guardar', 'Gastos::guardar');
 $routes->get('gastos/editar/(:num)', 'Gastos::editar/$1');
 $routes->get('gastos/borrar/(:num)', 'Gastos::borrar/$1');
 $routes->post('gastos/actualizar/(:num)', 'Gastos::actualizar/$1');
+
+/*
+ * --------------------------------------------------------------------
+ * Chicos, aquí estoy añadiendo el módulo del inventario
+ * --------------------------------------------------------------------
+ */
+$routes->get('inventario', 'Inventario::index');
+$routes->get('inventario/crear', 'Inventario::crear');
+$routes->post('inventario/guardar', 'Inventario::guardar'); // Esta es para procesar el formulario
+/*
+ * --------------------------------------------------------------------
+ * Holaa, aquí estoy añadiendo el módulo de ventas, para que lo trabajen en el backend.
+ * --------------------------------------------------------------------
+ */
+$routes->get('ventas', 'Ventas::index');
+$routes->get('ventas/crear', 'Ventas::crear');
+$routes->post('ventas/guardar', 'Ventas::guardar');
+$routes->get('ventas/detalle/(:num)', 'Ventas::detalle/$1');

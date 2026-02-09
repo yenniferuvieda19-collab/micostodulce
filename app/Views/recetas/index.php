@@ -19,6 +19,10 @@
                     <i class="fa-solid fa-hand-holding-dollar me-2 text-warning"></i>Ir a Costos Indirectos
                 </a>
 
+                <a href="<?= base_url('inventario') ?>" class="btn btn-outline-primary rounded-pill px-4 shadow-sm me-2">
+                    <i class="fa-solid fa-boxes-stacked me-2"></i>Ver Inventario
+                </a>
+
                 <a href="<?= base_url('recetas/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" style="background-color: var(--azul-logo); border:none;">
                     <i class="fa-solid fa-plus me-2"></i>Nueva Receta
                 </a>

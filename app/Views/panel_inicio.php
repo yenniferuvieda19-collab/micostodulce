@@ -12,7 +12,7 @@
             <p class="fs-5 fw-medium text-dark mt-1">Aquí tienes un resumen de tu negocio hoy.</p>
         </div>
 
-        <div class="row g-3 g-md-4 mb-5">
+        <div class="row g-3 g-md-4 mb-4 justify-content-center">
 
             <div class="col-12 col-sm-6 col-lg-4">
                 <div class="card border-0 shadow-sm h-100 p-2 p-md-3 hover-scale">
@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-lg-4">
+            <div class="col-12 col-sm-6 col-lg-4">
                 <div class="card border-0 shadow-sm h-100 p-2 p-md-3 hover-scale">
                     <div class="d-flex align-items-center">
                         <div class="icon-box bg-light text-warning rounded-circle p-3 me-3">
@@ -58,6 +58,45 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+            <?php /* Estoy añadiendo acá el botón para redirigir a ese apartado nuevo de inventario*/ ?>
+        <div class="row g-3 g-md-4 mb-5 justify-content-center">
+
+            <div class="col-12 col-sm-6 col-lg-4">
+                 <div class="card border-0 shadow-sm h-100 p-2 p-md-3 hover-scale">
+                    <div class="d-flex algin-items-center">
+                        <div class="icon-box bg-light text-danger rounded-circle p-3 me-3">
+                            <i class="fa-solid fa-kitchen-set fa-2x" style="color: var(--rosa-logo);"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1">Producción</h5>
+                            <p class="text-muted small">Gestiona tu inventario disponible</p>
+                        </div>
+                        <a href="<?= base_url('inventario') ?>" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+
+            <?php /*Estoy añadiendo acá el botón de ventas*/ ?>
+
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 p-2 p-md-3 hover-scale">
+                    <div class="d-flex algin-items-center">
+                        <div class="icon-box bg-light rounded-circle p-3 me-3">
+                            <i class="fa-solid fa-cash-register fa-2x" style="color: #28a745;"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-dark">Ventas</h5>
+                            <p class="text-muted small mb-0">Registra tus ventas y ganancias.</p>
+                        </div>
+                        <a href="<?= base_url('ventas') ?>" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
 
         </div>
 
