@@ -7,22 +7,20 @@ use CodeIgniter\Model;
 class InventarioModel extends Model
 {
     // Nombre de la tabla en tu base de datos
-    protected $table      = 'inventario'; 
+    protected $table      = 'produccion'; 
     // Nombre de la llave primaria
-    protected $primaryKey = 'id_inventario'; 
+    protected $primaryKey = 'Id_produccion'; 
 
     // Campos que permitiremos que el sistema escriba o lea
     // Asegúrate de que coincidan con los nombres en tu base de datos
     protected $allowedFields = [
-        'Id_usuario', 
-        'id_receta', 
-        'nombre_postre', 
-        'cantidad_preparada', 
-        'porciones_totales', 
-        'porciones_disponibles', 
-        'precio_venta_sug', 
-        'costo_reinversion', 
-        'fecha_elaboracion'
+        'Id_produccion', 
+        'Id_receta', 
+        'nombre_receta', 
+        'cantidad_producida',  
+        'costo_adicional_total', 
+        'costo_total_lote', 
+        'fecha_produccion'
     ];
 
     // Esto hará que CodeIgniter nos devuelva los datos como arreglos

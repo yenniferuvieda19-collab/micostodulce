@@ -12,24 +12,27 @@
                 <form action="<?= base_url('inventario/guardar') ?>" method="POST">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Selecciona la Receta</label>
-                        <select name="id_receta" class="form-select" required>
+                        <select name="id_receta" id="select_receta" class="form-select" required>
                             <option value="" selected disabled>-- Selecciona una de tus recetas creadas --</option>
 
                             <?php if (!empty($recetas)): ?>
                             <?php foreach($recetas as $receta): ?>
-                                <option value="<?= $receta['Id_receta'] ?>">
+                                <option 
+                                    value="<?= $receta['Id_receta'] ?>"
+                                    data-porciones="<?= $receta['porciones'] ?>"
+                                >
                                     <?= esc($receta['nombre_postre']) ?>
                                 </option>
                             <?php endforeach; ?>
                             <?php else: ?>
                                 <option value="" disabled>No tienes recetas registradas aún</option>
-                                <?php endif; ?>
+                            <?php endif; ?>
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Cantidad Producida (Porciones)</label>
-                        <input type="number" name="cantidad" class="form-control" placeholder="Ej: 12" required>
+                        <input type="number" name="cantidad" id="cantidad_input" class="form-control" placeholder="Ej: 12" required>
                     </div>
 
                     <div class="mb-3">
@@ -48,4 +51,18 @@
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('select_receta').addEventListener('change', function() {
+    // Buscamos la opción seleccionada
+    const selectedOption = this.options[this.selectedIndex];
+    // Sacamos el número de porciones que viene de la base de datos
+    const porciones = selectedOption.getAttribute('data-porciones');
+    // Lo ponemos en la casilla de cantidad
+    if (porciones) {
+        document.getElementById('cantidad_input').value = porciones;
+    }
+});
+</script>
+
 <?= $this->endSection() ?>

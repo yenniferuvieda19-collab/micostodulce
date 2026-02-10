@@ -29,25 +29,30 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="ps-4">
-                                    <div class="fw-bold text-dark">Torta de Chocolate Selva Negra</div>
-                                    <span class="badge bg-info-subtle text-info small">Repostería</span>
-                                </td>
-                                <td>08 Feb 2026</td>
-                                <td>
-                                    <span class="fw-bold">12 / 20</span> porciones
-                                    <div class="progress mt-1" style="height: 4px; width: 100px;">
-                                        <div class="progress-bar bg-success" style="width: 60%"></div>
-                                    </div>
-                                </td>
-                                <td class="text-danger fw-medium">$ 15.50</td>
-                                <td class="text-success fw-bold">$ 25.00</td>
-                                <td class="text-end pe-4">
-                                    <button class="btn btn-sm btn-outline-primary rounded-circle me-1"><i class="fa-solid fa-eye"></i></button>
-                                    <button class="btn btn-sm btn-outline-danger rounded-circle"><i class="fa-solid fa-trash"></i></button>
-                                </td>
-                            </tr>
+
+   <?php if (!empty($producciones)): ?>
+        <?php foreach ($producciones as $p): ?>
+            <tr>
+                <td><?= esc($p['nombre_receta']) ?></td>
+
+                <td><?= date('d/m/Y', strtotime($p['fecha_produccion'])) ?></td>
+
+                <td><?= $p['cantidad_producida'] ?></td>
+
+                <td>$<?= number_format($p['costo_total_lote'], 2) ?></td>
+
+                <td class="fw-bold text-success">
+                    $<?= number_format($p['costo_adicional_total'], 2) ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <tr>
+            <td colspan="5" class="text-center">No hay registros de producción.</td>
+        </tr>
+    <?php endif; ?>
+                        
+                           
                         </tbody>
                     </table>
                 </div>
