@@ -15,13 +15,21 @@
 
 <div class="glass-card" style="background-color: rgba(255, 255, 255, 0.95); border-radius: 20px; padding: 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
     <form action="<?= base_url('inventario/guardar') ?>" method="POST">
-        <div class="row g-4">
+        <div class="row g-3 align-items-end">
             <div class="col-md-7">
                 <label class="form-label fw-bold" style="color: #444;">¿Qué vas a producir hoy?</label>
-                <select name="receta_id" class="form-select" style="border-radius: 12px; border: 1px solid #ddd; padding: 12px;" required>
+                <?php //Añado acá para que me muestre la lista de las recetas guardadas en el recetario de la página y deje seleccionarlas ?>
+                <select name="id_receta" class="form-select" style="border-radius: 12px; border: 1px solid #ddd; padding: 12px;" required>
                     <option value="">Selecciona una receta...</option>
-                    <option value="1">Torta de Vainilla</option>
-                    <option value="2">Galletas mini chips</option>
+                        <?php if (!empty($recetas)): ?>
+                            <?php foreach ($recetas as $receta): ?>
+                    <option value="<?= $receta['Id_receta'] ?>">
+                    <?= esc($receta['nombre_postre']) ?>
+                    </option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                    <option value="" disabled>No tienes recetas guardadas aún</option>
+                        <?php endif; ?>
                 </select>
             </div>
 

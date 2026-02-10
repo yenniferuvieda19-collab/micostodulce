@@ -63,6 +63,23 @@
 
 <div class="row justify-content-center w-100 g-0 py-5">
     <div class="col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4">
+        
+        <?php //Estoy añadiendo esto paara corregir el error de que no se vean las validaciones después de loss cambios de yennifer ?>
+
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-3" role="alert" style="border-radius: 15px;">
+                <?= session()->getFlashdata('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <?php if (session()->getFlashdata('mensaje')): ?>
+            <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3" role="alert" style="border-radius: 15px;">
+                <?= session()->getFlashdata('mensaje') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
         <div class="card reset-card shadow-lg mx-auto">
             <div class="card-header bg-transparent text-center py-4 border-0">
                 <i class="fa-solid fa-shield-halved fa-3x mb-3 cupcake-icon" style="color: var(--rosa-logo);"></i>

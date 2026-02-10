@@ -13,6 +13,7 @@
         :root {
             --rosa-logo: #f26185;
             --marron-logo: #825a42;
+            --azul-logo: #0fa7ee;
         }
 
         /* AJUSTE PARA FOOTER AL FINAL */

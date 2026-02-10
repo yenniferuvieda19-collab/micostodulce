@@ -12,6 +12,20 @@
                     <p class="text-muted small">Comienza a organizar tus costos hoy mismo</p>
                 </div>
 
+                <?php if (session()->getFlashdata('error')): ?>
+                    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-3" role="alert" style="border-radius: 15px;">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-triangle-exclamation me-2 fs-5"></i>
+                            <div class="small">
+                            <?= session()->getFlashdata('error') ?>
+                            </div>
+                        </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+<form action="<?= base_url('auth/registrar') ?>" method="POST"></form>
+
                 <form action="<?= base_url('auth/registrar') ?>" method="POST">
                     <?= csrf_field() ?>
 

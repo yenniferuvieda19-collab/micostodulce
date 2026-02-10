@@ -211,7 +211,7 @@ class Auth extends BaseController
         }
 
         if ($contrasena !== $Confirmcontrasena) {
-            return redirect()->back()->with('error', 'las contraseñas no son iguales');
+            return redirect()->back()->with('error', 'Las contraseñas no son iguales');
         }
 
         $reglas = [
