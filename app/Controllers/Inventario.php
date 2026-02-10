@@ -1,93 +1,106 @@
 <?php
 
-//Muchachos, creé este controlador temporal para probar la vista del inventario y ver que todo se esté creando bien
-//Ya luego lo modifican para añadir las funciones principales y así
-
 namespace App\Controllers;
+
+use App\Models\inventarioModel;
+use App\Models\RecetaModel;
 
 class Inventario extends BaseController
 {
+    // 1. LISTAR INVENTARIO (Con JOIN para ver los nombres)
     public function index()
     {
-         $inventarioModel=  new \App\Models\inventarioModel();
+        $inventarioModel = new inventarioModel();
+        
+        // Unimos la tabla 'produccion' con 'recetas' para traer 'nombre_postre'
+        $data['producciones'] = $inventarioModel->select('produccion.*, recetas.nombre_postre')
+            ->join('recetas', 'recetas.Id_receta = produccion.Id_receta', 'left')
+            ->orderBy('fecha_produccion', 'DESC')
+            ->findAll();
 
-
-         $data['producciones'] = $inventarioModel->orderBy('fecha_produccion', 'DESC')->findAll();
-
-        // Por ahora envío un array vacío para que no de error el foreach
-       // $data['produccion'] = []; 
         return view('inventario/index', $data);
     }
 
-    public function crear(){
-        $recetaModel = new \App\Models\RecetaModel(); // Asegúrate de que el nombre del modelo sea correcto
-    
-        // Obtenemos solo las recetas del usuario activo
+    // 2. FORMULARIO DE NUEVA PRODUCCIÓN
+    public function crear()
+    {
+        $recetaModel = new RecetaModel();
+        
         $data['recetas'] = $recetaModel->where('Id_usuario', session()->get('Id_usuario'))
-                                    ->orderBy('nombre_postre', 'ASC')
-                                    ->findAll();
+                                     ->orderBy('nombre_postre', 'ASC')
+                                     ->findAll();
 
         return view('inventario/crear', $data);
     }
 
-    public function guardar() {
-    $recetaModel = new \App\Models\RecetaModel();
-    $inventarioModel = new \App\Models\inventarioModel();
+    // 3. GUARDAR O ACTUALIZAR PRODUCCIÓN
+    public function guardar() 
+    {
+        $recetaModel = new RecetaModel();
+        $inventarioModel = new inventarioModel();
 
-    // 1. Recibimos los datos del formulario
-    $id_receta = $this->request->getPost('id_receta');
-    $cantidad_nueva = $this->request->getPost('cantidad'); 
-    $fecha = $this->request->getPost('fecha');
-    $nombre_receta = $this->request->getPost('nombre_postre');
+        $id_receta = $this->request->getPost('id_receta');
+        $cantidad_nueva = $this->request->getPost('stock_disponible'); 
+        $fecha = date('Y-m-d');
 
-    // 2. Buscamos la receta base para obtener los costos unitarios actuales
-    $receta = $recetaModel->find($id_receta);
-    if (!$receta) {
-        return redirect()->back()->with('error', 'Receta no encontrada');
+        $receta = $recetaModel->find($id_receta);
+        if (!$receta) {
+            return redirect()->back()->with('error', 'Receta no encontrada');
+        }
+
+        $registroExistente = $inventarioModel->where('Id_receta', $id_receta)->first();
+
+        if ($registroExistente) {
+            $nueva_cantidad_total = $registroExistente['cantidad_producida'] + $cantidad_nueva;
+
+            $dataUpdate = [
+                'cantidad_producida'    => $nueva_cantidad_total,
+                'fecha_produccion'      => $fecha, 
+                'costo_adicional_total' => $registroExistente['costo_adicional_total'] + ($receta['precio_venta_sug'] * $cantidad_nueva), 
+                'costo_total_lote'      => $registroExistente['costo_total_lote'] + ($receta['costo_ingredientes'] * $cantidad_nueva)
+            ];
+
+            $inventarioModel->update($registroExistente['Id_produccion'], $dataUpdate);
+            $mensaje = "Inventario actualizado satisfactoriamente.";
+        } else {
+            $dataInsert = [
+                'Id_receta'             => $id_receta,
+                'nombre_receta'         => $receta['nombre_postre'],
+                'cantidad_producida'    => $cantidad_nueva,
+                'fecha_produccion'      => $fecha,
+                'costo_adicional_total' => $receta['precio_venta_sug'] * $cantidad_nueva,
+                'costo_total_lote'      => $receta['costo_ingredientes'] * $cantidad_nueva
+            ];
+
+            $inventarioModel->insert($dataInsert);
+            $mensaje = '¡Producción registrada con éxito!';
+        }
+
+        return redirect()->to(base_url('inventario'))->with('mensaje', $mensaje);
     }
 
-    // --- PASO CLAVE: VERIFICAR SI EXISTE EN LA TABLA PRODUCCIÓN ---
-    $registroExistente = $inventarioModel->where('Id_receta', $id_receta)->first();
+    // 4. VER DETALLES
+    public function ver($id)
+    {
+        $inventarioModel = new inventarioModel();
+        $data['p'] = $inventarioModel->select('produccion.*, recetas.nombre_postre')
+            ->join('recetas', 'recetas.Id_receta = produccion.Id_receta', 'left')
+            ->find($id);
 
-    if ($registroExistente) {
-        // --- SI EXISTE: SUMAR ---
-        
-        // Sumamos la cantidad que ya había + la nueva
-        $nueva_cantidad_total = $registroExistente['cantidad_producida'] + $cantidad_nueva;
+        if (!$data['p']) {
+            return redirect()->to(base_url('inventario'))->with('error', 'No se encontró el registro.');
+        }
 
-        // Recalculamos los costos totales multiplicando el valor unitario por la nueva cantidad total
-        $dataUpdate = [
-            'cantidad_producida'    => $nueva_cantidad_total,
-            'fecha_produccion'      => $fecha, // Actualizamos a la fecha más reciente de producción
-            'costo_adicional_total' => $registroExistente['costo_adicional_total'] + $receta['precio_venta_sug'], 
-            'costo_total_lote'      => $registroExistente['costo_total_lote'] + $receta['costo_ingredientes']
-        ];
-
-        // Actualizamos la fila existente usando su ID primario
-        $inventarioModel->update($registroExistente['Id_produccion'], $dataUpdate);
-        $mensaje = "Inventario actualizado: ahora tienes $nueva_cantidad_total porciones de {$receta['nombre_postre']}.";
-
-    } else {
-        // --- NO EXISTE: INSERTAR NUEVO ---
-        
-        $dataInsert = [
-            'Id_receta'             => $id_receta,
-            'nombre_receta'         => $receta['nombre_postre'],
-            'cantidad_producida'    => $cantidad_nueva,
-            'fecha_produccion'      => $fecha,
-            'costo_adicional_total' => $receta['precio_venta_sug']  ,
-            'costo_total_lote'      => $receta['costo_ingredientes'] 
-        ];
-
-        $inventarioModel->insert($dataInsert);
-        $mensaje = '¡Producción registrada con éxito!';
+        return view('inventario/ver', $data);
     }
 
-    return redirect()->to(base_url('inventario'))->with('mensaje', $mensaje);
-}
-
-
-
-
-    
+    // 5. ELIMINAR
+    public function eliminar($id)
+    {
+        $inventarioModel = new inventarioModel();
+        if ($inventarioModel->delete($id)) {
+            return redirect()->to(base_url('inventario'))->with('mensaje', 'Registro eliminado.');
+        }
+        return redirect()->to(base_url('inventario'))->with('error', 'No se pudo eliminar.');
+    }
 }

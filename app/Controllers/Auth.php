@@ -58,15 +58,12 @@ class Auth extends BaseController
         $nombre_negocio = $this->request->getPost('nombre_negocio');
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
-
-        // Recibimos la confirmación
         $password_confirm = $this->request->getPost('password_confirm');
 
         if (empty($nombre_negocio) || empty($email) || empty($password)) {
             return redirect()->back()->with('error', 'Todos los campos son obligatorios.');
         }
 
-        // Validamos que coincidan
         if ($password !== $password_confirm) {
             return redirect()->back()->withInput()->with('error', 'Las contraseñas no coinciden.');
         }
@@ -78,19 +75,18 @@ class Auth extends BaseController
         if (strlen($password) < 6) {
             return redirect()->back()->with('error', 'La contraseña debe tener al menos 6 caracteres.');
         }
- 
-         if (strlen($password) > 15) {
+
+        if (strlen($password) > 15) {
             return redirect()->back()->with('error', 'La contraseña solo puede tener maximo 15 caracteres.');
         }
 
         $reglas = [
-    'password' => 'regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).+$/]'
-                ];
+            'password' => 'regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).+$/]'
+        ];
 
-         if (!$this->validate($reglas)) {
-             // Si no cumple, regresa con el error
-             return redirect()->back()->with('error', 'La contraseña requiere una Mayuzcula, una Miniscula y un caracter especial(*#$%/)');
-                       }
+        if (!$this->validate($reglas)) {
+            return redirect()->back()->with('error', 'La contraseña requiere una Mayuscula, una Miniscula y un caracter especial(*#$%/)');
+        }
 
         $data = [
             'Nombre' => $nombre_negocio,
@@ -100,18 +96,15 @@ class Auth extends BaseController
 
         $model->insert($data);
 
-                $emailService = \Config\Services::email();
-                $data2 =  [
-                        'nombre_negocio' =>  $nombre_negocio
-                ];
-                $body = view('email/bienvenido_template', $data2);
+        // Envío de correo de bienvenida
+        $emailService = \Config\Services::email();
+        $data2 = ['nombre_negocio' => $nombre_negocio];
+        $body = view('email/bienvenido_template', $data2);
+        
         $emailService->setTo($email);
         $emailService->setSubject('Bienvenido a Mi Costo Dulce');
         $emailService->setMessage("$body");
         $emailService->send();
-
-
-
 
         return redirect()->to(base_url('login'))->with('mensaje', 'Registro exitoso. ¡Bienvenido a Mi Costo Dulce!');
     }
@@ -127,42 +120,33 @@ class Auth extends BaseController
     {
         $model = new UsuarioModel();
         $email = $this->request->getPost('email');
-        // recibe la info del formulario de recuperar
 
         if (empty($email)) {
             return redirect()->back()->with('error', 'Por favor, ingresa tu correo electrónico.');
         }
 
-
         $user = $model->where('Correo', $email)->first();
 
         if (!$user) {
-            // Si no existe el usuario
             return redirect()->back()->with('error', 'No encontramos una cuenta con ese correo.');
         }
-        //si existe se ejecuta lo siguinte
 
-
-        $token = bin2hex(random_bytes(32)); //genera el token
-        
-               
-       $link = base_url('resetPassword/' . $token . '?uid=' . $user['Id_usuario']); //link que ira en el correo
+        $token = bin2hex(random_bytes(32)); 
+        $link = base_url('resetPassword/' . $token . '?uid=' . $user['Id_usuario']);
 
         $db = \Config\Database::connect();
         $db->table('tokens_temporales')->insert([
-            'id_usuario'    => $user['Id_usuario'],
-            'token' => password_hash($token, PASSWORD_DEFAULT), //encripta el token
+            'id_usuario'       => $user['Id_usuario'],
+            'token'            => password_hash($token, PASSWORD_DEFAULT),
             'fecha_expiracion' => date('Y-m-d H:i:s', strtotime('+1 hour'))
         ]);
 
-
         $emailService = \Config\Services::email();
-
-        $data=[
+        $data = [
             'nombre_negocio' => $user['Nombre'],
             'link' => $link
         ];
-        $body= view ('email/ResetPasword', $data);
+        $body = view ('email/ResetPasword', $data);
 
         $emailService->setTo($user['Correo']);
         $emailService->setSubject('Recuperación de contraseña');
@@ -171,149 +155,105 @@ class Auth extends BaseController
 
         return redirect()->to(base_url('login'))->with('mensaje', 'Si el correo existe, recibirás instrucciones en tu correo.');
     }
-   
 
-        public function verificacionGmail($token = null )
-                      {
-                       
+    // Verifica el token enviado por Gmail
+    public function verificacionGmail($token = null)
+    {
+        $db = \Config\Database::connect();
+        $idUsuario = $this->request->getGet('uid');
 
+        if (!$idUsuario || !$token) {
+            return "Enlace incompleto o inválido.";
+        }
 
-    //  Conexión a base de datos
-    $db = \Config\Database::connect();
+        $tokenData = $db->table('tokens_temporales')
+                        ->where('Id_usuario', $idUsuario)
+                        ->orderBy('Id_token', 'DESC')
+                        ->get()
+                        ->getRow();
 
-    //  Obtener parámetros desde la URL
-    $idUsuario = $this->request->getGet('uid');
-   if (!$idUsuario || !$token) {
-        return "Enlace incompleto o inválido.";
+        if (!$tokenData) {
+            return "Token inválido.";
+        }
+
+        if (!is_null($tokenData->fecha_uso) && $tokenData->fecha_uso !== '') {
+            return redirect()->to(base_url('login'))->with('error', 'El link ya fue utilizado');
+        }
+
+        if (!password_verify($token, $tokenData->token)) {
+            return redirect()->to(base_url('login'))->with('error', 'link invalido');
+        }
+
+        if (strtotime($tokenData->fecha_expiracion) < time()) {
+            return redirect()->to(base_url('login'))->with('error', 'El link ya expiro');
+        }
+
+        return view('auth/resetpassword', [
+            'Id_usuario' => $idUsuario,
+            'token'      => $token
+        ]);
     }
 
-    //  Consultar el token más reciente del usuario
-    $tokenData = $db->table('tokens_temporales')
-                    ->where('Id_usuario', $idUsuario)
-                    ->orderBy('Id_token', 'DESC')
-                    ->get()
-                    ->getRow();
+    // Procesa el cambio de contraseña
+    public function ProcesarContrasena()
+    {
+        $model = new UsuarioModel();
+        $idUsuario = $this->request->getPost('Id_usuario');
+        $contrasena = $this->request->getPost('password');
+        $Confirmcontrasena = $this->request->getPost('confirm_password');
 
-    //  Validar existencia del registro de token
-    if (!$tokenData) {
-        return "Token inválido.";
-    }
-
-    //  Bloquear si ya fue usado (fecha_uso no es NULL ni vacío)
-    if (!is_null($tokenData->fecha_uso) && $tokenData->fecha_uso !== '') {
-       return redirect()->to(base_url('login'))
-                 ->with('error', 'El link ya fue utilizado');
-    }
-
-    //  Comparar token plano contra hash almacenado
-    if (!password_verify($token, $tokenData->token)) {
-       return redirect()->to(base_url('login'))
-                 ->with('error', 'link invalido');
-
-
-    }
-
-    //  Comprobar si aun es valido
-    if (strtotime($tokenData->fecha_expiracion) < time()) {
-        return redirect()->to(base_url('login'))
-                 ->with('error', 'El link ya expiro');
-
-
-    }
-
-
-    //  Renderizar la vista para cambiar contraseña 
-    return view('auth/resetpassword', [
-        'Id_usuario' => $idUsuario,
-        'token'      => $token
-    ]);
-
-
-                
-                       }  
-
-
-                       public function ProcesarContrasena()
-            {
-                $model=new UsuarioModel();
-
-                $idUsuario=$this->request->getPost('Id_usuario');
-                //die(var_dump($idUsuario));
-                $contrasena=$this->request->getPost('password');
-                $Confirmcontrasena=$this->request->getPost('confirm_password');
-                
-
-
-                 if (strlen($contrasena) < 6) {
+        if (strlen($contrasena) < 6) {
             return redirect()->back()->with('error', 'La contraseña debe tener al menos 6 caracteres.');
         }
 
-               if (strlen($contrasena) > 15) {
+        if (strlen($contrasena) > 15) {
             return redirect()->back()->with('error', 'La contraseña solo puede tener maximo 15 caracteres.');
         }
 
-                if($contrasena !== $Confirmcontrasena)
-                    {
-              return redirect()->back()->with('error', 'las contraseñas no son iguales');
-                     }
+        if ($contrasena !== $Confirmcontrasena) {
+            return redirect()->back()->with('error', 'las contraseñas no son iguales');
+        }
 
+        $reglas = [
+            'password' => 'regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).+$/]'
+        ];
 
-                  $reglas = [
-                      'password' => 'regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).+$/]'
-                ];
+        if (!$this->validate($reglas)) {
+            return redirect()->back()->with('error', 'La contraseña requiere una Mayuzcula, una Miniscula y un caracter especial(*#$%/)');
+        }
 
-         if (!$this->validate($reglas)) {
-             // Si no cumple, regresa con el error
-             return redirect()->back()->with('error', 'La contraseña requiere una Mayuzcula, una Miniscula y un caracter especial(*#$%/)');
-                       }    
+        $db = \Config\Database::connect();
+        $tokenData = $db->table('tokens_temporales')
+                        ->where('id_usuario', $idUsuario)
+                        ->orderBy('Id_token', 'DESC')
+                        ->get()
+                        ->getRow();
 
+        if ($tokenData) {
+            $db->table('tokens_temporales')
+               ->where('Id_token', $tokenData->Id_token)
+               ->update(['fecha_uso' => date('Y-m-d H:i:s')]);
+        }
 
-                $db = \Config\Database::connect();
-              // 1. Buscamos el token en la base de datos usando el Id_usuario
-               $tokenData = $db->table('tokens_temporales')
-                ->where('id_usuario', $idUsuario)
-                ->orderBy('Id_token', 'DESC') // Traemos el último generado
-                ->get()
-                ->getRow();
+        $NuevaContrasena = password_hash($contrasena, PASSWORD_DEFAULT);
+        $model->update($idUsuario, ['Contraseña' => $NuevaContrasena]);
 
-                   // 2. Verificamos que realmente encontramos algo
-                   if ($tokenData) {
-                 
-                    $db->table('tokens_temporales')
-                     ->where('Id_token', $tokenData->Id_token) 
-                     ->update(['fecha_uso' => date('Y-m-d H:i:s')]);
-                      }      
+        return redirect()->to(base_url('login'))->with('mensaje', 'cambio de contraseña exitoso');
+    }
 
-                $NuevaContrasena = password_hash($contrasena, PASSWORD_DEFAULT);
-
-                $model->update($idUsuario, ['Contraseña' => $NuevaContrasena]);
-              
-                return redirect()->to(base_url('login'))->with('mensaje', 'cambio de contraseña exitoso');
-
-            }
-
-
+    /**
+     * MÉTODO PANEL: 
+     * Redirige al controlador Home para centralizar la lógica de la vista
+     * y evitar errores de variables no definidas.
+     */
     public function panel()
     {
-
         if (!session()->get("isLoggedIn")) {
             return redirect()->to(base_url('login'));
         }
 
-        $ingredientesModel = new IngredienteModel();
-        $recetasModel = new RecetaModel();
-
-        $idUsuario = session()->get('Id_usuario');
-
-        $data = [
-            'totalIngredientes' => $ingredientesModel->where('Id_usuario', $idUsuario)->countAllResults(),
-            'totalRecetas'      => $recetasModel->where('Id_usuario', $idUsuario)->countAllResults(),
-            // Traemos las últimas 5 recetas para la tabla
-            'ultimasRecetas'           => $recetasModel->where('Id_usuario', $idUsuario)->orderBy('Id_receta', 'DESC')->findAll(5)
-        ];
-
-        return view('panel_inicio', $data);
+        // Al redirigir a 'home', el controlador Home::index se encarga de cargar
+        // las variables $mostrarGuia y $pasoActual correctamente.
+        return redirect()->to(base_url('home'));
     }
-
-   
 }

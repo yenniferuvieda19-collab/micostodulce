@@ -1,152 +1,117 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Costo Dulce | Panel</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <link rel="stylesheet" href="<?= base_url('assets/css/estilos.css?v=' . time()) ?>">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
-        .navbar {
-            background-color: var(--rosa-logo) !important;
+        :root {
+            --rosa-logo: #f26185;
+            --marron-logo: #825a42;
         }
 
-        .cupcake-icon {
-            color: var(--azul-logo) !important;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        /* AJUSTE PARA FOOTER AL FINAL */
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            min-height: 100vh; 
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Esto permite que el contenido empuje al footer */
+        }
+        
+        .auth-bg {
+            background-image: url('<?= base_url("assets/img/backgrounds/fondo-login.jpg") ?>'); 
+            background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
         }
 
+        .navbar { height: 80px; background-color: var(--rosa-logo) !important; border-bottom: 3px solid var(--marron-logo); }
+        .navbar .container-fluid { padding-left: 60px !important; padding-right: 40px !important; }
+        .navbar-brand { font-family: 'Playfair Display', serif !important; font-size: 1.8rem; display: flex; align-items: center; }
+
+        .logo-cupcake-container {
+            background-color: white; width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin-right: 15px;
+        }
+
+        /* EL MAIN CRECE PARA OCUPAR EL ESPACIO DISPONIBLE */
+        main.container { 
+            background-color: transparent !important; 
+            padding: 20px; 
+            margin-top: 20px;
+            flex: 1 0 auto; /* Esto empuja el footer hacia abajo */
+        }
+
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.95) !important; 
+            border-radius: 20px !important; padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
+        }
+
+        /* BOTONES SÓLIDOS */
+        .btn-dulce-rosa { background-color: #f26185 !important; color: white !important; border: none !important; font-weight: 600; }
+        .btn-dulce-marron { background-color: #825a42 !important; color: white !important; border: none !important; font-weight: 600; }
+
+        /* FOOTER ESTILIZADO */
         footer {
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            flex-shrink: 0; /* Evita que el footer se encoja */
+            background-color: rgba(255, 255, 255, 0.9);
+            border-top: 2px solid var(--marron-logo);
         }
 
-        .alert {
-            border: none;
-            border-left: 4px solid;
-            border-radius: 8px;
+        @keyframes beat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
-
-        /* Ajuste para que el contenido baje un poco más */
-        /*.auth-bg main {
-            padding-top: 5rem;
-        }*/
-            /*Lo comento para que se ajuste mejor la vista en el centrado automático*/
+        .heart-beat { color: var(--rosa-logo); display: inline-block; animation: beat 1.5s infinite; }
     </style>
 </head>
-
-<body class="auth-bg d-flex flex-column min-vh-100">
-
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm mb-4">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-2" href="<?= base_url() ?>"
-                style="font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 0.5px;">
-                <i class="fa-solid fa-cake-candles cupcake-icon fa-lg me-3"></i> Mi Costo Dulce
+<body class="auth-bg">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="<?= base_url() ?>">
+                <div class="logo-cupcake-container"><i class="fa-solid fa-cake-candles" style="color: var(--rosa-logo);"></i></div>
+                <span>Mi Costo Dulce</span>
             </a>
-
             <?php if (session()->get('isLoggedIn')): ?>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto align-items-center">
-
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-light btn-sm text-dark ms-lg-3 px-5 shadow-sm" href="<?= base_url('salir') ?>">
-                                <i class="fa-solid fa-right-from-bracket me-1"></i> Cerrar Sesión
-                            </a>
-                        </li>
-                    </ul>
+                <div class="ms-auto">
+                    <a class="btn btn-light btn-sm rounded-pill fw-bold" href="<?= base_url('salir') ?>">Cerrar Sesión</a>
                 </div>
             <?php endif; ?>
         </div>
     </nav>
 
-    <main class="container flex-grow-1 d-flex flex-column justify-content-center">
-        
-
-        <?php if (session()->getFlashdata('mensaje')): ?>
-            <div class="alert alert-success alert-dismissible fade show shadow-sm border-success mb-4" role="alert">
-                <div class="d-flex align-items-center">
-                    <i class="fa-solid fa-circle-check me-3 fs-4"></i>
-                    <div>
-                        <strong>¡Éxito!</strong> <?= session()->getFlashdata('mensaje') ?>
-                    </div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
-
-        <?php if (session()->getFlashdata('error')): ?>
-            <div class="alert alert-danger alert-dismissible fade show shadow-sm border-danger mb-4" role="alert">
-                <div class="d-flex align-items-center">
-                    <i class="fa-solid fa-triangle-exclamation me-3 fs-4"></i>
-                    <div>
-                        <strong>Atención:</strong> <?= session()->getFlashdata('error') ?>
-                    </div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
-
+    <main class="container">
         <?= $this->renderSection('contenido') ?>
-
     </main>
 
-    <footer class="bg-light text-center py-3 mt-4">
+    <footer class="text-center py-3">
         <div class="container">
-            <small class="text-muted">
-                Hecho con ❤️ para <strong>Dulce Capricho</strong> &copy; 2026
-            </small>
+            <p class="mb-0" style="font-family: 'Quicksand', sans-serif; color: var(--marron-logo); font-weight: 700;">
+                Hecho con <i class="fa-solid fa-heart heart-beat"></i> para 
+                <span style="font-family: 'Playfair Display', serif; color: var(--rosa-logo);">Dulce Capricho</span>
+            </p>
+            <small class="text-muted" style="font-size: 0.7rem;">&copy; <?= date('Y') ?> Mi Costo Dulce</small>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <?php if (file_exists('assets/js/scripts.js')): ?>
-        <script src="<?= base_url('assets/js/scripts.js') ?>"></script>
-    <?php endif; ?>
-
-    <?= $this->renderSection('scripts') ?>
-
-</body>
-
-<script>
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // Bloquear tecleo del signo menos (-) y la letra 'e' (exponencial)
-            document.body.addEventListener('keydown', function(e) {
-                if (e.target.type === 'number') {
-                    if (e.key === '-' || e.key === 'e' || e.key === 'E') {
-                        e.preventDefault();
-                    }
-                }
-            });
-
-            // Controlar las flechitas y el pegado de texto
-            document.body.addEventListener('input', function(e) {
-                if (e.target.type === 'number') {
-                    // Si el valor es menor a 0, lo resetea a vacío o a 0
-                    if (e.target.value < 0) {
-                        e.target.value = ''; 
-                    }
-                }
-            });
-
-            // Agregar atributo min="0" dinámicamente a todos los inputs numéricos, esto ayuda a que el navegador sepa que el límite es 0
-            const inputsNumericos = document.querySelectorAll('input[type="number"]');
-            inputsNumericos.forEach(input => {
-                if (!input.hasAttribute('min')) {
-                    input.setAttribute('min', '0');
-                }
-            });
-        });
+    <script>
+        function confirmarEliminacion(id, url) {
+            Swal.fire({
+                title: '¿Eliminar?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#825a42',
+                confirmButtonText: 'Sí, borrar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => { if (result.isConfirmed) window.location.href = url + '/' + id; });
+        }
     </script>
-
-</html></body>
+</body>
+</html>

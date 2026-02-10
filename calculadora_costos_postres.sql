@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-02-2026 a las 02:30:56
+-- Tiempo de generación: 10-02-2026 a las 16:23:17
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -133,6 +133,22 @@ INSERT INTO `ingredientes_recetas` (`Id_detalle`, `Id_receta`, `Id_ingrediente`,
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `produccion`
+--
+
+CREATE TABLE `produccion` (
+  `Id_produccion` int(11) NOT NULL,
+  `Id_receta` int(11) NOT NULL,
+  `cantidad_producida` int(11) NOT NULL,
+  `nombre_receta` varchar(150) NOT NULL,
+  `costo_adicional_total` decimal(10,2) NOT NULL,
+  `costo_total_lote` decimal(10,2) NOT NULL,
+  `fecha_produccion` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `recetas`
 --
 
@@ -180,7 +196,9 @@ INSERT INTO `tokens_temporales` (`Id_token`, `Id_usuario`, `token`, `fecha_expir
 (1, 1, '$2y$10$j1u38dc4kUS5OTnW5llTB.ja9EjoKHM1dwq4N2O.KBeD071Ubnpd6', '2026-01-12 20:51:34', NULL),
 (2, 2, '$2y$10$1YYrsiqkVKnpC0P88mGq3OdgMBrKh3GmRrfKImwZxs6XXkzww.wvi', '2026-02-05 01:55:46', NULL),
 (3, 3, '$2y$10$vLuQZ.RgkWc8l9wfUckaleR1VWMjZ3C31Sh39fvreXoQxMdPrRDUu', '2026-02-05 02:20:20', NULL),
-(4, 2, '$2y$10$6aNwSOxOu4vWVNnSSmKghOvi7QeT244h8hA4Dh5IZBFfsa1Of0c4W', '2026-02-05 02:23:09', NULL);
+(4, 2, '$2y$10$6aNwSOxOu4vWVNnSSmKghOvi7QeT244h8hA4Dh5IZBFfsa1Of0c4W', '2026-02-05 02:23:09', NULL),
+(5, 2, '$2y$10$9bQbesT139uPaGDAxwwKYuRISI.gIwvAT0L4RDv.g..wJJ1UzeQZq', '2026-02-06 03:01:54', NULL),
+(6, 2, '$2y$10$9JNJCQTJ60ktHUIIFCIMbe518vkFDJmOcMv7B2eWqQZYkXo7e36mm', '2026-02-08 20:07:24', NULL);
 
 -- --------------------------------------------------------
 
@@ -240,6 +258,20 @@ INSERT INTO `usuarios` (`Id_usuario`, `Nombre`, `Correo`, `Contraseña`) VALUES
 (2, 'Endulzate ', 'eilynmartinez1812@gmail.com', '$2y$10$SflpBOYHPPfNKgXQbU6oieHBN17kZDx7Qep0ZdKn1d0N.jsOAFJ72'),
 (3, 'ay', 'garciaandrese2603@gmail.com', '$2y$10$vvqDnG.u.InZTyCS8N5LmuciuuNq7d6K/yiOaWi9fSerzsMgMr96u');
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ventas`
+--
+
+CREATE TABLE `ventas` (
+  `Id_venta` int(11) NOT NULL,
+  `Id_receta` int(11) NOT NULL,
+  `cantidad_vendida` int(11) NOT NULL,
+  `precio_venta_total` decimal(10,2) NOT NULL,
+  `fecha_venta` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Índices para tablas volcadas
 --
@@ -275,6 +307,13 @@ ALTER TABLE `ingredientes_recetas`
   ADD KEY `idx_ingredientes_recetas_ingrediente` (`Id_ingrediente`);
 
 --
+-- Indices de la tabla `produccion`
+--
+ALTER TABLE `produccion`
+  ADD PRIMARY KEY (`Id_produccion`),
+  ADD KEY `idx_produccion_recetas` (`Id_receta`);
+
+--
 -- Indices de la tabla `recetas`
 --
 ALTER TABLE `recetas`
@@ -308,6 +347,13 @@ ALTER TABLE `usuarios`
   ADD UNIQUE KEY `idx_correo_unico` (`Correo`);
 
 --
+-- Indices de la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  ADD PRIMARY KEY (`Id_venta`),
+  ADD KEY `idx_ventas_recetas` (`Id_receta`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -336,6 +382,12 @@ ALTER TABLE `ingredientes_recetas`
   MODIFY `Id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=159;
 
 --
+-- AUTO_INCREMENT de la tabla `produccion`
+--
+ALTER TABLE `produccion`
+  MODIFY `Id_produccion` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `recetas`
 --
 ALTER TABLE `recetas`
@@ -345,7 +397,7 @@ ALTER TABLE `recetas`
 -- AUTO_INCREMENT de la tabla `tokens_temporales`
 --
 ALTER TABLE `tokens_temporales`
-  MODIFY `Id_token` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Id_token` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `unidades`
@@ -364,6 +416,12 @@ ALTER TABLE `unidades_conversion`
 --
 ALTER TABLE `usuarios`
   MODIFY `Id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  MODIFY `Id_venta` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
@@ -397,6 +455,12 @@ ALTER TABLE `ingredientes_recetas`
   ADD CONSTRAINT `ingredientes_recetas_ibfk_2` FOREIGN KEY (`Id_ingrediente`) REFERENCES `ingredientes` (`Id_ingrediente`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `produccion`
+--
+ALTER TABLE `produccion`
+  ADD CONSTRAINT `produccion_ibfk_1` FOREIGN KEY (`Id_receta`) REFERENCES `recetas` (`Id_receta`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `recetas`
 --
 ALTER TABLE `recetas`
@@ -413,6 +477,12 @@ ALTER TABLE `tokens_temporales`
 --
 ALTER TABLE `unidades_conversion`
   ADD CONSTRAINT `unidades_conversion_ibfk_1` FOREIGN KEY (`Id_unidad`) REFERENCES `ingredientes` (`Id_unidad_base`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`Id_receta`) REFERENCES `recetas` (`Id_receta`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

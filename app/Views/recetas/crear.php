@@ -6,11 +6,11 @@
     <div class="row justify-content-center">
         <div class="col-lg-12">
 
-            <form action="<?= base_url('recetas/guardar') ?>" method="POST" id="formReceta">
+            <form action="<?= base_url('recetas/guardar') ?>" method="POST" id="formReceta" novalidate>
 
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
                     <div>
-                        <h2 class="fw-bold mb-1" style="color: var(--azul-logo);">Nueva Receta</h2>
+                        <h2 class="fw-bold mb-1" style="color: var(--marron-logo);">Nueva Receta</h2>
                         <p class="text-muted mb-0">Configura los costos y márgenes de tu nuevo postre.</p>
                     </div>
                     <div class="d-flex gap-2 w-100 w-md-auto ms-md-auto justify-content-md-end">
@@ -65,8 +65,7 @@
                                         <th style="width: 5%;" class="pe-4"></th>
                                     </tr>
                                 </thead>
-                                <tbody id="listaIngredientes">
-                                    </tbody>
+                                <tbody id="listaIngredientes"></tbody>
                             </table>
                         </div>
                         <div class="p-3">
@@ -85,7 +84,6 @@
                     </div>
                     <div class="card-body p-3 p-md-4">
                         <p class="text-muted small mb-3">Selecciona los adicionales que aplican a esta receta:</p>
-                        
                         <div class="row g-3">
                             <?php if(!empty($gastos)): ?>
                                 <?php foreach($gastos as $gasto): ?>
@@ -130,15 +128,24 @@
 
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body p-3 p-md-4">
-                        <label class="form-label fw-bold text-secondary small text-uppercase">
-                            <i class="fa-solid fa-comment-dots me-2"></i>Nota Adicional (Opcional)
+                        <label class="form-label fw-bold text-secondary small text-uppercase" for="notas">
+                            <i class="fa-solid fa-list-check me-2"></i>Pasos de la preparación / Receta (Opcional)
                         </label>
-                        <textarea name="notas" class="form-control" rows="2" placeholder="Ej: Notas sobre la preparación..."></textarea>
+                        <textarea 
+                            name="notas" 
+                            id="notas"
+                            class="form-control" 
+                            rows="6" 
+                            style="border-left: 5px solid var(--azul-logo); resize: none;" 
+                            placeholder="Describe aquí el paso a paso detallado (opcional)..."></textarea>
+                        <div class="form-text mt-2 text-muted">
+                            <i class="fa-solid fa-circle-info me-1"></i> Puedes dejar este espacio en blanco si no deseas detallar el procedimiento.
+                        </div>
                     </div>
                 </div>
 
                 <div class="d-grid gap-2 mb-5">
-                    <button type="submit" class="btn btn-success btn-lg rounded-pill text-white fw-bold shadow py-3" style="background-color: var(--azul-logo); border:none;">
+                    <button type="submit" class="btn btn-lg rounded-pill text-white fw-bold shadow py-3 btn-guardar-receta">
                         <i class="fa-solid fa-check-double me-2"></i>GUARDAR RECETA COMPLETA
                     </button>
                 </div>
@@ -153,7 +160,7 @@
                 id: "<?= $ing['Id_ingrediente'] ?>",
                 nombre: "<?= esc($ing['nombre_ingrediente']) ?>",
                 unidad_id: <?= $ing['Id_unidad_base'] ?>,
-                precio: <?= $ing['costo_unidad'] ?>,
+                precio: <?= $ing['costo_unitario'] ?? $ing['costo_unidad'] ?>,
                 paquete: <?= $ing['cantidad_paquete'] ?>
             },
         <?php endforeach; ?>
@@ -170,7 +177,7 @@
         const tbody = document.getElementById('listaIngredientes');
         const row = document.createElement('tr');
 
-        let opciones = '<option value="" data-unidad="-" data-precio="0" data-paquete="0" data-tipo="0">-- Selecciona --</option>';
+        let opciones = '<option value="" data-unidad="-" data-precio="0" data-paquete="0">-- Selecciona --</option>';
 
         ingredientesDisponibles.forEach(ing => {
             opciones += `<option value="${ing.id}" data-unidad-id="${ing.unidad_id}" data-precio="${ing.precio}" data-paquete="${ing.paquete}">${ing.nombre}</option>`;
@@ -194,6 +201,7 @@
         const labelCostoUnit = fila.querySelector('.lbl-costo-unitario');
         const labelSubtotal = fila.querySelector('.lbl-subtotal');
         const opcion = select.options[select.selectedIndex];
+        
         const unidadId = parseInt(opcion.getAttribute('data-unidad-id')) || 0;
         const precioPaquete = parseFloat(opcion.getAttribute('data-precio')) || 0;
         const tamanoPaquete = parseFloat(opcion.getAttribute('data-paquete')) || 0;
@@ -206,11 +214,13 @@
         else if (unidadId === 4) { etiquetaUnidad = 'ml'; factor = 1000; }
 
         labelsUnidad.forEach(lbl => lbl.textContent = etiquetaUnidad);
+        
         let costoUnitario = 0;
-        let tamanoRealEnGramos = tamanoPaquete * factor;
-        if (tamanoRealEnGramos > 0) {
-            costoUnitario = precioPaquete / tamanoRealEnGramos;
+        let tamanoReal = tamanoPaquete * factor;
+        if (tamanoReal > 0) {
+            costoUnitario = precioPaquete / tamanoReal;
         }
+        
         labelCostoUnit.textContent = '$ ' + costoUnitario.toFixed(4);
         const cantidadUsada = parseFloat(inputCant.value) || 0;
         const subtotal = costoUnitario * cantidadUsada;
@@ -242,7 +252,7 @@
 </script>
 
 <style>
-    /* Estilo del fondo */
+    /* Estilos personalizados mantenidos */
     body {
         background-image: linear-gradient(rgba(255, 255, 255, 0.75), 
             rgba(255, 255, 255, 0.75)), 
@@ -250,10 +260,7 @@
         background-size: cover !important; 
         background-position: center !important; 
         background-attachment: fixed !important; 
-        background-repeat: no-repeat !important; 
     }
-
-    main, .wrapper, #content { background: transparent !important; }
 
     .card {
         background-color: rgba(255, 255, 255, 0.9) !important; 
@@ -266,30 +273,15 @@
         background-color: #f8f9fa !important;
     }
 
-    .border-dashed:hover {
-        border-color: var(--azul-logo) !important;
-        background-color: #fff !important;
+    .btn-guardar-receta {
+        background-color: var(--azul-logo) !important;
+        border: none !important;
     }
 
-    /* Checkboxes de Gastos */
-    .custom-check-card {
-        transition: all 0.2s ease-in-out;
-        cursor: pointer;
-        border: 1px solid #dee2e6 !important;
+    .btn-guardar-receta:hover {
+        background-color: var(--marron-logo) !important;
+        transform: translateY(-2px);
     }
-    
-    .custom-check-card:hover {
-        background-color: #fff !important;
-        transform: translateY(-3px);
-        box-shadow: 0 .5rem 1rem rgba(0,0,0,.1) !important;
-    }
-
-    .custom-check-card:has(.form-check-input:checked) {
-        background-color: #e8f0fe !important; 
-        border-color: var(--azul-logo) !important;
-    }
-
-    .cursor-pointer { cursor: pointer; }
 </style>
 
 <?= $this->endSection() ?>

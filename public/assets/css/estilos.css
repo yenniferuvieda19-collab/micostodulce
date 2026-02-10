@@ -1,113 +1,62 @@
-/*  VARIABLES DE COLOR (Dulce Capricho) */
+/* VARIABLES DE COLOR (Dulce Capricho) */
 :root { 
-    --rosa-logo: #f26185ff;    /* Rosa del borde */
-    --azul-logo: #16c2e8ff;    /* Azul del cupcake */
-    --marron-logo: #825a42;    /* Marrón chocolate */
-    --negro-logo: #212121;     /* Negro para textos fuertes */
-    --fondo-suave: #f4f9fa;    /* Fondo azul clarito */
+    --rosa-logo: #f26185;
+    --azul-logo: #16c2e8;
+    --marron-logo: #825a42;
+    --negro-logo: #212121;
+    --fondo-suave: #f4f9fa;
 }
 
-/* ESTILOS GENERALES */
 body { 
     background-color: var(--fondo-suave); 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
-.container {
-    margin-top: 20px;
-}
-
-/*  NAVEGACIÓN (Navbar) */
 .navbar { 
     background-color: var(--rosa-logo) !important; 
     border-bottom: 3px solid var(--marron-logo); 
 }
 
-.navbar-brand, .nav-link { 
-    color: white !important; 
-}
-
-/*  BOTONES Y ELEMENTOS DE MARCA */
 .btn-primary { 
-    background-color: var(--marron-logo); 
-    border: none; 
+    background-color: var(--marron-logo) !important; 
+    border: none !important; 
     transition: all 0.3s ease;
 }
 
 .btn-primary:hover { 
-    background-color: var(--negro-logo); 
+    background-color: var(--negro-logo) !important; 
     transform: translateY(-1px);
 }
 
-.cupcake-icon {
-    color: var(--azul-logo);
-    text-shadow: 1px 1px 1px var(--marron-logo);
-}
-
-h1, h3 {
-    color: var(--rosa-logo);
-    font-weight: bold;
-}
-
-.text-rosa {
-    color: var(--rosa-logo) !important;
-}
-
-/*  DISEÑO DEL LOGIN Y REGISTRO (CON FONDO) */
-
-
-.auth-bg {
-    background-image: url('../img/backgrounds/fondo-login.jpg'); 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    min-height: 100vh;
-   /* display: block !important;*/
-   /*Comento el display block para que me deje ajustar el footer*/
-   display: flex !important; 
-    flex-direction: column;
-}
-
-main.flex-grow-1 {
-    padding-bottom: 20px; /* Espacio de seguridad antes del footer */
-}
-
-/* Card semi-transparente para resaltar sobre los dulces */
+/* CARD LOGIN / REGISTRO */
 .auth-bg .card {
-    background-color: rgba(255, 255, 255, 0.92); /* Efecto cristalino */
+    background-color: rgba(255, 255, 255, 0.92); 
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
+    border: none;
 }
 
-/*  CAMPOS DE CONTRASEÑA (INPUT GROUP) */
-
-/* Une el input con el ojito */
-.input-group input[type="password"],
-.input-group input[type="text"] {
-    border-right: none;
+/* INPUTS CON OJITO */
+.input-group input {
+    border-right: none !important;
 }
 
-/* Estilo para el botón del "ojito" */
 .toggle-password {
-    border-left: none;
+    border-left: none !important;
     background-color: white !important;
-    border-color: #dee2e6;
+    border: 1px solid #dee2e6;
     color: var(--marron-logo);
     cursor: pointer;
     display: flex;
     align-items: center;
-    transition: color 0.2s ease;
+    padding: 0 12px;
 }
 
-.toggle-password:hover {
-    color: var(--rosa-logo);
-}
-
-/* Resplandor azul al hacer clic en el campo */
 .input-group:focus-within .form-control, 
 .input-group:focus-within .toggle-password {
-    border-color: var(--azul-logo);
+    border-color: var(--azul-logo) !important;
     box-shadow: 0 0 0 0.25rem rgba(22, 194, 232, 0.25);
+}
+
+.text-end, .text-center {
+    font-variant-numeric: tabular-nums;
 }

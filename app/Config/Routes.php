@@ -6,20 +6,25 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// --- PÁGINA DE INICIO ---
+/*
+ * --------------------------------------------------------------------
+ * PÁGINA DE INICIO Y REDIRECCIÓN
+ * --------------------------------------------------------------------
+ */
 $routes->get('/', 'Home::index');
+$routes->get('home', 'Home::index'); 
 
 /*
  * --------------------------------------------------------------------
- * Módulo de Autenticación (Login y Registro)
+ * MÓDULO DE AUTENTICACIÓN
  * --------------------------------------------------------------------
  */
-$routes->get('login', 'Auth::login');             // Pantalla de entrada
-$routes->post('auth/ingresar', 'Auth::ingresar'); // Procesa el formulario
-$routes->get('registro', 'Auth::registro');       // Pantalla registro
+$routes->get('login', 'Auth::login');
+$routes->post('auth/ingresar', 'Auth::ingresar');
+$routes->get('registro', 'Auth::registro');
 $routes->post('auth/registrar', 'Auth::registrar');
-$routes->get('salir', 'Auth::salir');             // Cerrar sesión
-$routes->get('panel', 'Auth::panel'); //Carga el panel de bienvenida al portal web.
+$routes->get('salir', 'Auth::salir');
+$routes->get('panel', 'Auth::panel'); 
 
 // Recuperación de contraseña
 $routes->get('recuperar', 'Auth::recuperar');
@@ -29,15 +34,13 @@ $routes->post('auth/update_password', 'Auth::ProcesarContrasena');
 
 /*
  * --------------------------------------------------------------------
- * Módulo de Ingredientes (Insumos)
+ * MÓDULO DE INGREDIENTES (INSUMOS)
  * --------------------------------------------------------------------
  */
 $routes->group('ingredientes', function ($routes) {
-    $routes->get('/', 'Ingredientes::index');          // Ver lista
-    $routes->get('crear', 'Ingredientes::crear');      // Formulario crear
-    $routes->post('guardar', 'Ingredientes::guardar'); // Guardar nuevo
-
-    // Editar y Borrar Insumos
+    $routes->get('/', 'Ingredientes::index');
+    $routes->get('crear', 'Ingredientes::crear');
+    $routes->post('guardar', 'Ingredientes::guardar');
     $routes->get('editar/(:num)', 'Ingredientes::editar/$1');
     $routes->post('actualizar/(:num)', 'Ingredientes::actualizar/$1');
     $routes->get('borrar/(:num)', 'Ingredientes::borrar/$1');
@@ -45,17 +48,14 @@ $routes->group('ingredientes', function ($routes) {
 
 /*
  * --------------------------------------------------------------------
- * Módulo de Recetas 
+ * MÓDULO DE RECETAS
  * --------------------------------------------------------------------
  */
 $routes->group('recetas', function ($routes) {
-    $routes->get('/', 'Recetas::index');           // Ver tarjetas
-    $routes->get('crear', 'Recetas::crear');       // Formulario crear
-    $routes->post('guardar', 'Recetas::guardar');  // Guardar nueva
-
-    $routes->get('ver/(:num)', 'Recetas::ver/$1'); //ruta para Ver la receta en solo vista
-
-    // Editar y Borrar Recetas (Ahora están en su lugar correcto)
+    $routes->get('/', 'Recetas::index');
+    $routes->get('crear', 'Recetas::crear');
+    $routes->post('guardar', 'Recetas::guardar');
+    $routes->get('ver/(:num)', 'Recetas::ver/$1');
     $routes->get('editar/(:num)', 'Recetas::editar/$1');
     $routes->post('actualizar/(:num)', 'Recetas::actualizar/$1');
     $routes->get('borrar/(:num)', 'Recetas::borrar/$1');
@@ -63,30 +63,39 @@ $routes->group('recetas', function ($routes) {
 
 /*
  * --------------------------------------------------------------------
- * Módulo de Gastos Indirectos 
+ * MÓDULO DE GASTOS INDIRECTOS
  * --------------------------------------------------------------------
  */
-$routes->get('gastos', 'Gastos::index');
-$routes->get('gastos/crear', 'Gastos::crear');
-$routes->post('gastos/guardar', 'Gastos::guardar');
-$routes->get('gastos/editar/(:num)', 'Gastos::editar/$1');
-$routes->get('gastos/borrar/(:num)', 'Gastos::borrar/$1');
-$routes->post('gastos/actualizar/(:num)', 'Gastos::actualizar/$1');
+$routes->group('gastos', function ($routes) {
+    $routes->get('/', 'Gastos::index');
+    $routes->get('crear', 'Gastos::crear');
+    $routes->post('guardar', 'Gastos::guardar');
+    $routes->get('editar/(:num)', 'Gastos::editar/$1');
+    $routes->post('actualizar/(:num)', 'Gastos::actualizar/$1');
+    $routes->get('borrar/(:num)', 'Gastos::borrar/$1');
+});
 
 /*
  * --------------------------------------------------------------------
- * Chicos, aquí estoy añadiendo el módulo del inventario
+ * MÓDULO DE INVENTARIO Y PRODUCCIÓN (ACTUALIZADO)
  * --------------------------------------------------------------------
  */
-$routes->get('inventario', 'Inventario::index');
-$routes->get('inventario/crear', 'Inventario::crear');
-$routes->post('inventario/guardar', 'Inventario::guardar'); // Esta es para procesar el formulario
+$routes->group('inventario', function ($routes) {
+    $routes->get('/', 'Inventario::index');
+    $routes->get('crear', 'Inventario::crear');
+    $routes->post('guardar', 'Inventario::guardar');
+    $routes->get('ver/(:num)', 'Inventario::ver/$1');      // Ruta para el icono del OJO
+    $routes->get('eliminar/(:num)', 'Inventario::eliminar/$1'); // Ruta para el icono de la PAPELERA
+});
+
 /*
  * --------------------------------------------------------------------
- * Holaa, aquí estoy añadiendo el módulo de ventas, para que lo trabajen en el backend.
+ * MÓDULO DE VENTAS
  * --------------------------------------------------------------------
  */
-$routes->get('ventas', 'Ventas::index');
-$routes->get('ventas/crear', 'Ventas::crear');
-$routes->post('ventas/guardar', 'Ventas::guardar');
-$routes->get('ventas/detalle/(:num)', 'Ventas::detalle/$1');
+$routes->group('ventas', function ($routes) {
+    $routes->get('/', 'Ventas::index');
+    $routes->get('crear', 'Ventas::crear');
+    $routes->post('guardar', 'Ventas::guardar');
+    $routes->get('detalle/(:num)', 'Ventas::detalle/$1');
+});

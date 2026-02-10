@@ -11,7 +11,7 @@
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
                     <div>
                         <h2 class="fw-bold mb-1" style="color: var(--marron-logo);">Editar Receta</h2>
-                        <p class="text-muted mb-0">Modifica los ingredientes o el margen de ganancia de tu receta.</p>
+                        <p class="text-muted mb-0">Modifica los ingredientes o el procedimiento de tu receta.</p>
                     </div>
                     <div class="d-flex gap-2 w-100 w-md-auto ms-md-auto justify-content-md-end">
                         <a href="<?= base_url('recetas') ?>" class="btn btn-outline-secondary rounded-pill px-4 fw-bold flex-fill flex-md-grow-0">
@@ -68,8 +68,7 @@
                                         <th style="width: 5%;" class="pe-4"></th>
                                     </tr>
                                 </thead>
-                                <tbody id="listaIngredientes">
-                                    </tbody>
+                                <tbody id="listaIngredientes"></tbody>
                             </table>
                         </div>
                         <div class="p-3">
@@ -83,15 +82,23 @@
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body p-3 p-md-4">
                         <label class="form-label fw-bold text-secondary small text-uppercase">
-                            <i class="fa-solid fa-comment-dots me-2"></i>Nota Adicional (Opcional)
+                            <i class="fa-solid fa-eye me-2"></i>Detalles de la preparación / Receta (Opcional)
                         </label>
-                        <textarea name="notas" class="form-control" rows="2" placeholder="Ej: Mantener refrigerado..."><?= isset($receta['notas']) ? esc($receta['notas']) : '' ?></textarea>
+                        <textarea 
+                            name="notas" 
+                            class="form-control" 
+                            rows="6" 
+                            style="border-left: 5px solid var(--azul-logo); resize: none;" 
+                            placeholder="Describe aquí el paso a paso de tu preparación (opcional)..."><?= isset($receta['notas']) ? esc($receta['notas']) : '' ?></textarea>
+                        <div class="form-text mt-2 text-muted">
+                            <i class="fa-solid fa-circle-info me-1"></i> Puedes dejar este espacio en blanco si no deseas incluir el procedimiento.
+                        </div>
                     </div>
                 </div>
 
                 <div class="d-grid gap-2 mb-5">
-                    <button type="submit" class="btn btn-warning btn-lg rounded-pill text-white fw-bold shadow py-3">
-                        <i class="fa-solid fa-floppy-disk me-2"></i>ACTUALIZAR RECETA
+                    <button type="submit" class="btn btn-lg rounded-pill text-white fw-bold shadow py-3 btn-actualizar">
+                        <i class="fa-solid fa-arrows-rotate me-2"></i>GUARDAR CAMBIOS EN LA RECETA
                     </button>
                 </div>
             </form>
@@ -235,9 +242,21 @@
         background-color: #f8f9fa !important;
     }
 
-    .btn-warning {
-        background-color: #f1c40f !important;
+    .btn-actualizar {
+        background-color: var(--azul-logo) !important;
         border: none !important;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn-actualizar:hover {
+        background-color: var(--marron-logo) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+    }
+
+    textarea[name="notas"]:focus {
+        border-color: var(--azul-logo) !important;
+        box-shadow: 0 0 0 0.25rem rgba(0, 51, 102, 0.1) !important;
     }
 </style>
 

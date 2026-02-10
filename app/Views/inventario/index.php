@@ -2,80 +2,84 @@
 
 <?= $this->section('contenido') ?>
 
-<div class="dashboard-container">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold mb-0" style="color: var(--azul-logo);">Producción Activa</h2>
-                <p class="text-muted small">Recetas listas para la venta en inventario</p>
-            </div>
-            <a href="<?= base_url('inventario/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm" style="background-color: var(--rosa-logo); border:none;">
-                <i class="fa-solid fa-plus me-2"></i>Nueva Producción
-            </a>
-        </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 style="font-family: 'Quicksand', sans-serif; font-weight: 700; color: #825a42;">
+        Producción Activa
+    </h2>
+    <a href="<?= base_url('inventario/crear') ?>" class="btn rounded-pill px-4 shadow-sm" 
+       style="background-color: #825a42; color: white;">
+        + Nueva Producción
+    </a>
+</div>
 
-        <div class="card border-0 shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr class="small text-uppercase text-muted">
-                                <th class="ps-4">Producto / Receta</th>
-                                <th>Fecha Producción</th>
-                                <th>Stock Disponible</th>
-                                <th>Costo Inversión</th>
-                                <th>PVP Sugerido</th>
-                                <th class="text-end pe-4">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-   <?php if (!empty($producciones)): ?>
-        <?php foreach ($producciones as $p): ?>
-            <tr>
-                <td><?= esc($p['nombre_receta']) ?></td>
-
-                <td><?= date('d/m/Y', strtotime($p['fecha_produccion'])) ?></td>
-
-                <td><?= $p['cantidad_producida'] ?></td>
-
-                <td>$<?= number_format($p['costo_total_lote'], 2) ?></td>
-
-                <td class="fw-bold text-success">
-                    $<?= number_format($p['costo_adicional_total'], 2) ?>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <tr>
-            <td colspan="5" class="text-center">No hay registros de producción.</td>
-        </tr>
-    <?php endif; ?>
+<div class="glass-card p-0 overflow-hidden" style="background-color: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+                <tr style="font-size: 0.85rem; color: #666; text-transform: uppercase;">
+                    <th class="px-4 py-3">PRODUCTO / RECETA</th>
+                    <th class="py-3">FECHA PRODUCCIÓN</th>
+                    <th class="py-3">STOCK DISPONIBLE</th>
+                    <th class="py-3">COSTO INVERSIÓN</th>
+                    <th class="py-3">PVP SUGERIDO</th>
+                    <th class="py-3 text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody style="font-size: 0.9rem;">
+                <?php if(!empty($producciones) && is_array($producciones)): ?>
+                    <?php foreach ($producciones as $p): ?>
+                    <tr>
+                        <td class="px-4 py-3">
+                            <i class="fa-solid fa-cake-candles me-2" style="color: #f26185;"></i> 
+                            <span class="fw-bold"><?= esc($p['nombre_postre'] ?? $p['nombre_receta'] ?? 'Producto') ?></span>
+                        </td>
+                        <td class="py-3"><?= date('d/m/Y', strtotime($p['fecha_produccion'])) ?></td>
+                        <td class="py-3">
+                            <span class="badge rounded-pill px-3" style="background-color: rgba(22, 194, 232, 0.1); color: #16c2e8; border: 1px solid #16c2e8;">
+                                <?= $p['cantidad_producida'] ?? $p['stock_disponible'] ?? '0' ?> uds
+                            </span>
+                        </td>
+                        <td class="py-3">$ <?= number_format($p['costo_total_lote'] ?? $p['costo_inversion'] ?? 0, 2) ?></td>
+                        <td class="py-3 text-success fw-bold">$ <?= number_format($p['costo_adicional_total'] ?? $p['pvp_sugerido'] ?? 0, 2) ?></td>
                         
-                           
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+                        <td class="py-3">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <?php 
+                                    // Usamos el ID exacto de tu tabla SQL: Id_produccion
+                                    $id_limpio = $p['Id_produccion'] ?? $p['id'] ?? null; 
+                                ?>
+
+                                <?php if ($id_limpio): ?>
+                                    <a href="<?= base_url('inventario/ver/' . $id_limpio) ?>" class="mx-2" style="color: #16c2e8; font-size: 1.1rem; transition: transform 0.2s;" title="Ver detalle" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+
+                                    <button onclick="confirmarEliminacion(<?= $id_limpio ?>, '<?= base_url('inventario/eliminar') ?>')" 
+                                            class="mx-2" style="color: #dc3545; border: none; background: none; cursor: pointer; padding: 0; font-size: 1.1rem; transition: transform 0.2s;" title="Eliminar" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                <?php else: ?>
+                                    <span class="text-muted small">Sin ID</span>
+                                <?php endif; ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="fa-solid fa-box-open d-block fs-1 mb-2 opacity-25"></i>
+                            No hay producciones activas registradas.
+                        </td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
     </div>
 </div>
 
-<style>
-    /* Mantenemos tu estética de fondo */
-    body {
-        background-image: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)),
-            url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important;
-        background-size: cover !important;
-        background-attachment: fixed !important;
-    }
-    main, .wrapper, #content { background: transparent !important; }
-    .card {
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        backdrop-filter: blur(8px);
-        border-radius: 15px;
-    }
-    .table thead th { border: none; padding: 15px 10px; }
-</style>
+<div class="mt-2 px-2 text-muted">
+    <small style="font-family: 'Quicksand', sans-serif;">Recetas listas para la venta en inventario</small>
+</div>
 
 <?= $this->endSection() ?>
