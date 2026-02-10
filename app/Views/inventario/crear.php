@@ -18,25 +18,27 @@
         <div class="row g-3 align-items-end">
             <div class="col-md-7">
                 <label class="form-label fw-bold" style="color: #444;">¿Qué vas a producir hoy?</label>
-                <?php //Añado acá para que me muestre la lista de las recetas guardadas en el recetario de la página y deje seleccionarlas ?>
-                <select name="id_receta" class="form-select" style="border-radius: 12px; border: 1px solid #ddd; padding: 12px;" required>
+                <select name="id_receta" id="select_receta" class="form-select" style="border-radius: 12px; border: 1px solid #ddd; padding: 12px;" required>
                     <option value="">Selecciona una receta...</option>
-                        <?php if (!empty($recetas)): ?>
-                            <?php foreach ($recetas as $receta): ?>
-                    <option value="<?= $receta['Id_receta'] ?>">
-                    <?= esc($receta['nombre_postre']) ?>
-                    </option>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                    <option value="" disabled>No tienes recetas guardadas aún</option>
-                        <?php endif; ?>
+                    <?php if (!empty($recetas)): ?>
+                        <?php foreach ($recetas as $receta): ?>
+                            <option
+                                value="<?= $receta['Id_receta'] ?>"
+                                data-porciones="<?= $receta['porciones'] ?>"
+                            >
+                                <?= esc($receta['nombre_postre']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="" disabled>No tienes recetas guardadas aún</option>
+                    <?php endif; ?>
                 </select>
             </div>
 
             <div class="col-md-5">
                 <label class="form-label fw-bold" style="color: #444;">Cantidad de Porciones / Unidades</label>
                 <div class="input-group">
-                    <input type="number" name="stock_disponible" class="form-control" style="border-radius: 12px 0 0 12px; border: 1px solid #ddd; padding: 12px;" placeholder="Ej: 8" required>
+                    <input type="number" name="stock_disponible" id="stock_input" class="form-control" style="border-radius: 12px 0 0 12px; border: 1px solid #ddd; padding: 12px;" placeholder="Ej: 8" required>
                     <span class="input-group-text bg-white" style="border-radius: 0 12px 12px 0; border: 1px solid #ddd; color: #888;">uds</span>
                 </div>
             </div>
@@ -45,7 +47,7 @@
         <div class="mt-4 p-3 rounded-3" style="background-color: rgba(22, 194, 232, 0.08); border: 1px solid #16c2e8;">
             <small style="color: #0d6efd; font-weight: 500;">
                 <i class="fa-solid fa-circle-info me-2"></i> 
-                Nota: Al registrar, se descontarán los ingredientes automáticamente del inventario de insumos.
+                Nota: Al registrar, se sumará al inventario y se guardará el costo actual de la receta.
             </small>
         </div>
 
@@ -57,5 +59,32 @@
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selector = document.getElementById('select_receta');
+    const inputStock = document.getElementById('stock_input');
+
+    selector.addEventListener('change', function() {
+        // Obtenemos la opción seleccionada
+        const selectedOption = this.options[this.selectedIndex];
+        
+        // Obtenemos el valor del atributo data-porciones
+        const porcionesBase = selectedOption.getAttribute('data-porciones');
+
+        if (porcionesBase) {
+            // Lo ponemos en el input automáticamente
+            inputStock.value = porcionesBase;
+            
+            // Un pequeño efecto visual de "parpadeo" para avisar que cambió
+            inputStock.style.transition = "background-color 0.3s";
+            inputStock.style.backgroundColor = "#e8faff";
+            setTimeout(() => {
+                inputStock.style.backgroundColor = "white";
+            }, 500);
+        }
+    });
+});
+</script>
 
 <?= $this->endSection() ?>

@@ -56,20 +56,20 @@ class Inventario extends BaseController
             $dataUpdate = [
                 'cantidad_producida'    => $nueva_cantidad_total,
                 'fecha_produccion'      => $fecha, 
-                'costo_adicional_total' => $registroExistente['costo_adicional_total'] + ($receta['precio_venta_sug'] * $cantidad_nueva), 
-                'costo_total_lote'      => $registroExistente['costo_total_lote'] + ($receta['costo_ingredientes'] * $cantidad_nueva)
+                'costo_adicional_total' => $registroExistente['costo_adicional_total'] + ($receta['precio_venta_sug'] ), 
+                'costo_total_lote'      => $registroExistente['costo_total_lote'] + ($receta['costo_ingredientes'] )
             ];
 
             $inventarioModel->update($registroExistente['Id_produccion'], $dataUpdate);
-            $mensaje = "Inventario actualizado satisfactoriamente.";
+          $mensaje = "Inventario actualizado: ahora tienes $nueva_cantidad_total porciones de {$receta['nombre_postre']}.";
         } else {
             $dataInsert = [
                 'Id_receta'             => $id_receta,
                 'nombre_receta'         => $receta['nombre_postre'],
                 'cantidad_producida'    => $cantidad_nueva,
                 'fecha_produccion'      => $fecha,
-                'costo_adicional_total' => $receta['precio_venta_sug'] * $cantidad_nueva,
-                'costo_total_lote'      => $receta['costo_ingredientes'] * $cantidad_nueva
+                'costo_adicional_total' => $receta['precio_venta_sug'] ,
+                'costo_total_lote'      => $receta['costo_ingredientes'] 
             ];
 
             $inventarioModel->insert($dataInsert);

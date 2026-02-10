@@ -2,6 +2,22 @@
 
 <?= $this->section('contenido') ?>
 
+<?php if (session()->getFlashdata('mensaje')): ?>
+    <div class="alert alert-success alert-dismissible fade show shadow-sm border-0" role="alert" style="border-radius: 15px; background-color: #d1f7ec; color: #0f5132;">
+        <i class="fa-solid fa-circle-check me-2"></i>
+        <?= session()->getFlashdata('mensaje') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0" role="alert" style="border-radius: 15px; background-color: #f8d7da; color: #842029;">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>
+        <?= session()->getFlashdata('error') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 style="font-family: 'Quicksand', sans-serif; font-weight: 700; color: #825a42;">
         Producción Activa
