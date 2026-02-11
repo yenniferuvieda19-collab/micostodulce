@@ -26,8 +26,8 @@ class Ventas extends BaseController
     $inventarioModel = new InventarioModel();
     
     // Traemos solo lo que tenga porciones disponibles > 0
-    $data['producciones'] = $inventarioModel->where('Id_usuario', session()->get('id'))
-                                            ->where('porciones_disponibles >', 0)
+    $data['producciones'] = $inventarioModel -> where('Id_usuario', session()->get('Id_usuario'))
+                                            ->where('cantidad_producida >', 0)
                                             ->findAll();
 
     return view('ventas/crear', $data);
@@ -39,3 +39,8 @@ class Ventas extends BaseController
     return view('ventas/detalle'); 
     }
 }
+
+
+
+
+// wladi sigue con lo de lasventas ya en elformulario de registrar una venta te sale lasrecetas que hay disponible en peoduccion

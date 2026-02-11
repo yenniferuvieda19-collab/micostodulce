@@ -42,6 +42,8 @@ class Inventario extends BaseController
         $id_receta = $this->request->getPost('id_receta');
         $cantidad_nueva = $this->request->getPost('stock_disponible'); 
         $fecha = date('Y-m-d');
+        $idUsuario= session()->get('Id_usuario');
+       // $idUsuario = $this->request->getPost('Id_usuario'); 
 
         $receta = $recetaModel->find($id_receta);
         if (!$receta) {
@@ -54,6 +56,7 @@ class Inventario extends BaseController
             $nueva_cantidad_total = $registroExistente['cantidad_producida'] + $cantidad_nueva;
 
             $dataUpdate = [
+                'Id_usuario'            => $idUsuario,
                 'cantidad_producida'    => $nueva_cantidad_total,
                 'fecha_produccion'      => $fecha, 
                 'costo_adicional_total' => $registroExistente['costo_adicional_total'] + ($receta['precio_venta_sug'] ), 
@@ -64,6 +67,7 @@ class Inventario extends BaseController
           $mensaje = "Inventario actualizado: ahora tienes $nueva_cantidad_total porciones de {$receta['nombre_postre']}.";
         } else {
             $dataInsert = [
+                'Id_usuario'            => $idUsuario,
                 'Id_receta'             => $id_receta,
                 'nombre_receta'         => $receta['nombre_postre'],
                 'cantidad_producida'    => $cantidad_nueva,

@@ -14,7 +14,8 @@ class InventarioModel extends Model
     // Campos que permitiremos que el sistema escriba o lea
     // Asegúrate de que coincidan con los nombres en tu base de datos
     protected $allowedFields = [
-        'Id_produccion', 
+        'Id_produccion',
+        'Id_usuario', 
         'Id_receta', 
         'nombre_receta', 
         'cantidad_producida',  

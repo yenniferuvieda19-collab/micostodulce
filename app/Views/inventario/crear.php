@@ -25,6 +25,7 @@
                             <option
                                 value="<?= $receta['Id_receta'] ?>"
                                 data-porciones="<?= $receta['porciones'] ?>"
+                                 value="<?= $receta['Id_usuario'] ?>"
                             >
                                 <?= esc($receta['nombre_postre']) ?>
                             </option>

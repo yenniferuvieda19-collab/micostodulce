@@ -17,7 +17,7 @@
                             <label class="form-label fw-bold small text-muted">POSTRE DISPONIBLE</label>
                             <select name="id_inventario" class="form-select rounded-pill border-2" required>
                                 <option value="" disabled selected>Selecciona del inventario...</option>
-                                <?php foreach($productos as $p): ?>
+                                <?php foreach($producciones as $p): ?>
                                     <option value="<?= $p['Id_produccion'] ?>">
                                         <?= $p['nombre_receta'] ?> (Quedan: <?= $p['cantidad_producida'] ?>)
                                     </option>

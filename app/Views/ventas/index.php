@@ -5,9 +5,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold mb-0" style="color: var(--azul-logo);">
-                <i class="fa-solid fa-chart-line me-2" style="color: var(--rosa-logo);"></i>Resumen de Ventas y Rendimiento
+                <i class="fa-solid fa-chart-line me-2" style="color: var(--rosa-logo);"></i>Registra tus ventas
             </h2>
-            <p class="text-muted small">Control de porciones, ganancias y reinversión.</p>
+            <p class="text-muted small">registro de ventas para tu control</p>
         </div>
         <a href="<?= base_url('ventas/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm" style="background-color: var(--azul-logo); border:none;">
             <i class="fa-solid fa-cart-plus me-1"></i> Registrar Venta
@@ -20,16 +20,12 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="bg-light">
                         <tr class="small text-uppercase text-muted fw-bold">
-                            <th class="ps-4 py-3">Postre / Elaboración</th>
-                            <th class="py-3 text-center">Preparado</th>
-                            <th class="py-3 text-center">Total Porciones</th>
-                            <th class="py-3 text-center">Vendidas</th>
-                            <th class="py-3 text-center">Perdidas</th>
-                            <th class="py-3 text-end">Ganancia Total</th>
-                            <th class="py-3 text-end">Pérdida ($)</th>
-                            <th class="py-3 text-end">Reinversión</th>
-                            <th class="text-center pe-4">Acciones</th>
-                        </tr>
+                            <th class="ps-4 py-3">Postre </th>
+                            <th class="py-3 text-center">cantidad de producto</th>
+                            <th class="py-3 text-center">precio unitario</th>
+                            <th class="py-3 text-center">total recibido</th>
+                            <th class="py-3 text-center">Fecha</th>
+                           
                     </thead>
                     <tbody>
                         <?php if (!empty($resumen)): ?>
