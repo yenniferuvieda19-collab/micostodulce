@@ -112,11 +112,25 @@ class Inventario extends BaseController
 
     // eliminar
     public function eliminar($id)
-    {
-        $inventarioModel = new inventarioModel();
+{
+    $inventarioModel = new inventarioModel();
+
+    try {
+        // Intentamos borrar el registro
         if ($inventarioModel->delete($id)) {
-            return redirect()->to(base_url('inventario'))->with('mensaje', 'Registro eliminado.');
+            return redirect()->to(base_url('inventario'))->with('mensaje', 'Registro eliminado correctamente.');
         }
-        return redirect()->to(base_url('inventario'))->with('error', 'No se pudo eliminar.');
+        
+        return redirect()->to(base_url('inventario'))->with('error', 'No se pudo encontrar el registro para eliminar.');
+
+    } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+        // Verificamos si el error es por la restricción de llave foránea (Error 1451)
+        if (strpos($e->getMessage(), '1451') !== false) {
+            return redirect()->to(base_url('inventario'))->with('error', 'No puedes eliminar esta producción porque ya tiene ventas registradas asociadas.');
+        }
+
+        // Si es otro tipo de error de base de datos
+        return redirect()->to(base_url('inventario'))->with('error', 'no puedes borrar este registro porque tienes ventas de esta produccion.');
     }
+}
 }

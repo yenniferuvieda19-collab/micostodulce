@@ -103,14 +103,25 @@
                                 <td class="py-3 fw-bold text-muted">$ <?= number_format($p['costo_unitario'] ?? 0, 2) ?></td>
                                 
                                 <td class="py-3">
-                                    <div class="d-flex justify-content-center align-items-center">
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
                                         <?php $id_limpio = $p['Id_produccion'] ?? $p['id'] ?? null; ?>
 
                                         <?php if ($id_limpio): ?>
-                                            <a href="<?= base_url('inventario/ver/' . $id_limpio) ?>" class="btn btn-sm rounded-pill px-3 fw-bold" style="background-color: rgba(22, 194, 232, 0.1); color: #16c2e8; border: 1px solid #16c2e8; transition: all 0.2s;" title="Ver detalle">
-                                                <i class="fa-solid fa-eye me-1"></i> Ver Detalle
+                                            <a href="<?= base_url('inventario/ver/' . $id_limpio) ?>" 
+                                               class="btn btn-sm rounded-pill px-3 fw-bold" 
+                                               style="background-color: rgba(22, 194, 232, 0.1); color: #16c2e8; border: 1px solid #16c2e8; transition: all 0.2s;" 
+                                               title="Ver detalle">
+                                                <i class="fa-solid fa-eye me-1"></i> Ver
                                             </a>
-                                            <?php else: ?>
+
+                                            <a href="<?= base_url('inventario/eliminar/' . $id_limpio) ?>" 
+                                               class="btn btn-sm rounded-pill px-3 fw-bold" 
+                                               style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid #dc3545; transition: all 0.2s;" 
+                                               onclick="return confirm('¿Estás seguro de que deseas eliminar este registro de producción?')"
+                                               title="Eliminar">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        <?php else: ?>
                                             <span class="text-muted small">Sin ID</span>
                                         <?php endif; ?>
                                     </div>

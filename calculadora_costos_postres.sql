@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-02-2026 a las 16:23:17
+-- Tiempo de generación: 12-02-2026 a las 08:47:03
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -46,6 +46,7 @@ CREATE TABLE `gastos_adicionales` (
   `Id_usuario` int(11) NOT NULL,
   `nombre_gasto` varchar(100) NOT NULL,
   `categoria` enum('Empaque','Servicio','Mano de Obra','Otro') DEFAULT 'Otro',
+  `es_fijo` tinyint(1) NOT NULL DEFAULT 0,
   `precio_unitario` decimal(10,2) NOT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
   `es_paquete` tinyint(1) DEFAULT 0,
@@ -57,11 +58,35 @@ CREATE TABLE `gastos_adicionales` (
 -- Volcado de datos para la tabla `gastos_adicionales`
 --
 
-INSERT INTO `gastos_adicionales` (`Id_gasto`, `Id_usuario`, `nombre_gasto`, `categoria`, `precio_unitario`, `created_at`, `es_paquete`, `cantidad_paquete`, `costo_paquete`) VALUES
-(1, 1, 'Caja para torta', 'Empaque', 1.50, '2026-01-12 20:42:34', 0, 1, 0.00),
-(2, 1, 'Vasos', 'Empaque', 0.10, '2026-01-12 21:40:16', 1, 50, 5.00),
-(3, 1, 'Luz', 'Servicio', 0.50, '2026-01-12 21:40:42', 0, 0, 0.00),
-(4, 1, 'Mano de Obra', 'Mano de Obra', 0.50, '2026-01-12 21:42:19', 0, 0, 0.00);
+INSERT INTO `gastos_adicionales` (`Id_gasto`, `Id_usuario`, `nombre_gasto`, `categoria`, `es_fijo`, `precio_unitario`, `created_at`, `es_paquete`, `cantidad_paquete`, `costo_paquete`) VALUES
+(5, 6, 'Delivery', '', 1, 3.00, '2026-02-12 00:36:45', 0, 1, 0.00),
+(6, 6, 'Mano de Obra', '', 0, 10.00, '2026-02-12 00:37:01', 0, 1, 0.00),
+(7, 7, 'Delivery', '', 1, 2.00, '2026-02-12 02:17:14', 0, 1, 0.00),
+(8, 7, 'Mano de obra', '', 0, 30.00, '2026-02-12 02:17:38', 0, 1, 0.00);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `gastos_recetas`
+--
+
+CREATE TABLE `gastos_recetas` (
+  `Id_gasto_receta` int(11) NOT NULL,
+  `Id_receta` int(11) NOT NULL,
+  `Id_gasto` int(11) NOT NULL,
+  `precio_aplicado` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `gastos_recetas`
+--
+
+INSERT INTO `gastos_recetas` (`Id_gasto_receta`, `Id_receta`, `Id_gasto`, `precio_aplicado`) VALUES
+(6, 30, 0, 2.00),
+(7, 30, 0, 5.05),
+(8, 31, 0, 2.00),
+(9, 32, 0, 2.00),
+(10, 33, 0, 5.32);
 
 -- --------------------------------------------------------
 
@@ -84,16 +109,19 @@ CREATE TABLE `ingredientes` (
 --
 
 INSERT INTO `ingredientes` (`Id_ingrediente`, `Id_usuario`, `Id_unidad_base`, `nombre_ingrediente`, `precio_compra`, `cantidad_paquete`, `costo_unidad`) VALUES
-(32, 1, 2, 'Harina de Trigo', 0.00, 1.00, 6.0000),
-(33, 1, 2, 'Azúcar', 0.00, 1.00, 5.0000),
-(34, 1, 5, 'Huevos', 0.00, 24.00, 7.3000),
-(35, 1, 4, 'Leche', 0.00, 1.00, 4.7500),
-(36, 1, 1, 'Cacao en Polvo', 0.00, 500.00, 2.8000),
-(38, 1, 5, 'P01', 0.00, 10.00, 10.0000),
-(39, 1, 5, 'P02', 0.00, 10.00, 10.0000),
-(40, 1, 5, 'P03', 0.00, 10.00, 10.0000),
-(45, 1, 2, 'Avena', 0.00, 1.00, 2.7500),
-(47, 2, 5, 'huevos', 0.00, 12.00, 4.0000);
+(48, 4, 5, 'huevos', 0.00, 24.00, 7.0000),
+(49, 4, 1, 'harina', 0.00, 1000.00, 3.0000),
+(50, 4, 1, 'azucar', 0.00, 1000.00, 4.0000),
+(51, 4, 1, 'cacao', 0.00, 300.00, 1.0000),
+(53, 6, 1, 'P01', 0.00, 1000.00, 10.0000),
+(54, 6, 3, 'P02', 0.00, 1000.00, 10.0000),
+(55, 6, 5, 'P03', 0.00, 1000.00, 10.0000),
+(56, 7, 5, 'Huevos', 0.00, 15.00, 4.3000),
+(57, 7, 1, 'Harina ', 0.00, 900.00, 2.0000),
+(58, 7, 1, 'Leche', 0.00, 900.00, 12.0000),
+(59, 7, 1, 'Mantequilla', 0.00, 500.00, 2.5000),
+(60, 7, 1, 'Cacao', 0.00, 200.00, 4.7600),
+(61, 7, 2, 'Azucar', 0.00, 1.00, 1.7000);
 
 -- --------------------------------------------------------
 
@@ -114,21 +142,31 @@ CREATE TABLE `ingredientes_recetas` (
 --
 
 INSERT INTO `ingredientes_recetas` (`Id_detalle`, `Id_receta`, `Id_ingrediente`, `cantidad_requerida`, `unidad_receta`) VALUES
-(127, 13, 35, 1000.00, 'unidad'),
-(128, 13, 36, 500.00, 'unidad'),
-(129, 13, 33, 1000.00, 'unidad'),
-(130, 14, 38, 10.00, 'unidad'),
-(131, 14, 39, 10.00, 'unidad'),
-(132, 14, 40, 10.00, 'unidad'),
-(135, 11, 32, 2.50, 'unidad'),
-(136, 11, 33, 1.50, 'unidad'),
-(137, 11, 34, 8.00, 'unidad'),
-(138, 11, 35, 1.00, 'unidad'),
-(139, 11, 36, 500.00, 'unidad'),
-(152, 18, 38, 10.00, 'unidad'),
-(156, 19, 38, 5.00, 'unidad'),
-(157, 19, 39, 5.00, 'unidad'),
-(158, 19, 40, 5.00, 'unidad');
+(195, 23, 49, 600.00, 'unidad'),
+(196, 23, 50, 200.00, 'unidad'),
+(197, 23, 48, 4.00, 'unidad'),
+(198, 23, 51, 100.00, 'unidad'),
+(202, 24, 49, 500.00, 'unidad'),
+(203, 24, 48, 2.00, 'unidad'),
+(204, 24, 50, 149.99, 'unidad'),
+(208, 27, 53, 1000.00, 'unidad'),
+(209, 27, 54, 1000.00, 'unidad'),
+(210, 27, 55, 1000.00, 'unidad'),
+(214, 28, 53, 1000.00, 'unidad'),
+(215, 28, 54, 1000.00, 'unidad'),
+(216, 28, 55, 1000.00, 'unidad'),
+(232, 30, 61, 600.00, 'unidad'),
+(233, 30, 60, 150.00, 'unidad'),
+(234, 30, 57, 700.00, 'unidad'),
+(235, 30, 56, 5.00, 'unidad'),
+(236, 30, 58, 600.00, 'unidad'),
+(237, 30, 59, 250.00, 'unidad'),
+(238, 33, 60, 150.00, 'unidad'),
+(239, 33, 61, 600.00, 'unidad'),
+(240, 33, 57, 700.00, 'unidad'),
+(241, 33, 58, 690.00, 'unidad'),
+(242, 33, 56, 4.00, 'unidad'),
+(243, 33, 59, 250.00, 'unidad');
 
 -- --------------------------------------------------------
 
@@ -138,13 +176,25 @@ INSERT INTO `ingredientes_recetas` (`Id_detalle`, `Id_receta`, `Id_ingrediente`,
 
 CREATE TABLE `produccion` (
   `Id_produccion` int(11) NOT NULL,
+  `Id_usuario` int(11) NOT NULL,
   `Id_receta` int(11) NOT NULL,
+  `nombre_receta` varchar(255) NOT NULL,
   `cantidad_producida` int(11) NOT NULL,
-  `nombre_receta` varchar(150) NOT NULL,
+  `costo_unitario` decimal(10,2) NOT NULL,
   `costo_adicional_total` decimal(10,2) NOT NULL,
   `costo_total_lote` decimal(10,2) NOT NULL,
   `fecha_produccion` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `produccion`
+--
+
+INSERT INTO `produccion` (`Id_produccion`, `Id_usuario`, `Id_receta`, `nombre_receta`, `cantidad_producida`, `costo_unitario`, `costo_adicional_total`, `costo_total_lote`, `fecha_produccion`) VALUES
+(17, 4, 23, 'torta de chocolate', 20, 0.00, 10.66, 8.20, '2026-02-11 00:00:00'),
+(18, 4, 24, 'ponques', 5, 0.00, 3.49, 2.68, '2026-02-11 00:00:00'),
+(20, 7, 30, 'Torta Vainilla', 12, 2.10, 25.28, 33.66, '2026-02-12 00:00:00'),
+(22, 7, 33, 'Bizcocho marmoleado', 0, 4.33, -0.04, 23.06, '2026-02-12 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -157,8 +207,8 @@ CREATE TABLE `recetas` (
   `Id_usuario` int(11) NOT NULL,
   `nombre_postre` varchar(150) NOT NULL,
   `porciones` int(11) NOT NULL,
-  `costo_ingredientes` decimal(10,2) DEFAULT NULL,
-  `precio_venta_sug` decimal(10,2) DEFAULT NULL,
+  `costo_ingredientes` decimal(10,2) NOT NULL,
+  `precio_venta_sug` decimal(10,2) NOT NULL,
   `notas` text DEFAULT NULL,
   `porcentaje_ganancia` int(11) NOT NULL DEFAULT 30
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -168,11 +218,12 @@ CREATE TABLE `recetas` (
 --
 
 INSERT INTO `recetas` (`Id_receta`, `Id_usuario`, `nombre_postre`, `porciones`, `costo_ingredientes`, `precio_venta_sug`, `notas`, `porcentaje_ganancia`) VALUES
-(11, 1, 'Torta de Chocolate', 8, 5.26, 10.52, 'Esto es una prueba, al parecer todo funciona.', 50),
-(13, 1, 'Helado', 25, 12.55, 25.10, 'Helados caseros de vaso.', 50),
-(14, 1, 'PRUEBA', 10, 50.00, 100.00, 'PRUEBA 01-05', 50),
-(18, 1, 'Venta Individual', 1, 10.00, 20.00, '', 50),
-(19, 1, 'GALLETAS', 25, 15.00, 30.00, '', 50);
+(23, 4, 'torta de chocolate', 10, 4.10, 5.33, '', 30),
+(24, 4, 'ponques', 5, 2.68, 3.49, '', 30),
+(27, 6, 'PRUEBA01', 1, 36.00, 54.00, '', 50),
+(28, 6, 'PRUEBA02', 10, 30.00, 45.00, '', 50),
+(30, 7, 'Torta Vainilla', 12, 16.83, 25.24, 'Hollaaaaa', 50),
+(33, 7, 'Bizcocho marmoleado', 8, 23.06, 34.60, '', 50);
 
 -- --------------------------------------------------------
 
@@ -187,18 +238,6 @@ CREATE TABLE `tokens_temporales` (
   `fecha_expiracion` datetime NOT NULL,
   `fecha_uso` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `tokens_temporales`
---
-
-INSERT INTO `tokens_temporales` (`Id_token`, `Id_usuario`, `token`, `fecha_expiracion`, `fecha_uso`) VALUES
-(1, 1, '$2y$10$j1u38dc4kUS5OTnW5llTB.ja9EjoKHM1dwq4N2O.KBeD071Ubnpd6', '2026-01-12 20:51:34', NULL),
-(2, 2, '$2y$10$1YYrsiqkVKnpC0P88mGq3OdgMBrKh3GmRrfKImwZxs6XXkzww.wvi', '2026-02-05 01:55:46', NULL),
-(3, 3, '$2y$10$vLuQZ.RgkWc8l9wfUckaleR1VWMjZ3C31Sh39fvreXoQxMdPrRDUu', '2026-02-05 02:20:20', NULL),
-(4, 2, '$2y$10$6aNwSOxOu4vWVNnSSmKghOvi7QeT244h8hA4Dh5IZBFfsa1Of0c4W', '2026-02-05 02:23:09', NULL),
-(5, 2, '$2y$10$9bQbesT139uPaGDAxwwKYuRISI.gIwvAT0L4RDv.g..wJJ1UzeQZq', '2026-02-06 03:01:54', NULL),
-(6, 2, '$2y$10$9JNJCQTJ60ktHUIIFCIMbe518vkFDJmOcMv7B2eWqQZYkXo7e36mm', '2026-02-08 20:07:24', NULL);
 
 -- --------------------------------------------------------
 
@@ -254,9 +293,10 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`Id_usuario`, `Nombre`, `Correo`, `Contraseña`) VALUES
-(1, 'José', 'josewladimirgarcia17@gmail.com', '$2y$10$824G0Yhg.35dVZwXrNlW.OXPDHsNH2h7IJL4s0/xl9vGwuzIkaVv.'),
-(2, 'Endulzate ', 'eilynmartinez1812@gmail.com', '$2y$10$SflpBOYHPPfNKgXQbU6oieHBN17kZDx7Qep0ZdKn1d0N.jsOAFJ72'),
-(3, 'ay', 'garciaandrese2603@gmail.com', '$2y$10$vvqDnG.u.InZTyCS8N5LmuciuuNq7d6K/yiOaWi9fSerzsMgMr96u');
+(4, 'Anyel', 'anyeldaniel0205@gmail.com', '$2y$10$OaXYB.DcIUtU6ruXz2rtEeOTgKVczoT9N7zkYaEZZrLcRDS.ILEHa'),
+(5, 'Anyel2', 'anyelsilva0205@gmail.com', '$2y$10$SDTl1QFPszQl5FWxM6vWWu5ERAkM9hcEnHTo8LZyHdCgp6.RbwGLu'),
+(6, 'JoséBackend', 'wladimirgarcia145@gmail.com', '$2y$10$BkM9m36S/sdMmOsmja/9zuG7Nd6XJLgP/TtQAHPulzl1b/O9e75iS'),
+(7, 'Dulce Delicia', 'garciaandrese2603@gmail.com', '$2y$10$K1ZCxKZyRGplSs53vloXOexlc/3uR.hSsbsP2ovE2tuInk3YKf87K');
 
 -- --------------------------------------------------------
 
@@ -266,11 +306,25 @@ INSERT INTO `usuarios` (`Id_usuario`, `Nombre`, `Correo`, `Contraseña`) VALUES
 
 CREATE TABLE `ventas` (
   `Id_venta` int(11) NOT NULL,
-  `Id_receta` int(11) NOT NULL,
+  `Id_produccion` int(11) NOT NULL,
+  `Id_usuario` int(11) NOT NULL,
   `cantidad_vendida` int(11) NOT NULL,
+  `precio_unitario` decimal(10,2) NOT NULL,
   `precio_venta_total` decimal(10,2) NOT NULL,
+  `nombre_receta` varchar(50) NOT NULL,
   `fecha_venta` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ventas`
+--
+
+INSERT INTO `ventas` (`Id_venta`, `Id_produccion`, `Id_usuario`, `cantidad_vendida`, `precio_unitario`, `precio_venta_total`, `nombre_receta`, `fecha_venta`) VALUES
+(1, 20, 7, 5, 2.10, 10.50, 'Torta Vainilla', '2026-02-12 00:00:00'),
+(2, 20, 7, 6, 2.10, 12.60, 'Torta Vainilla', '2026-02-12 00:00:00'),
+(3, 20, 7, 1, 2.10, 2.10, 'Torta Vainilla', '2026-02-12 00:00:00'),
+(4, 22, 7, 3, 4.33, 12.99, 'Bizcocho marmoleado', '2026-02-12 00:00:00'),
+(5, 22, 7, 5, 4.33, 21.65, 'Bizcocho marmoleado', '2026-02-12 00:00:00');
 
 --
 -- Índices para tablas volcadas
@@ -289,6 +343,14 @@ ALTER TABLE `costos_adicionales`
 ALTER TABLE `gastos_adicionales`
   ADD PRIMARY KEY (`Id_gasto`),
   ADD KEY `Id_usuario` (`Id_usuario`);
+
+--
+-- Indices de la tabla `gastos_recetas`
+--
+ALTER TABLE `gastos_recetas`
+  ADD PRIMARY KEY (`Id_gasto_receta`),
+  ADD KEY `fk_receta` (`Id_receta`),
+  ADD KEY `fk_gasto` (`Id_gasto`);
 
 --
 -- Indices de la tabla `ingredientes`
@@ -311,7 +373,8 @@ ALTER TABLE `ingredientes_recetas`
 --
 ALTER TABLE `produccion`
   ADD PRIMARY KEY (`Id_produccion`),
-  ADD KEY `idx_produccion_recetas` (`Id_receta`);
+  ADD KEY `idx_produccion_recetas` (`Id_receta`),
+  ADD KEY `index_produccion_usuario` (`Id_usuario`);
 
 --
 -- Indices de la tabla `recetas`
@@ -351,7 +414,8 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `ventas`
   ADD PRIMARY KEY (`Id_venta`),
-  ADD KEY `idx_ventas_recetas` (`Id_receta`);
+  ADD KEY `idx_ventas_recetas` (`Id_produccion`),
+  ADD KEY `idx_produccion_usuarios` (`Id_usuario`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -367,31 +431,37 @@ ALTER TABLE `costos_adicionales`
 -- AUTO_INCREMENT de la tabla `gastos_adicionales`
 --
 ALTER TABLE `gastos_adicionales`
-  MODIFY `Id_gasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Id_gasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT de la tabla `gastos_recetas`
+--
+ALTER TABLE `gastos_recetas`
+  MODIFY `Id_gasto_receta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `ingredientes`
 --
 ALTER TABLE `ingredientes`
-  MODIFY `Id_ingrediente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `Id_ingrediente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT de la tabla `ingredientes_recetas`
 --
 ALTER TABLE `ingredientes_recetas`
-  MODIFY `Id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=159;
+  MODIFY `Id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=244;
 
 --
 -- AUTO_INCREMENT de la tabla `produccion`
 --
 ALTER TABLE `produccion`
-  MODIFY `Id_produccion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_produccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `recetas`
 --
 ALTER TABLE `recetas`
-  MODIFY `Id_receta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `Id_receta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `tokens_temporales`
@@ -415,13 +485,13 @@ ALTER TABLE `unidades_conversion`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `Id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `Id_venta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
@@ -458,7 +528,8 @@ ALTER TABLE `ingredientes_recetas`
 -- Filtros para la tabla `produccion`
 --
 ALTER TABLE `produccion`
-  ADD CONSTRAINT `produccion_ibfk_1` FOREIGN KEY (`Id_receta`) REFERENCES `recetas` (`Id_receta`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `produccion_ibfk_1` FOREIGN KEY (`Id_receta`) REFERENCES `recetas` (`Id_receta`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `produccion_ibfk_2` FOREIGN KEY (`Id_usuario`) REFERENCES `usuarios` (`Id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `recetas`
@@ -482,7 +553,8 @@ ALTER TABLE `unidades_conversion`
 -- Filtros para la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`Id_receta`) REFERENCES `recetas` (`Id_receta`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `ventas_ibfk_2` FOREIGN KEY (`Id_usuario`) REFERENCES `usuarios` (`Id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ventas_ibfk_3` FOREIGN KEY (`Id_produccion`) REFERENCES `produccion` (`Id_produccion`) ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
