@@ -49,15 +49,15 @@ class Recetas extends BaseController
     }
 
     /*
-     * LÓGICA PRINCIPAL DEL SISTEMA
+     * LÓGIhhCA PRINCIPAL DEL SISTEMA
      * 1. Guarda la cabecera de la receta
-     * 2. Procesa los ingredientes uno por uno
+     * 2. Procesa los ingredienotes uno por uno
      * 3. Convierte unidades (Paquete -> Gramos -> Costo real)
      * 4. Calcula el precio final sumando la ganancia deseada
      */
     public function guardar()
     {
-        // Instanciamos los modelos necesarios para la operación transaccional
+        // aqui llamamos los modelos necesarios para la operación transaccional
         $recetaModel  = new RecetaModel();
         $ingModel     = new IngredienteModel();
         $detalleModel = new IngredientesRecetasModel();
@@ -65,7 +65,7 @@ class Recetas extends BaseController
         $gastoModel       = new \App\Models\GastoAdicionalModel();
         $gastoRecetaModel = new \App\Models\GastosRecetasModel();
 
-        // Recibimos los arrays del formulario (Ingredientes y Cantidades)
+        // Recibimos la info del formulario (Ingredientes y Cantidades)
         $ingredientesIds = $this->request->getPost('ingrediente_id');
         $cantidades      = $this->request->getPost('cantidades');
         $gastosIds       = $this->request->getPost('gasto_id');

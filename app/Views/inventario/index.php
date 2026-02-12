@@ -38,6 +38,7 @@
                     <th class="py-3">STOCK DISPONIBLE</th>
                     <th class="py-3">COSTO INVERSIÓN</th>
                     <th class="py-3">PVP SUGERIDO</th>
+                    <th class="py-3">COSTO UNITARIO</th>
                     <th class="py-3 text-center">ACCIONES</th>
                 </tr>
             </thead>
@@ -58,6 +59,12 @@
                         <td class="py-3">$ <?= number_format($p['costo_total_lote'] ?? $p['costo_inversion'] ?? 0, 2) ?></td>
                         <td class="py-3 text-success fw-bold">$ <?= number_format($p['costo_adicional_total'] ?? $p['pvp_sugerido'] ?? 0, 2) ?></td>
                         
+                        
+                        <td class="py-3 fw-bold" style="color: #666;">
+                         $ <?= number_format($p['costo_unitario'] ?? 0, 2) ?>
+                        </td>
+
+
                         <td class="py-3">
                             <div class="d-flex justify-content-center align-items-center">
                                 <?php 

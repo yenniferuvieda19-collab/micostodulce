@@ -7,7 +7,7 @@ use App\Models\RecetaModel;
 
 class Inventario extends BaseController
 {
-    // 1. LISTAR INVENTARIO (Con JOIN para ver los nombres)
+    //  LISTAR INVENTARIO (Con JOIN para ver los nombres)
     public function index()
     {
         $inventarioModel = new inventarioModel();
@@ -21,7 +21,7 @@ class Inventario extends BaseController
         return view('inventario/index', $data);
     }
 
-    // 2. FORMULARIO DE NUEVA PRODUCCIÓN
+    //  FORMULARIO DE NUEVA PRODUCCIÓN
     public function crear()
     {
         $recetaModel = new RecetaModel();
@@ -33,7 +33,7 @@ class Inventario extends BaseController
         return view('inventario/crear', $data);
     }
 
-    // 3. GUARDAR O ACTUALIZAR PRODUCCIÓN
+    //  GUARDAR O ACTUALIZAR PRODUCCIÓN
     public function guardar() 
     {
         $recetaModel = new RecetaModel();
@@ -49,6 +49,8 @@ class Inventario extends BaseController
         if (!$receta) {
             return redirect()->back()->with('error', 'Receta no encontrada');
         }
+         
+        $costo_unitario = $receta['precio_venta_sug'] / $cantidad_nueva;
 
         $registroExistente = $inventarioModel->where('Id_receta', $id_receta)->first();
 
@@ -60,7 +62,8 @@ class Inventario extends BaseController
                 'cantidad_producida'    => $nueva_cantidad_total,
                 'fecha_produccion'      => $fecha, 
                 'costo_adicional_total' => $registroExistente['costo_adicional_total'] + ($receta['precio_venta_sug'] ), 
-                'costo_total_lote'      => $registroExistente['costo_total_lote'] + ($receta['costo_ingredientes'] )
+                'costo_total_lote'      => $registroExistente['costo_total_lote'] + ($receta['costo_ingredientes'] ),
+                'costo_unitario'        => $costo_unitario // Se sobrescribe con el valor actual, no se suma
             ];
 
             $inventarioModel->update($registroExistente['Id_produccion'], $dataUpdate);
@@ -73,7 +76,8 @@ class Inventario extends BaseController
                 'cantidad_producida'    => $cantidad_nueva,
                 'fecha_produccion'      => $fecha,
                 'costo_adicional_total' => $receta['precio_venta_sug'] ,
-                'costo_total_lote'      => $receta['costo_ingredientes'] 
+                'costo_total_lote'      => $receta['costo_ingredientes'] ,
+                'costo_unitario'        => $costo_unitario //  Se guarda por primera vez
             ];
 
             $inventarioModel->insert($dataInsert);
@@ -83,7 +87,7 @@ class Inventario extends BaseController
         return redirect()->to(base_url('inventario'))->with('mensaje', $mensaje);
     }
 
-    // 4. VER DETALLES
+    // VER DETALLES
     public function ver($id)
     {
         $inventarioModel = new inventarioModel();
@@ -98,7 +102,7 @@ class Inventario extends BaseController
         return view('inventario/ver', $data);
     }
 
-    // 5. ELIMINAR
+    // ELIMINAR
     public function eliminar($id)
     {
         $inventarioModel = new inventarioModel();
