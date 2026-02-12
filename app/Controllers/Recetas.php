@@ -49,7 +49,7 @@ class Recetas extends BaseController
     }
 
     /*
-     * LÓGICA PRINCIPAL DEL SISTEMA
+     * LÓGIhhCA PRINCIPAL DEL SISTEMA
      * 1. Guarda la cabecera de la receta
      * 2. Procesa los ingredientes uno por uno
      * 3. Procesa los COSTOS INDIRECTOS (Fijos y Porcentajes)
@@ -68,7 +68,7 @@ class Recetas extends BaseController
         // pero lo ideal es tener el modelo App\Models\GastosRecetasModel
         $gastoRecetaModel = new \App\Models\GastosRecetasModel(); 
 
-        // Recibimos los arrays del formulario (Ingredientes y Cantidades)
+        // Recibimos la info del formulario (Ingredientes y Cantidades)
         $ingredientesIds = $this->request->getPost('ingrediente_id');
         $cantidades      = $this->request->getPost('cantidades');
         $gastosIds       = $this->request->getPost('gasto_id'); // Checkboxes de Gastos

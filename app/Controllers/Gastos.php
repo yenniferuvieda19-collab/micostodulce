@@ -29,7 +29,7 @@ class Gastos extends BaseController
         return view('gastos/crear');
     }
 
-    // Guarda un nuevo gasto. Incluye lógica para calcular costo unitario si el usuario ingresa un paquete
+    // Guarda un nuevo gasto Incluye lógica para calcular costo unitario si el usuario ingresa un paquete
     public function guardar()
     {
         $model = new GastoAdicionalModel();

@@ -18,10 +18,11 @@ class InventarioModel extends Model
         'Id_usuario', 
         'Id_receta', 
         'nombre_receta', 
-        'cantidad_producida',  
+        'cantidad_producida', 
         'costo_adicional_total', 
         'costo_total_lote', 
-        'fecha_produccion'
+        'fecha_produccion',
+        'costo_unitario'
     ];
 
     // Esto hará que CodeIgniter nos devuelva los datos como arreglos
