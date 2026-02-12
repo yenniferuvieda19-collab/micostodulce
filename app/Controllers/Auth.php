@@ -238,7 +238,7 @@ class Auth extends BaseController
         $NuevaContrasena = password_hash($contrasena, PASSWORD_DEFAULT);
         $model->update($idUsuario, ['Contraseña' => $NuevaContrasena]);
 
-        return redirect()->to(base_url('login'))->with('mensaje', 'cambio de contraseña exitoso');
+        return redirect()->to(base_url('login'))->with('mensaje', 'Cambio de contraseña exitoso');
     }
 
     /**

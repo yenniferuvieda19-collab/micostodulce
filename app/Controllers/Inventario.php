@@ -11,10 +11,13 @@ class Inventario extends BaseController
     public function index()
     {
         $inventarioModel = new inventarioModel();
+        $idUsuario = session()->get('Id_usuario'); //Con esto obtengo el ID del usuario logueado
         
-        // Unimos la tabla 'produccion' con 'recetas' para traer 'nombre_postre'
+        //Agrego el where para filtrar solo la búsqueda de recetas del usuario logueado, así corrijo el error de anyel. 
+        // También uno la tabla 'produccion' con 'recetas' para traer 'nombre_postre'
         $data['producciones'] = $inventarioModel->select('produccion.*, recetas.nombre_postre')
             ->join('recetas', 'recetas.Id_receta = produccion.Id_receta', 'left')
+            ->where ('produccion.Id_usuario', $idUsuario) //Aquí agregué el filtro chicosss
             ->orderBy('fecha_produccion', 'DESC')
             ->findAll();
 
@@ -50,7 +53,12 @@ class Inventario extends BaseController
             return redirect()->back()->with('error', 'Receta no encontrada');
         }
 
-        $registroExistente = $inventarioModel->where('Id_receta', $id_receta)->first();
+        /*Modifiqué esta línea Anyel, para que pueda filtrar que la receta de producción que estoy obteniendo al
+        actualizar, sea la misma de mi usuario, o sea, evito que sin querer modifique la de otro usuario por
+        estar en la misma base de datos.*/
+        $registroExistente = $inventarioModel->where('Id_receta', $id_receta)
+                                     ->where('Id_usuario', $idUsuario) //Aquí me aseguro que coincida con la producción de mi usuario 
+                                     ->first();
 
         if ($registroExistente) {
             $nueva_cantidad_total = $registroExistente['cantidad_producida'] + $cantidad_nueva;

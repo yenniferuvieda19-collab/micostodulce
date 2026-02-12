@@ -5,29 +5,24 @@
 <div class="dashboard-container">
     <div class="container">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold" style="color: var(--azul-logo);">Mis Recetas</h2>
-                <p class="fs-5 fw-medium text-dark">Calcula costos y define tus precios de venta.</p>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="<?= base_url("ingredientes") ?>" class="btn rounded-pill px-4 shadow-sm fw-bold text-white" style="background-color: #ee1d6dff; border:none;">
-                    <i class="fa-solid fa-basket-shopping me-2"></i>Insumos
-                </a>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <div class="flex-shrink-0">
+        <h2 class="fw-bold mb-1 text-nowrap" style="color: var(--azul-logo);">
+            <i class="fa-solid fa-book-open me-2"></i>Mis Recetas
+        </h2>
+        <p class="text-muted mb-0">Calcula costos y define tus precios de venta.</p>
+    </div>
+    
+    <div class="d-flex flex-wrap gap-2 w-100 w-md-auto ms-md-auto justify-content-md-end">
+        <a href='<?= base_url('panel') ?>' class="btn rounded-pill px-3 px-md-4 shadow-sm fw-bold bg-white text-dark border flex-fill flex-md-grow-0">
+            <i class="fa-solid fa-arrow-left me-1 me-md-2"></i>Regresar
+        </a>
 
-                <a href="<?= base_url("gastos") ?>" class="btn rounded-pill px-4 shadow-sm fw-bold bg-white text-dark border">
-                    <i class="fa-solid fa-hand-holding-dollar me-2 text-warning"></i>Ir a Costos Indirectos
-                </a>
-
-                <a href="<?= base_url('inventario') ?>" class="btn btn-outline-primary rounded-pill px-4 shadow-sm me-2">
-                    <i class="fa-solid fa-boxes-stacked me-2"></i>Ver Inventario
-                </a>
-
-                <a href="<?= base_url('recetas/crear') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" style="background-color: var(--azul-logo); border:none;">
-                    <i class="fa-solid fa-plus me-2"></i>Nueva Receta
-                </a>
-            </div>
-        </div>  
+        <a href="<?= base_url('recetas/crear') ?>" class="btn btn-primary rounded-pill px-3 px-md-4 shadow-sm fw-bold flex-fill flex-md-grow-0" style="background-color: var(--azul-logo); border:none;">
+            <i class="fa-solid fa-plus me-1 me-md-2"></i>Nueva Receta
+        </a>
+    </div>
+</div>
 
         <?php if (empty($recetas)): ?>
             <div class="text-center py-5">

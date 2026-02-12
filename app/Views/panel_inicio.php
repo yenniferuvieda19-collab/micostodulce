@@ -2,6 +2,63 @@
 
 <?= $this->section('contenido') ?>
 
+<style>
+    body {
+        background-image: linear-gradient(rgba(255, 255, 255, 0.75),
+                rgba(255, 255, 255, 0.75)),
+            url('<?= base_url('assets/img/backgrounds/fondo-login.jpg') ?>') !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-attachment: fixed !important;
+        background-repeat: no-repeat !important;
+    }
+
+    /* Aseguramos que los contenedores del layout sean transparentes */
+    main, .wrapper, #content {
+        background: transparent !important;
+    }
+
+    .dashboard-container {
+        min-height: 100vh;
+        padding-top: 1rem;
+        padding-bottom: 3rem;
+        background: transparent !important;
+    }
+
+    /* Efecto Glassmorphism para TODAS las tarjetas */
+    .card {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: blur(8px);
+        border-radius: 20px !important; /* Bordes más suaves para el dashboard */
+        border: none !important;
+    }
+
+    .hover-scale {
+        transition: transform 0.2s ease;
+    }
+    
+    .hover-scale:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .table thead th {
+        letter-spacing: 1px;
+        font-size: 0.75rem;
+    }
+
+    .btn-white { background-color: #ffffff; border: none; transition: 0.2s; }
+    .btn-white:hover { background-color: #f8f9fa; }
+</style>
+
 <div class="dashboard-container">
     <div class="container px-3 px-md-4">
 
@@ -13,7 +70,7 @@
         </div>
 
         <?php if (isset($mostrarGuia) && $mostrarGuia): ?>
-            <div class="card border-0 shadow-sm mb-5 overflow-hidden" style="border-radius: 20px; border-left: 6px solid var(--rosa-logo) !important;">
+            <div class="card border-0 shadow-sm mb-5 overflow-hidden" style="border-left: 6px solid var(--rosa-logo) !important;">
                 <div class="card-body p-4">
                     <div class="row align-items-center">
                         <div class="col-lg-8">
@@ -141,7 +198,7 @@
         </div>
 
         <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white py-3 border-bottom-0 d-flex justify-content-between align-items-center">
+            <div class="card-header bg-white py-3 border-bottom-0 d-flex justify-content-between align-items-center" style="background: transparent !important;">
                 <h5 class="fw-bold mb-0">Últimas Recetas</h5>
                 <?php if (!empty($ultimasRecetas)): ?>
                     <a href="<?= base_url('recetas') ?>" class="btn btn-sm fw-bold text-decoration-none" style="color: var(--rosa-logo);">Ver todas</a>
@@ -197,41 +254,5 @@
 
     </div>
 </div>
-
-<style>
-    .dashboard-container {
-        min-height: 80vh;
-        padding-top: 1rem;
-        padding-bottom: 3rem;
-    }
-
-    .card {
-        background-color: rgba(255, 255, 255, 0.95) !important;
-        backdrop-filter: blur(5px);
-        border-radius: 15px;
-    }
-
-    .hover-scale {
-        transition: transform 0.2s ease;
-    }
-    
-    .hover-scale:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-    }
-
-    .icon-box {
-        width: 60px;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .table thead th {
-        letter-spacing: 1px;
-        font-size: 0.75rem;
-    }
-</style>
 
 <?= $this->endSection() ?>

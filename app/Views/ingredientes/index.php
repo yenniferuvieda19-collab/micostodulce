@@ -14,25 +14,23 @@
         <?php endif; ?>
 
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-            <div>
-                <h2 class="fw-bold mb-1" style="color: var(--marron-logo);">Mis Insumos</h2>
-                <p class="text-muted mb-0">Administra los precios y presentaciones de tus ingredientes.</p>
-            </div>
+    <div class="flex-shrink-0">
+        <h2 class="fw-bold mb-1 text-nowrap" style="color: var(--marron-logo);">
+            <i class="fa-solid fa-basket-shopping me-2"></i>Mis Insumos
+        </h2>
+        <p class="text-muted mb-0">Administra los precios y presentaciones de tus ingredientes.</p>
+    </div>
 
-            <div class="d-flex flex-wrap gap-2 w-100 w-md-auto ms-md-auto justify-content-md-end">
-                <a href="<?= base_url('recetas') ?>" class="btn rounded-pill px-3 px-md-4 shadow-sm fw-bold text-white flex-fill flex-md-grow-0" style="background-color: #ee1d6dff; border:none;">
-                    <i class="fa-solid fa-arrow-right-arrow-left me-1 me-md-2"></i>Recetas
-                </a>
+    <div class="d-flex flex-wrap gap-2 w-100 w-md-auto ms-md-auto justify-content-md-end">
+        <a href='<?= base_url('panel') ?>' class="btn rounded-pill px-3 px-md-4 shadow-sm fw-bold bg-white text-dark border flex-fill flex-md-grow-0">
+            <i class="fa-solid fa-arrow-left me-1 me-md-2"></i>Regresar
+        </a>
 
-                <a href="<?= base_url("gastos") ?>" class="btn rounded-pill px-3 px-md-4 shadow-sm fw-bold bg-white text-dark border flex-fill flex-md-grow-0">
-                    <i class="fa-solid fa-hand-holding-dollar me-1 me-md-2 text-warning"></i>Indirectos
-                </a>
-
-                <a href="<?= base_url('ingredientes/crear') ?>" class="btn btn-primary rounded-pill px-3 px-md-4 shadow-sm fw-bold flex-fill flex-md-grow-0" style="background-color: var(--azul-logo); border:none;">
-                    <i class="fa-solid fa-plus me-1 me-md-2"></i>Nuevo Insumo
-                </a>
-            </div>
-        </div>
+        <a href="<?= base_url('ingredientes/crear') ?>" class="btn btn-primary rounded-pill px-3 px-md-4 shadow-sm fw-bold flex-fill flex-md-grow-0" style="background-color: var(--azul-logo); border:none;">
+            <i class="fa-solid fa-plus me-1 me-md-2"></i>Nuevo Insumo
+        </a>
+    </div>
+</div>
 
         <div class="card border-0 shadow-sm overflow-hidden">
             <div class="card-body p-0">
