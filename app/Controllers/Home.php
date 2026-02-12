@@ -7,26 +7,22 @@ use App\Models\RecetaModel;
 
 class Home extends BaseController
 {
-    /**
-     * Muestra el Dashboard principal con el resumen del negocio y la guía de inicio
-     */
+    //Muestra el Dashboard principal con el resumen del negocio y la guía de inicio
     public function index()
     {
-        // 1. Control de acceso: Verificar si el usuario está logueado
+        //Control de acceso: Verifica si el usuario está logueado
         if (!session()->get("isLoggedIn")) {
             return redirect()->to(base_url('login'));
         }
 
-        // 2. Inicialización de modelos e identificación de usuario
+        //Inicialización de modelos e identificación de usuario
         $ingredientesModel = new IngredienteModel();
         $recetasModel = new RecetaModel();
         $idUsuario = session()->get('Id_usuario');
 
-        // 3. Obtención de métricas en tiempo real
         $totalIngredientes = $ingredientesModel->where('Id_usuario', $idUsuario)->countAllResults();
         $totalRecetas = $recetasModel->where('Id_usuario', $idUsuario)->countAllResults();
 
-        // 4. Lógica de Onboarding (Pasos del usuario)
         // La guía se muestra solo si el usuario aún no tiene recetas creadas
         $mostrarGuia = ($totalRecetas == 0);
         $pasoActual = 1;
@@ -44,10 +40,8 @@ class Home extends BaseController
             $porcentajeProgreso = 100;
         }
 
-        // 5. Sincronización con la sesión (opcional, para uso en otras vistas)
         session()->set('pasoActual', $pasoActual);
 
-        // 6. Preparación de datos para la vista
         $data = [
             'totalIngredientes'  => $totalIngredientes,
             'totalRecetas'       => $totalRecetas,

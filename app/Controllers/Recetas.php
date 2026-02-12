@@ -7,7 +7,7 @@ use App\Models\RecetaModel;
 use App\Models\IngredienteModel;
 use App\Models\IngredientesRecetasModel;
 
-// Muestra el listado de todas las recetas del usuario y valida la sesión antes de mostrar datos   
+// Muestra el listado de todas las recetas del usuario y valida la sesión antes de mostrar datos    
 class Recetas extends BaseController
 {
     public function index()
@@ -39,7 +39,7 @@ class Recetas extends BaseController
 
         // Filtramos insumos válidos (precio > 0) y los ordenamos alfabéticamente para facilitar la búsqueda al usuario.
         $data['ingredientes'] = $ingModel->where('Id_usuario', $idUsuario)
-            ->where('costo_unidad >', 0.01)
+            ->where('costo_unidad >', 0.0001) // Ajustado para permitir insumos baratos
             ->orderBy('nombre_ingrediente', 'ASC')
             ->findAll();
 
@@ -49,54 +49,55 @@ class Recetas extends BaseController
     }
 
     /*
-     * LÓGICA PRINCIPAL DEL SISTEMA
+     * LÓGIhhCA PRINCIPAL DEL SISTEMA
      * 1. Guarda la cabecera de la receta
      * 2. Procesa los ingredientes uno por uno
-     * 3. Convierte unidades (Paquete -> Gramos -> Costo real)
+     * 3. Procesa los COSTOS INDIRECTOS (Fijos y Porcentajes)
      * 4. Calcula el precio final sumando la ganancia deseada
      */
     public function guardar()
     {
         // Instanciamos los modelos necesarios para la operación transaccional
-        $recetaModel  = new RecetaModel();
-        $ingModel     = new IngredienteModel();
-        $detalleModel = new IngredientesRecetasModel();
+        $recetaModel      = new RecetaModel();
+        $ingModel         = new IngredienteModel();
+        $detalleModel     = new IngredientesRecetasModel();
+        
         // Modelos nuevos para los Gastos Indirectos
         $gastoModel       = new \App\Models\GastoAdicionalModel();
-        $gastoRecetaModel = new \App\Models\GastosRecetasModel();
+        // Asegúrate de haber creado este modelo o úsalo directo si usas query builder, 
+        // pero lo ideal es tener el modelo App\Models\GastosRecetasModel
+        $gastoRecetaModel = new \App\Models\GastosRecetasModel(); 
 
-        // Recibimos los arrays del formulario (Ingredientes y Cantidades)
+        // Recibimos la info del formulario (Ingredientes y Cantidades)
         $ingredientesIds = $this->request->getPost('ingrediente_id');
         $cantidades      = $this->request->getPost('cantidades');
-        $gastosIds       = $this->request->getPost('gasto_id');
+        $gastosIds       = $this->request->getPost('gasto_id'); // Checkboxes de Gastos
         $inputGanancia   = $this->request->getPost('ganancia');
 
-        // Validación básica del porcentaje de ganancia (Default: 30%), aunque puede ser el porcentaje que el cliente desee
+        // Validación básica del porcentaje de ganancia (Default: 30%)
         $gananciaReal    = ($inputGanancia > 0) ? $inputGanancia : 30;
-        $margen_ganancia = $gananciaReal / 100;
+        $idUsuario       = session()->get('Id_usuario');
 
-        $idUsuario = session()->get('Id_usuario');
-
-        // PASO 1: Crear la receta Cabecera, inicializamos costos en 0, se calcularán más abajo
+        // 1. Crear la receta Cabecera, inicializamos costos en 0
         $dataReceta = [
             'Id_usuario'          => $idUsuario,
             'nombre_postre'       => $this->request->getPost('nombre'),
             'porciones'           => $this->request->getPost('porciones'),
-            'costo_ingredientes'  => 0,
-            'precio_venta_sug'    => 0,
+            'costo_ingredientes'  => 0, // Se actualizará al final
+            'precio_venta_sug'    => 0, // Se actualizará al final
             'porcentaje_ganancia' => $gananciaReal,
             'notas'               => $this->request->getPost('notas')
         ];
 
-        // Insertamos y recuperamos el ID generado para relacionar los ingredientes
+        // Insertamos y recuperamos el ID generado
         $idReceta = $recetaModel->insert($dataReceta, true);
 
-        // PASO 2: Procesamiento de Costos, lo que vendría siendo el algoritmo de costeo
-        $costoTotalReceta = 0;
+        //Procesamiento de Ingredientes e Insumos
+        $costoTotalIngredientes = 0;
 
         if ($ingredientesIds) {
             foreach ($ingredientesIds as $index => $idIng) {
-                // Verificamos que el ingrediente y la cantidad sean válidos, es decir, no sean menor a 0 (> 0)
+                // Verificamos que el ingrediente y la cantidad sean válidos
                 if (!empty($idIng) && !empty($cantidades[$index]) && $cantidades[$index] > 0) {
 
                     $infoIngrediente = $ingModel->find($idIng);
@@ -108,23 +109,23 @@ class Recetas extends BaseController
                         $cantidadUsada  = floatval($cantidades[$index]);
                         $idUnidadBase   = intval($infoIngrediente['Id_unidad_base']);
 
-                        // Lógica de conversión de unidades Si la unidad base es KG (2) o Litro (4), multiplicamos el tamaño del paquete por 1000, esto lo hacemos para estandarizar todo a Gramos o Mililitros
+                        // Lógica de conversión de unidades
                         $factor = 1;
-                        if ($idUnidadBase == 2 || $idUnidadBase == 4) {
+                        if ($idUnidadBase == 2 || $idUnidadBase == 4) { // KG o Litros
                             $factor = 1000;
                         }
 
-                        $tamanoRealEnGramos = $tamanoPaquete * $factor;
+                        $tamanoReal = $tamanoPaquete * $factor;
 
-                        // Cálculo del costo proporcional (Regla de tres)
+                        // Cálculo del costo proporcional
                         $costoInsumo = 0;
-                        if ($tamanoRealEnGramos > 0) {
-                            $costoUnitarioReal = $precioPaquete / $tamanoRealEnGramos;
+                        if ($tamanoReal > 0) {
+                            $costoUnitarioReal = $precioPaquete / $tamanoReal;
                             $costoInsumo = $costoUnitarioReal * $cantidadUsada;
                         }
 
-                        // Acumulamos al costo total de la receta 
-                        $costoTotalReceta += $costoInsumo;
+                        // Acumulamos al costo parcial de ingredientes
+                        $costoTotalIngredientes += $costoInsumo;
 
                         $detalleModel->insert([
                             'Id_receta'          => $idReceta,
@@ -137,34 +138,49 @@ class Recetas extends BaseController
             }
         }
 
-        $costoGastos = 0; // Acumula cajas, luz, mano de obra...
+        // Procesamiento de Gastos Indirectos (Fijos vs Porcentajes)
+        $costoTotalIndirectos = 0;
 
-        // Procesa los gatos indirectos para agregarlo a la receta
         if ($gastosIds) {
             foreach ($gastosIds as $idGasto) {
                 $infoGasto = $gastoModel->find($idGasto);
                 
                 if ($infoGasto) {
-                    $precioAplicar = floatval($infoGasto['precio_unitario']);
-                    $costoGastos += $precioAplicar;
+                    $valorGasto = floatval($infoGasto['precio_unitario']);
+                    $esFijo     = ($infoGasto['es_fijo'] == 1);
+                    $montoAplicado = 0;
 
-                    // Guardamos la relación
+                    if ($esFijo) {
+                        // Si es fijo (ej: Delivery $3), se suma directo
+                        $montoAplicado = $valorGasto;
+                    } else {
+                        // Si es porcentaje (ej: Mano de obra 10%), se calcula sobre los ingredientes
+                        $montoAplicado = $costoTotalIngredientes * ($valorGasto / 100);
+                    }
+
+                    $costoTotalIndirectos += $montoAplicado;
+
+                    // Guardamos la relación en la tabla intermedia
                     $gastoRecetaModel->insert([
                         'Id_receta'       => $idReceta,
-                        'id_gasto'        => $idGasto,
-                        'precio_aplicado' => $precioAplicar
+                        'Id_gasto'        => $idGasto,
+                        'precio_aplicado' => $montoAplicado // Guardamos cuánto valió en ese momento
                     ]);
                 }
             }
         }
 
-        // PASO 3: Cálculo financiero, fórmula simple Costo de Inversión + % de Ganancia en Dinero = Precio Venta
-        $gananciaDinero = $costoTotalReceta * ($gananciaReal / 100);
-        $precioVenta    = $costoTotalReceta + $gananciaDinero;
+        // Cálculo financiero final
+        // El costo de producción real es: Ingredientes + Indirectos
+        $costoProduccionTotal = $costoTotalIngredientes + $costoTotalIndirectos;
 
-        // PASO 4: Actualización final, Guardamos los totales calculados en la cabecera de la receta
+        // La ganancia se calcula sobre el costo de producción total
+        $gananciaDinero = $costoProduccionTotal * ($gananciaReal / 100);
+        $precioVenta    = $costoProduccionTotal + $gananciaDinero;
+
+        // Actualización final de la cabecera
         $recetaModel->update($idReceta, [
-            'costo_ingredientes' => $costoTotalReceta,
+            'costo_ingredientes' => $costoProduccionTotal, // Guardamos el costo total aquí
             'precio_venta_sug'   => $precioVenta
         ]);
 
@@ -217,7 +233,7 @@ class Recetas extends BaseController
 
         // Traemos todos los ingredientes para así poder agregar nuevos si se desea
         $data['ingredientes'] = $ingModel->where('Id_usuario', $idUsuario)
-            ->where('costo_unidad >', 0.01)
+            ->where('costo_unidad >', 0.0001)
             ->orderBy('nombre_ingrediente', 'ASC')
             ->findAll();
 
@@ -239,8 +255,7 @@ class Recetas extends BaseController
         $inputGanancia   = $this->request->getPost('ganancia');
 
         $gananciaReal    = ($inputGanancia > 0) ? $inputGanancia : 30;
-        $margen_ganancia = $gananciaReal / 100;
-
+        
         // Reiniciamos el contador de costos
         $costoTotalReceta = 0;
         $detallesNuevos = [];
@@ -257,18 +272,18 @@ class Recetas extends BaseController
                         $precioPaquete  = floatval($infoIngrediente['costo_unidad']);
                         $tamanoPaquete  = floatval($infoIngrediente['cantidad_paquete']);
                         $cantidadUsada  = floatval($cantidades[$index]);
-                        $idUnidadBase   = intval($infoIngrediente['Id_unidad_base']); // Obtenemos el ID de unidad
+                        $idUnidadBase   = intval($infoIngrediente['Id_unidad_base']); 
 
                         $factor = 1;
                         if ($idUnidadBase == 2 || $idUnidadBase == 4) { // KG o Lt
                             $factor = 1000;
                         }
 
-                        $tamanoRealEnGramos = $tamanoPaquete * $factor;
+                        $tamanoReal = $tamanoPaquete * $factor;
 
                         $costoInsumo = 0;
-                        if ($tamanoRealEnGramos > 0) {
-                            $costoUnitarioReal = $precioPaquete / $tamanoRealEnGramos;
+                        if ($tamanoReal > 0) {
+                            $costoUnitarioReal = $precioPaquete / $tamanoReal;
                             $costoInsumo = $costoUnitarioReal * $cantidadUsada;
                         }
 
@@ -286,7 +301,7 @@ class Recetas extends BaseController
             }
         }
 
-        // Calculos finales; Correción al calcular porcentaje
+        // Calculos finales
         $gananciaDinero = $costoTotalReceta * ($gananciaReal / 100);
         $precioVenta    = $costoTotalReceta + $gananciaDinero;
 
@@ -311,7 +326,7 @@ class Recetas extends BaseController
         return redirect()->to(base_url('recetas'))->with('mensaje', 'Receta actualizada exitosamente.');
     }
 
-    // Elimina una receta y sus detalles, además maneja redirección inteligente dependiendo de dónde se hizo clic al borrar  ya sea en el Panel o en la Lista
+    // Elimina una receta y sus detalles, además maneja redirección inteligente dependiendo de dónde se hizo clic al borrar    ya sea en el Panel o en la Lista
     public function borrar($id = null)
     {
         $recetaModel = new RecetaModel();

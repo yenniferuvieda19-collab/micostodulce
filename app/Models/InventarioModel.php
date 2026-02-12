@@ -12,18 +12,16 @@ class InventarioModel extends Model
     protected $primaryKey = 'Id_produccion'; 
 
     // Campos que permitiremos que el sistema escriba o lea
-    // Asegúrate de que coincidan con los nombres en tu base de datos
     protected $allowedFields = [
         'Id_produccion',
         'Id_usuario', 
         'Id_receta', 
         'nombre_receta', 
-        'cantidad_producida',  
+        'cantidad_producida', 
         'costo_adicional_total', 
         'costo_total_lote', 
-        'fecha_produccion'
+        'fecha_produccion',
+        'costo_unitario'
     ];
-
-    // Esto hará que CodeIgniter nos devuelva los datos como arreglos
     protected $returnType = 'array';
 }

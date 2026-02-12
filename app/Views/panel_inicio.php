@@ -85,8 +85,8 @@
                                                 <?= (isset($pasoActual) && $pasoActual > 1) ? '<i class="fa-solid fa-check"></i>' : '1' ?>
                                             </div>
                                             <div>
-                                                <h6 class="fw-bold mb-0">Registra tus Insumos</h6>
-                                                <p class="small mb-0 text-muted">Harina, huevos, azúcar...</p>
+                                                <h6 class="fw-bold mb-0">Ingredientes e Insumos</h6>
+                                                <p class="small mb-0 text-muted">Harina, azúcar, envases, cajas...</p>
                                             </div>
                                         </div>
                                         <?php if (isset($pasoActual) && $pasoActual == 1): ?>
@@ -141,7 +141,7 @@
                             <i class="fa-solid fa-basket-shopping fa-2x" style="color: var(--marron-logo);"></i>
                         </div>
                         <div>
-                            <h5 class="fw-bold mb-1">Mis Insumos</h5>
+                            <h5 class="fw-bold mb-1">Ingredientes e Insumos</h5>
                             <p class="text-muted small mb-0">Tienes <b><?= $totalIngredientes ?? 0 ?></b> registrados.</p>
                         </div>
                         <a href="<?= base_url('ingredientes') ?>" class="stretched-link"></a>

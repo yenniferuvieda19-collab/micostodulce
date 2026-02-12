@@ -125,22 +125,29 @@ class Ingredientes extends BaseController
 
     // Borrar ingrediente verificando que no esté en uso
     public function borrar($id = null)
-    {
-        $model = new IngredienteModel();
-        $relacionModel = new IngredientesRecetasModel();
+{
+    if (!$id) return redirect()->to(base_url('ingredientes'));
 
-        $estaEnUso = $relacionModel->where('id_ingrediente', $id)->first();
+    $model = new IngredienteModel();
+    //Ojo aquí gente, ya que verifica que el modelo RecetaDetalleModel sea el correcto para ver si se usa el insumo
+    $detalleModel = new \App\Models\RecetaDetalleModel();
 
-        if ($estaEnUso) {
-            return redirect()->back()->with('error', 'No se puede eliminar: este insumo es parte de una receta activa.');
-        }
+    // Verificamos si el ingrediente está siendo usado en alguna receta
+    // Ajusta 'Id_ingrediente' según el nombre real en la tabla receta_detalle
+    $estaEnUso = $detalleModel->where('Id_ingrediente', $id)->first();
 
-        $model->delete($id);
-
-        return redirect()->to(base_url('ingredientes'))->with('mensaje_exito', 'Insumo eliminado correctamente.');
+    if ($estaEnUso) {
+        // Si está en uso, enviamos un mensaje de error que capturaremos en la vista
+        return redirect()->to(base_url('ingredientes'))->with('error', 'No se puede eliminar: este insumo es parte de una receta activa.');
     }
 
-    // Función privada para actualizar costos de recetas automáticamente
+    // Si no está en uso, lo borro
+    $model->delete($id);
+
+    return redirect()->to(base_url('ingredientes'))->with('mensaje_exito', 'Insumo eliminado correctamente.');
+}
+
+    // Gente, creé esto acá para actualizar costos de recetas automáticamente con una función privadaa
     private function recalcularRecetasAfectadas($idIngrediente)
     {
         $detalleModel = new RecetaDetalleModel();

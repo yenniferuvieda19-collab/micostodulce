@@ -98,4 +98,5 @@ $routes->group('ventas', function ($routes) {
     $routes->get('crear', 'Ventas::crear');
     $routes->post('guardar', 'Ventas::guardar');
     $routes->get('detalle/(:num)', 'Ventas::detalle/$1');
+    $routes->get('eliminar/(:num)', 'Ventas::eliminar/$1');
 });

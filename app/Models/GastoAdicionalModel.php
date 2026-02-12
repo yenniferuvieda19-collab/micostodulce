@@ -10,7 +10,7 @@ class GastoAdicionalModel extends Model
     protected $primaryKey       = 'Id_gasto';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-    protected $allowedFields    = ['Id_usuario', 'nombre_gasto', 'categoria', 'precio_unitario', 'es_paquete', 'cantidad_paquete', 'costo_paquete'];
+    protected $allowedFields    = ['Id_usuario', 'nombre_gasto', 'categoria', 'precio_unitario', 'es_fijo', 'es_paquete', 'cantidad_paquete', 'costo_paquete'];
 
     // Validaciones básicas para que no metan datos vacíos
     protected $validationRules = [

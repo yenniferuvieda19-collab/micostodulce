@@ -1,3 +1,4 @@
+
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('contenido') ?>
@@ -45,7 +46,7 @@
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <h5 class="mb-0 fw-bold" style="color: var(--azul-logo);">
-                            <i class="fa-solid fa-blender me-2"></i>Ingredientes
+                            <i class="fa-solid fa-blender me-2"></i>Ingredientes e Insumos
                         </h5>
                         <div class="bg-light px-3 py-2 rounded-pill border d-flex align-items-center">
                             <small class="text-muted fw-bold me-2">COSTO TOTAL:</small>
@@ -58,7 +59,7 @@
                             <table class="table align-middle mb-0" id="tablaIngredientes" style="min-width: 700px;">
                                 <thead class="bg-light">
                                     <tr class="text-secondary small text-uppercase">
-                                        <th style="width: 35%;" class="ps-4">Ingrediente</th>
+                                        <th style="width: 35%;" class="ps-4">Ingrediente o Insumo</th>
                                         <th style="width: 20%;" class="text-center">Costo Unitario</th>
                                         <th style="width: 25%;">Cantidad a Usar</th>
                                         <th style="width: 15%;" class="text-end">Subtotal</th>
@@ -70,7 +71,7 @@
                         </div>
                         <div class="p-3">
                             <button type="button" class="btn btn-light text-primary fw-bold w-100 border-dashed py-3" onclick="agregarFila()">
-                                <i class="fa-solid fa-plus me-2"></i>Añadir otro ingrediente
+                                <i class="fa-solid fa-plus me-2"></i>Añadir un Ingrediente o Insumo
                             </button>
                         </div>
                     </div>
@@ -89,19 +90,22 @@
                                 <?php foreach($gastos as $gasto): ?>
                                     <div class="col-12 col-sm-6 col-lg-4">
                                         <div class="form-check p-3 border rounded bg-light custom-check-card position-relative h-100">
-                                            <input class="form-check-input position-absolute top-50 start-0 ms-3 translate-middle-y" 
+                                            <input class="form-check-input position-absolute top-50 start-0 ms-3 translate-middle-y check-gasto" 
                                                    type="checkbox" 
                                                    name="gasto_id[]" 
                                                    value="<?= $gasto['Id_gasto'] ?>" 
+                                                   data-precio="<?= $gasto['precio_unitario'] ?>"
+                                                   data-fijo="<?= $gasto['es_fijo'] ?>"
                                                    id="gasto_<?= $gasto['Id_gasto'] ?>"
+                                                   onchange="calcularTotalGeneral()"
                                                    style="transform: scale(1.3);">
                                             
                                             <label class="form-check-label w-100 ps-5 cursor-pointer d-flex flex-column justify-content-center" 
                                                    for="gasto_<?= $gasto['Id_gasto'] ?>" style="min-height: 45px;">
                                                 <div class="d-flex justify-content-between align-items-center w-100">
                                                     <span class="fw-bold text-dark small"><?= esc($gasto['nombre_gasto']) ?></span>
-                                                    <span class="badge bg-white text-success border border-success">
-                                                        $<?= number_format($gasto['precio_unitario'], 2) ?>
+                                                    <span class="badge bg-white text-dark border <?= $gasto['es_fijo'] ? 'border-success text-success' : 'border-primary text-primary' ?>">
+                                                        <?= $gasto['es_fijo'] ? '$' : '' ?><?= number_format($gasto['precio_unitario'], 2) ?><?= !$gasto['es_fijo'] ? '%' : '' ?>
                                                     </span>
                                                 </div>
                                                 <small class="text-muted d-block mt-1" style="font-size: 0.7rem;">
@@ -138,9 +142,6 @@
                             rows="6" 
                             style="border-left: 5px solid var(--azul-logo); resize: none;" 
                             placeholder="Describe aquí el paso a paso detallado (opcional)..."></textarea>
-                        <div class="form-text mt-2 text-muted">
-                            <i class="fa-solid fa-circle-info me-1"></i> Puedes dejar este espacio en blanco si no deseas detallar el procedimiento.
-                        </div>
                     </div>
                 </div>
 
@@ -176,9 +177,7 @@
     function agregarFila() {
         const tbody = document.getElementById('listaIngredientes');
         const row = document.createElement('tr');
-
         let opciones = '<option value="" data-unidad="-" data-precio="0" data-paquete="0">-- Selecciona --</option>';
-
         ingredientesDisponibles.forEach(ing => {
             opciones += `<option value="${ing.id}" data-unidad-id="${ing.unidad_id}" data-precio="${ing.precio}" data-paquete="${ing.paquete}">${ing.nombre}</option>`;
         });
@@ -217,27 +216,43 @@
         
         let costoUnitario = 0;
         let tamanoReal = tamanoPaquete * factor;
-        if (tamanoReal > 0) {
-            costoUnitario = precioPaquete / tamanoReal;
-        }
+        if (tamanoReal > 0) { costoUnitario = precioPaquete / tamanoReal; }
         
         labelCostoUnit.textContent = '$ ' + costoUnitario.toFixed(4);
         const cantidadUsada = parseFloat(inputCant.value) || 0;
         const subtotal = costoUnitario * cantidadUsada;
-        labelSubtotal.textContent = '$ ' + formatearDinero(subtotal);
+        labelSubtotal.textContent = '$ ' + subtotal.toFixed(4);
         calcularTotalGeneral();
     }
 
+    // Lógica de cálculo unificada para ingredientes + costos indirectos
     function calcularTotalGeneral() {
         const subtotales = document.querySelectorAll('.lbl-subtotal');
-        let total = 0;
+        let totalIngredientes = 0;
+
         subtotales.forEach(span => {
             let textoValor = span.textContent.replace('$', '').trim().replace(/,/g, '');
-            total += parseFloat(textoValor) || 0;
+            totalIngredientes += parseFloat(textoValor) || 0;
         });
+
+        let totalIndirectos = 0;
+        const checks = document.querySelectorAll('.check-gasto:checked');
+        
+        checks.forEach(check => {
+            const precio = parseFloat(check.getAttribute('data-precio')) || 0;
+            const esFijo = check.getAttribute('data-fijo') === "1";
+
+            if (esFijo) {
+                totalIndirectos += precio; 
+            } else {
+                totalIndirectos += (totalIngredientes * (precio / 100)); 
+            }
+        });
+
+        const granTotal = totalIngredientes + totalIndirectos;
         const displayTotal = document.getElementById('displayTotalCosto');
         if (displayTotal) {
-            displayTotal.textContent = '$ ' + formatearDinero(total);
+            displayTotal.textContent = '$ ' + formatearDinero(granTotal);
         }
     }
 
@@ -252,7 +267,6 @@
 </script>
 
 <style>
-    /* Estilos personalizados mantenidos */
     body {
         background-image: linear-gradient(rgba(255, 255, 255, 0.75), 
             rgba(255, 255, 255, 0.75)), 

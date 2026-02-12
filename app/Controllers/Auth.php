@@ -242,8 +242,7 @@ class Auth extends BaseController
     }
 
     /**
-     * MÉTODO PANEL: 
-     * Redirige al controlador Home para centralizar la lógica de la vista
+     * Muchachos, aquí se redirige al controlador Home para centralizar la lógica de la vista
      * y evitar errores de variables no definidas.
      */
     public function panel()

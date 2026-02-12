@@ -16,7 +16,7 @@
             --azul-logo: #0fa7ee;
         }
 
-        /* AJUSTE PARA FOOTER AL FINAL */
+        /* Mejoré el footer */
         body { 
             font-family: 'Montserrat', sans-serif; 
             min-height: 100vh; 
@@ -39,12 +39,11 @@
             display: flex; align-items: center; justify-content: center; margin-right: 15px;
         }
 
-        /* EL MAIN CRECE PARA OCUPAR EL ESPACIO DISPONIBLE */
         main.container { 
             background-color: transparent !important; 
             padding: 20px; 
             margin-top: 20px;
-            flex: 1 0 auto; /* Esto empuja el footer hacia abajo */
+            flex: 1 0 auto; /* Esto arregla el error de yenni y empuja el footer hacia abajo */
         }
 
         .glass-card {
@@ -53,11 +52,10 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
         }
 
-        /* BOTONES SÓLIDOS */
         .btn-dulce-rosa { background-color: #f26185 !important; color: white !important; border: none !important; font-weight: 600; }
         .btn-dulce-marron { background-color: #825a42 !important; color: white !important; border: none !important; font-weight: 600; }
 
-        /* FOOTER ESTILIZADO */
+        /* mi estilo de footer */
         footer {
             flex-shrink: 0; /* Evita que el footer se encoja */
             background-color: rgba(255, 255, 255, 0.9);
@@ -114,5 +112,6 @@
             }).then((result) => { if (result.isConfirmed) window.location.href = url + '/' + id; });
         }
     </script>
+    <?= $this->renderSection('scripts') ?>
 </body>
 </html>

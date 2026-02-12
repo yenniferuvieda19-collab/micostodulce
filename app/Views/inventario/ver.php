@@ -24,7 +24,7 @@
         background: transparent !important;
     }
 
-    /* Efecto Glassmorphism para la ficha de detalle */
+    /* Efecto para la ficha de detalle */
     .card-detalle {
         background-color: rgba(255, 255, 255, 0.9) !important;
         backdrop-filter: blur(10px);
@@ -83,7 +83,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="p-3 border rounded-3 bg-light text-danger shadow-sm">
-                                    <label class="d-block small opacity-75">Inversión</label>
+                                    <label class="d-block small opacity-75">Inversión de receta</label>
                                     <span class="h4 fw-bold">$<?= number_format($p['costo_total_lote'], 2) ?></span>
                                 </div>
                             </div>
