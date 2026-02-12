@@ -34,40 +34,24 @@ class Gastos extends BaseController
     {
         $model = new GastoAdicionalModel();
 
-        // Detectamos si es un paquete ejemplo: Paquete de 50 vasos o unidad simple
-        $esPaquete = $this->request->getPost('es_paquete');
-        $costoUnitarioFinal = 0;
+        // Verificamos el switch: 
+        // Si viene '1', es Fijo ($). Si no viene nada, es Porcentaje (%).
+        $esFijo = $this->request->getPost('es_fijo') ? 1 : 0;
+        
+        // El valor que escribió el usuario (puede ser 10% o $10)
+        $valorIngresado = $this->request->getPost('valor_gasto');
 
-        // Calculadora inteligente
-        if ($esPaquete == 1) {
-            // Si es por paquete dividimos Costo Total / Cantidad del Paquete
-            $costoPaquete = $this->request->getPost('costo_paquete');
-            $cantidad = $this->request->getPost('cantidad_paquete');
-
-            // Evitamos dividir por cero
-            if ($cantidad > 0) {
-                $costoUnitarioFinal = $costoPaquete / $cantidad;
-            } else {
-                $costoUnitarioFinal = 0;
-            }
-        } else {
-            // Si es por unidad tomamos el precio directo
-            $costoUnitarioFinal = $this->request->getPost('precio_unitario');
-        }
-
-        // Preparamos los datos para guardar
-        $datos = [
-            'Id_usuario'       => session()->get('Id_usuario'),
-            'nombre_gasto'     => $this->request->getPost('nombre_gasto'),
-            'categoria'        => $this->request->getPost('categoria'),
-            'es_paquete'       => $esPaquete ?? 0,
-            'costo_paquete'    => $this->request->getPost('costo_paquete') ?? 0,
-            'cantidad_paquete' => $this->request->getPost('cantidad_paquete') ?? 1,
-            'precio_unitario'  => $costoUnitarioFinal // Aquí guardamos el resultado de la división
+       $datos = [
+            'Id_usuario'      => session()->get('Id_usuario'),
+            'nombre_gasto'    => $this->request->getPost('nombre_gasto'),
+            'categoria'       => $this->request->getPost('categoria'),
+            'es_fijo'         => $esFijo, // 1 = Dólar, 0 = Porcentaje
+            'precio_unitario' => $this->request->getPost('valor_gasto'),
+            'es_paquete'      => 0,
+            'cantidad_paquete'=> 1
         ];
 
         $model->save($datos);
-
         return redirect()->to('gastos')->with('mensaje', 'Gasto guardado correctamente.');
     }
 
@@ -109,34 +93,21 @@ class Gastos extends BaseController
     public function actualizar($id = null)
     {
         $model = new GastoAdicionalModel();
+        
+        // Recibimos el Switch si está marcado "on", vale 1 (Dólares) Si no, vale 0 (Porcentaje)
+        $esFijo = $this->request->getPost('es_fijo') ? 1 : 0;
 
-        // Recibir datos del formulario (Igual que en guardar)
-        $esPaquete = $this->request->getPost('es_paquete');
-        $costoUnitarioFinal = 0;
-
-        // La matemática de recalcular costo unitario
-        if ($esPaquete == 1) {
-            $costoPaquete = $this->request->getPost('costo_paquete');
-            $cantidad = $this->request->getPost('cantidad_paquete');
-            
-            if($cantidad > 0) {
-                $costoUnitarioFinal = $costoPaquete / $cantidad;
-            }
-        } else {
-            $costoUnitarioFinal = $this->request->getPost('precio_unitario');
-        }
-
-        // Preparar datos
         $datos = [
-            'nombre_gasto'     => $this->request->getPost('nombre_gasto'),
-            'categoria'        => $this->request->getPost('categoria'),
-            'es_paquete'       => $esPaquete ?? 0,
-            'costo_paquete'    => $this->request->getPost('costo_paquete') ?? 0,
-            'cantidad_paquete' => $this->request->getPost('cantidad_paquete') ?? 1,
-            'precio_unitario'  => $costoUnitarioFinal
+            'nombre_gasto'    => $this->request->getPost('nombre_gasto'),
+            'categoria'       => $this->request->getPost('categoria'),
+            
+            // Guardamos la lógica nueva ($ o %)
+            'es_fijo'         => $esFijo,
+            
+            // Guardamos el valor (sea 15% o $3.00)
+            'precio_unitario' => $this->request->getPost('valor_gasto')
         ];
 
-        // Actualizar en la BD
         $model->update($id, $datos);
 
         return redirect()->to('gastos')->with('mensaje', 'Gasto actualizado correctamente.');

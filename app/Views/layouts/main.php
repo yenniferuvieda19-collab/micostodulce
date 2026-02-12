@@ -114,5 +114,6 @@
             }).then((result) => { if (result.isConfirmed) window.location.href = url + '/' + id; });
         }
     </script>
+    <?= $this->renderSection('scripts') ?>
 </body>
 </html>

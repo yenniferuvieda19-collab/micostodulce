@@ -13,23 +13,17 @@
         </div>
         <?php endif; ?>
 
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-            <div>
-                <h2 class="fw-bold mb-1" style="color: var(--marron-logo);">Mis Insumos</h2>
-                <p class="text-muted mb-0">Administra los precios y presentaciones de tus ingredientes.</p>
-            </div>
-
-            <div class="d-flex flex-wrap gap-2 w-100 w-md-auto ms-md-auto justify-content-md-end">
-                <a href="<?= base_url('recetas') ?>" class="btn rounded-pill px-3 px-md-4 shadow-sm fw-bold text-white flex-fill flex-md-grow-0" style="background-color: #ee1d6dff; border:none;">
-                    <i class="fa-solid fa-arrow-right-arrow-left me-1 me-md-2"></i>Recetas
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            
+            <h2 class="fw-bold mb-0" style="color: var(--marron-logo);">Ingredientes e Insumos</h2>
+            
+            <div class="d-flex gap-2">
+                <a href="<?= base_url('panel') ?>" class="btn btn-white border shadow-sm rounded-pill fw-bold px-4">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Regresar
                 </a>
 
-                <a href="<?= base_url("gastos") ?>" class="btn rounded-pill px-3 px-md-4 shadow-sm fw-bold bg-white text-dark border flex-fill flex-md-grow-0">
-                    <i class="fa-solid fa-hand-holding-dollar me-1 me-md-2 text-warning"></i>Indirectos
-                </a>
-
-                <a href="<?= base_url('ingredientes/crear') ?>" class="btn btn-primary rounded-pill px-3 px-md-4 shadow-sm fw-bold flex-fill flex-md-grow-0" style="background-color: var(--azul-logo); border:none;">
-                    <i class="fa-solid fa-plus me-1 me-md-2"></i>Nuevo Insumo
+                <a href="<?= base_url('ingredientes/crear') ?>" class="btn btn-primary shadow-sm rounded-pill fw-bold px-4" style="background-color: var(--azul-logo); border:none;">
+                    <i class="fa-solid fa-plus me-2"></i>Nuevo
                 </a>
             </div>
         </div>
@@ -40,9 +34,9 @@
                     <table class="table table-hover align-middle mb-0" style="min-width: 600px;">
                         <thead class="bg-light">
                             <tr class="text-secondary small text-uppercase">
-                                <th class="ps-4 py-3">Ingrediente</th>
+                                <th class="ps-4 py-3">Nombre</th> 
                                 <th class="py-3 text-center">Presentación</th>
-                                <th class="py-3 text-center">Precio Compra</th>
+                                <th class="py-3 text-center">Costo Unitario</th>
                                 <th class="text-end pe-4 py-3">Acciones</th>
                             </tr>
                         </thead>
@@ -50,6 +44,7 @@
                             <?php if (!empty($ingredientes)): ?>
                                 <?php foreach ($ingredientes as $ing): ?>
                                     <?php
+                                    // MANTENEMOS TU LÓGICA DE UNIDADES (IMPORTANTE)
                                     $lbl = 'Und';
                                     switch ($ing['Id_unidad_base']) {
                                         case 1: $lbl = 'gr'; break;
@@ -71,8 +66,10 @@
                                             </span>
                                         </td>
 
-                                        <td class="fw-bold text-success text-center">
-                                            $ <?= number_format($ing['costo_unidad'], 2, '.', ',') ?>
+                                        <td class="text-center align-middle">
+                                            <span class="fw-bold text-dark fs-6">
+                                                $ <?= number_format($ing['costo_unidad'], 2, '.', ',') ?>
+                                            </span>
                                         </td>
 
                                         <td class="text-end pe-4">
@@ -95,8 +92,7 @@
                                     <td colspan="4" class="text-center py-5 text-muted">
                                         <div class="py-4">
                                             <i class="fa-solid fa-basket-shopping fa-3x mb-3 opacity-25 text-brown"></i>
-                                            <p class="mb-0 fw-bold">No tienes insumos registrados.</p>
-                                            <small>Agrega tus ingredientes para empezar a costear.</small>
+                                            <p class="mb-0 fw-bold">No tienes ingredientes ni insumos.</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -141,24 +137,14 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
     }
 
-    .btn-white { background-color: #fff; }
-    .btn-white:hover { background-color: #f8f9fa; }
+    .btn-white { background-color: #fff; color: #333; }
+    .btn-white:hover { background-color: #f8f9fa; color: #000; }
 
     .text-brown { color: var(--marron-logo); }
 
-    /* Ajustes para los botones de acción en tabla */
     .btn-group .btn {
         border-radius: 8px !important;
         margin: 0 2px;
-    }
-
-    .hover-shadow:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 .8rem 2rem rgba(0, 0, 0, .15) !important;
-    }
-
-    .transition-all {
-        transition: all 0.3s ease;
     }
 </style>
 
@@ -178,10 +164,9 @@
 
                 Swal.fire({
                     title: '¿Estás seguro?',
-                    text: "No podrás revertir esta acción y el insumo se borrará permanentemente.",
+                    text: "No podrás revertir esta acción y el ítem se borrará permanentemente.",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
                     confirmButtonText: 'Sí, eliminar',
