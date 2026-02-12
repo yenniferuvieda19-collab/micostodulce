@@ -214,6 +214,27 @@
                 });
             });
         });
+
+        // --- BLOQUE PARA MOSTRAR ERROR SI LA RECETA ESTÁ EN USO ---
+        <?php if (session()->getFlashdata('error')): ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Atención',
+                text: '<?= session()->getFlashdata('error') ?>',
+                confirmButtonColor: '#3085d6',
+            });
+        <?php endif; ?>
+
+        // Bloque para mensajes de éxito (opcional, para consistencia visual)
+        <?php if (session()->getFlashdata('mensaje')): ?>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Hecho!',
+                text: '<?= session()->getFlashdata('mensaje') ?>',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        <?php endif; ?>
     });
 </script>
 <?= $this->endSection() ?>

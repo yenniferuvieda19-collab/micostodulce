@@ -327,6 +327,7 @@ class Recetas extends BaseController
     }
 
     // Elimina una receta y sus detalles, además maneja redirección inteligente dependiendo de dónde se hizo clic al borrar    ya sea en el Panel o en la Lista
+    // Elimina una receta y sus detalles, además maneja redirección inteligente dependiendo de dónde se hizo clic al borrar    ya sea en el Panel o en la Lista
     public function borrar($id = null)
     {
         $recetaModel = new RecetaModel();
@@ -334,9 +335,20 @@ class Recetas extends BaseController
 
         // Ejecutar el borrado
         if ($id) {
-            // Usamos 'builder' para permitir el delete con where manual
-            $detalleModel->builder()->where('Id_receta', $id)->delete();
-            $recetaModel->delete($id);
+            try {
+                // Verificamos si la receta está siendo usada en producción o ventas
+                // Nota: CodeIgniter lanzará una excepción automáticamente si hay una restricción de llave foránea en la BD
+                
+                // Usamos 'builder' para permitir el delete con where manual
+                $detalleModel->builder()->where('Id_receta', $id)->delete();
+                $recetaModel->delete($id);
+                
+                $mensajeFinal = 'Receta eliminada correctamente.';
+                $tipoMensaje = 'mensaje'; // Para éxito
+            } catch (\Exception $e) {
+                // Si la base de datos impide el borrado (por integridad referencial)
+                return redirect()->back()->with('error', 'No se puede eliminar la receta porque ya tiene registros de producción o ventas asociados.');
+            }
         }
 
         // Verificamos si en la URL venía el parámetro "?ref=panel", si es así volvemos al dashboard
